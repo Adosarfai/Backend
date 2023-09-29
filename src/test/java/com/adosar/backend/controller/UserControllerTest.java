@@ -107,7 +107,7 @@ public class UserControllerTest {
         ResponseEntity<GetUserByIdResponse> responseEntity = userController.getUserById(1);
 
         // Assert
-        assertThat(responseEntity.getBody()).isNull();
+        assertThat(responseEntity.getBody().getUser()).isNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
