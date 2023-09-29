@@ -1,7 +1,6 @@
 package com.adosar.backend.persistence.entity;
 
 import com.adosar.backend.domain.Privilege;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,6 +11,7 @@ import java.util.Date;
 @Getter
 @ToString
 @Entity
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "user")
@@ -21,7 +21,7 @@ public class UserEntity {
     @Column(name = "id", length = 10, nullable = false, updatable = false)
     private Integer userId;
 
-    @Column(name = "username", length = 30, nullable = false)
+    @Column(name = "username", length = 50, nullable = false)
     @Setter
     private String username;
 
@@ -31,7 +31,7 @@ public class UserEntity {
     private String email;
 
     @JsonIgnore
-    @Column(name = "password", length = 64, nullable = false)
+    @Column(name = "password", length = 162, nullable = false)
     @Setter
     private String password;
 

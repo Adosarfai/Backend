@@ -6,15 +6,15 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 final class UserConverter {
-    
+
     public static User convert(UserEntity user) {
         return User.builder()
-                .userId(user.getUserId())
                 .email(user.getEmail())
-                .CreationDate(user.getCreationDate())
-                .privilege(user.getPrivilege())
-                .password(user.getPassword())
+                .userId(user.getUserId())
                 .username(user.getUsername())
+                .password(user.getPassword())
+                .privilege(user.getPrivilege())
+                .CreationDate(user.getCreationDate())
                 .build();
     }
 }

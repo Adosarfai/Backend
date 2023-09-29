@@ -10,4 +10,5 @@ import java.util.Collection;
 public interface MapRepository extends JpaRepository<MapEntity, Integer> {
 
     Collection<MapEntity> getMapByHash(String hash);
+
 }

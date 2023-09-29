@@ -1,5 +1,8 @@
 package com.adosar.backend.domain;
 
+import jakarta.annotation.Nullable;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.List;
@@ -10,11 +13,31 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Pack {
+    
+    @NotNull
     private User user;
+    
+    @NotNull
+    @Id
     private Integer packId;
-    @Setter private String title;
-    @Setter private List<Map> maps;
-    @Setter private Removed removed;
-    @Setter private boolean published;
-    @Setter private String removalReason;
+    
+    @Setter
+    @NotNull
+    private String title;
+    
+    @Setter
+    @NotNull
+    private List<Map> maps;
+    
+    @Setter
+    @NotNull
+    private Removed removed;
+    
+    @Setter
+    @NotNull
+    private boolean published;
+    
+    @Setter
+    @Nullable
+    private String removalReason;
 }

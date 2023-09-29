@@ -20,13 +20,13 @@ name: Snyk Security
 
 on:
   push:
-    branches: ["main" ]
+    branches: [ "main" ]
   pull_request:
-    branches: ["main"]
+    branches: [ "main" ]
 
 permissions:
   contents: read
-  
+
 jobs:
   security:
     runs-on: ubuntu-latest

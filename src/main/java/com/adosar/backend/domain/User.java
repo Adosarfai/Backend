@@ -1,6 +1,8 @@
 package com.adosar.backend.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.Date;
@@ -11,10 +13,28 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
+    @NotNull
+    @Id
     private Integer userId;
+    
+    @NotNull
     private Date CreationDate;
-    @Setter private String username;
-    @Setter private Privilege privilege;
-    @JsonIgnore @Setter private String email;
-    @JsonIgnore @Setter private String password;
+    
+    @Setter
+    @NotNull
+    private String username;
+    
+    @Setter
+    @NotNull
+    private Privilege privilege;
+    
+    @JsonIgnore
+    @Setter
+    @NotNull
+    private String email;
+    
+    @JsonIgnore
+    @Setter
+    @NotNull
+    private String password;
 }

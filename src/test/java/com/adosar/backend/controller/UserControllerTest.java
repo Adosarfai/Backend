@@ -1,8 +1,10 @@
 package com.adosar.backend.controller;
 
-import com.adosar.backend.business.GetAllUsersUseCase;
 import com.adosar.backend.business.impl.GetAllUsersUseCaseImpl;
 import com.adosar.backend.business.impl.GetUserByIdUseCaseImpl;
+import com.adosar.backend.controller.request.CreateNewUserRequest;
+import com.adosar.backend.controller.response.GetAllUsersResponse;
+import com.adosar.backend.controller.response.GetUserByIdResponse;
 import com.adosar.backend.domain.User;
 import com.adosar.backend.persistence.UserRepository;
 import com.adosar.backend.persistence.entity.UserEntity;
@@ -32,16 +34,16 @@ public class UserControllerTest {
         Page<UserEntity> testUsers = new PageImpl<UserEntity>(List.of(new UserEntity()));
         when(userRepository.findAll(PageRequest.of(0, 10))).thenReturn(testUsers);
         when(userRepository.findAll(PageRequest.of(1, 10))).thenReturn(Page.empty());
-        
+
         UserController userController = UserController.builder()
                 .getAllUsersUseCase(new GetAllUsersUseCaseImpl(userRepository))
                 .build();
-        
+
         // Act
-        ResponseEntity<Iterable<User>> responseEntity = userController.getAllUsers(1);
-        
+        ResponseEntity<GetAllUsersResponse> responseEntity = userController.getAllUsers(1);
+
         // Assert
-        assertThat(responseEntity.getBody()).isEmpty();
+        assertThat(responseEntity.getBody().getUsers()).isEmpty();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
@@ -57,10 +59,10 @@ public class UserControllerTest {
         UserController userController = UserController.builder()
                 .getAllUsersUseCase(new GetAllUsersUseCaseImpl(userRepository))
                 .build();
-        
+
         // Act
-        ResponseEntity<Iterable<User>> responseEntity = userController.getAllUsers(-1);
-        
+        ResponseEntity<GetAllUsersResponse> responseEntity = userController.getAllUsers(-1);
+
         // Assert
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
@@ -79,7 +81,7 @@ public class UserControllerTest {
                 .build();
 
         // Act
-        ResponseEntity<User> responseEntity = userController.getUserById(-1);
+        ResponseEntity<GetUserByIdResponse> responseEntity = userController.getUserById(-1);
 
         // Assert
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -102,10 +104,26 @@ public class UserControllerTest {
                 .build();
 
         // Act
-        ResponseEntity<User> responseEntity = userController.getUserById(1);
+        ResponseEntity<GetUserByIdResponse> responseEntity = userController.getUserById(1);
 
         // Assert
         assertThat(responseEntity.getBody()).isNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * @verifies return 400 BAD_REQUEST when request object is not valid
+     * @see UserController#createNewUser(CreateNewUserRequest)
+     */
+    @Test
+    public void createNewUser_shouldReturn400BAD_REQUESTWhenRequestObjectIsNotValid() throws Exception {
+        // Arrange
+
+
+        // Act
+        //HttpStatus result = userController.createNewUser(CreateNewUserRequest.builder().build());
+
+        // Assert        
+        //assertThat(result).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }

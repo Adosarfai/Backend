@@ -33,7 +33,7 @@ public class ScoreEntity {
 
     @Column(name = "speed", nullable = false, updatable = false)
     private Float speed;
-    
+
     @Column(name = "score", nullable = false, updatable = false)
     private Integer score;
 }

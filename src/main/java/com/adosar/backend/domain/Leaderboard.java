@@ -1,8 +1,9 @@
 package com.adosar.backend.domain;
 
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -11,8 +12,19 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Leaderboard {
+    
+    @NotNull
     private User user;
+    
+    @NotNull
+    @Id
     private Integer leaderboardId;
-    @Setter private List<Map> maps;
-    @Setter private List<User> players;
+    
+    @NotNull
+    @Setter
+    private List<Map> maps;
+    
+    @NotNull
+    @Setter
+    private List<User> players;
 }

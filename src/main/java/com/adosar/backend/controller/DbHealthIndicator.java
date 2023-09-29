@@ -12,7 +12,7 @@ import java.sql.SQLException;
 
 @Component("database")
 public class DbHealthIndicator implements HealthIndicator, HealthContributor {
-    
+
     @Autowired
     private DataSource dataSource;
 
