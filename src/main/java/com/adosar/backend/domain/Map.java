@@ -14,41 +14,41 @@ import java.util.Date;
 @NoArgsConstructor
 public class Map {
 
-    @NotNull
-    private User user;
+	@NotNull
+	private User user;
 
-    @NotNull
-    @Id
-    private Integer mapId;
+	@NotNull
+	@Id
+	private Integer mapId;
 
-    @NotNull
-    private Date creationDate;
+	@NotNull
+	private Date creationDate;
 
-    @Setter
-    @NotNull
-    private String hash;
+	@Setter
+	@NotNull
+	private String hash;
 
-    @Setter
-    @NotNull
-    private String title;
+	@Setter
+	@NotNull
+	private String title;
 
-    @Setter
-    @NotNull
-    private String artist;
+	@Setter
+	@NotNull
+	private String artist;
 
-    @Setter
-    @NotNull
-    private Date lastUpdate;
+	@Setter
+	@NotNull
+	private Date lastUpdate;
 
-    @Setter
-    @NotNull
-    private Removed removed;
+	@Setter
+	@NotNull
+	private Removed removed;
 
-    @Setter
-    @NotNull
-    private Boolean published;
+	@Setter
+	@NotNull
+	private Boolean published;
 
-    @Setter
-    @Nullable
-    private String removalReason;
+	@Setter
+	@Nullable
+	private String removalReason;
 }

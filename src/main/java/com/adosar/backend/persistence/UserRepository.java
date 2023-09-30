@@ -12,12 +12,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
-    UserEntity getUserEntityByEmail(String email);
+	UserEntity getUserEntityByEmail(String email);
 
-    UserEntity getUserEntityByUserId(Integer id);
+	UserEntity getUserEntityByUserId(Integer id);
 
-    @Modifying
-    @Transactional
-    @Query("update UserEntity u set u.privilege = :newPrivilege where u.userId = :id")
-    void updatePrivilegeByUserId(@Param("id") Integer id, @Param("newPrivilege") Privilege newPrivilege);
+	@Modifying
+	@Transactional
+	@Query("update UserEntity u set u.privilege = :newPrivilege where u.userId = :id")
+	void updatePrivilegeByUserId(@Param("id") Integer id, @Param("newPrivilege") Privilege newPrivilege);
 }

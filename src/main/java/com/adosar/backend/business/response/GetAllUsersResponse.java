@@ -17,11 +17,11 @@ import java.util.List;
 @NoArgsConstructor
 public class GetAllUsersResponse {
 
-    @Nullable
-    private List<User> users;
+	@Nullable
+	private List<User> users;
 
-    @NotNull
-    private HttpStatus httpStatus;
+	@NotNull
+	private HttpStatus httpStatus;
 
 
 }

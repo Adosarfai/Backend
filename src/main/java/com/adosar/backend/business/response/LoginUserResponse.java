@@ -14,11 +14,11 @@ import org.springframework.http.HttpStatus;
 @NoArgsConstructor
 public class LoginUserResponse {
 
-    @Nullable
-    private String Jwt;
+	@Nullable
+	private String Jwt;
 
-    @NotNull
-    private HttpStatus httpStatus;
+	@NotNull
+	private HttpStatus httpStatus;
 
 
 }

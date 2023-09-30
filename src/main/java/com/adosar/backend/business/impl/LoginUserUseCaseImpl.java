@@ -23,43 +23,43 @@ import java.util.logging.Logger;
 @Service
 @AllArgsConstructor
 public class LoginUserUseCaseImpl implements LoginUserUseCase {
-    private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
-    private UserRepository userRepository;
+	private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
+	private UserRepository userRepository;
 
-    @Override
-    public LoginUserResponse loginUser(final LoginUserRequest request) {
-        try {
-            UserEntity userEntity = userRepository.getUserEntityByEmail(request.getEmail());
+	@Override
+	public LoginUserResponse loginUser(final LoginUserRequest request) {
+		try {
+			UserEntity userEntity = userRepository.getUserEntityByEmail(request.getEmail());
 
-            // Invalid email
-            if (userEntity == null)
-                throw new CredentialException(String.format("User with email %s was not found", request.getEmail()));
+			// Invalid email
+			if (userEntity == null)
+				throw new CredentialException(String.format("User with email %s was not found", request.getEmail()));
 
-            User user = UserConverter.convert(userEntity);
+			User user = UserConverter.convert(userEntity);
 
-            // Invalid password
-            if (!Password.check(request.getPassword(), user.getPassword()).withArgon2())
-                throw new CredentialException("Password hashes do not match");
+			// Invalid password
+			if (!Password.check(request.getPassword(), user.getPassword()).withArgon2())
+				throw new CredentialException("Password hashes do not match");
 
-            Algorithm algorithm = Algorithm.HMAC512("Adosar");
-            String jwt = JWT.create()
-                    .withIssuer("Adosar")
-                    .withSubject("User auth")
-                    .withClaim("UserId", user.getUserId())
-                    .withIssuedAt(Instant.now())
-                    .withExpiresAt(Instant.now().plusSeconds(604800))
-                    .withJWTId(UUID.randomUUID().toString())
-                    .withNotBefore(Instant.now())
-                    .sign(algorithm);
+			Algorithm algorithm = Algorithm.HMAC512("Adosar");
+			String jwt = JWT.create()
+					             .withIssuer("Adosar")
+					             .withSubject("User auth")
+					             .withClaim("UserId", user.getUserId())
+					             .withIssuedAt(Instant.now())
+					             .withExpiresAt(Instant.now().plusSeconds(604800))
+					             .withJWTId(UUID.randomUUID().toString())
+					             .withNotBefore(Instant.now())
+					             .sign(algorithm);
 
-            return new LoginUserResponse(jwt, HttpStatus.OK);
+			return new LoginUserResponse(jwt, HttpStatus.OK);
 
-        } catch (CredentialException credentialException) {
-            LOGGER.log(Level.FINE, credentialException.toString(), credentialException);
-            return new LoginUserResponse(null, HttpStatus.UNAUTHORIZED);
-        } catch (Exception exception) {
-            LOGGER.log(Level.SEVERE, exception.toString(), exception);
-            return new LoginUserResponse(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+		} catch (CredentialException credentialException) {
+			LOGGER.log(Level.FINE, credentialException.toString(), credentialException);
+			return new LoginUserResponse(null, HttpStatus.UNAUTHORIZED);
+		} catch (Exception exception) {
+			LOGGER.log(Level.SEVERE, exception.toString(), exception);
+			return new LoginUserResponse(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

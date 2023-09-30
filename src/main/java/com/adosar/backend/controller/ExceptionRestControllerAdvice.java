@@ -12,15 +12,15 @@ import java.time.Instant;
 @RestControllerAdvice
 public class ExceptionRestControllerAdvice {
 
-    @ExceptionHandler({ConstraintViolationException.class})
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ExceptionResponseMessage handleInvalidParameterException(RuntimeException ex) {
+	@ExceptionHandler({ConstraintViolationException.class})
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	public ExceptionResponseMessage handleInvalidParameterException(RuntimeException ex) {
 
-        return sendResponse(HttpStatus.BAD_REQUEST, ex);
-    }
+		return sendResponse(HttpStatus.BAD_REQUEST, ex);
+	}
 
-    private ExceptionResponseMessage sendResponse(HttpStatus status, RuntimeException ex) {
-        return new ExceptionResponseMessage(Instant.now(), status.value(), status.getReasonPhrase(), ex.getClass().toString(), ex.getMessage());
-    }
+	private ExceptionResponseMessage sendResponse(HttpStatus status, RuntimeException ex) {
+		return new ExceptionResponseMessage(Instant.now(), status.value(), status.getReasonPhrase(), ex.getClass().toString(), ex.getMessage());
+	}
 }
 

@@ -15,10 +15,10 @@ import org.springframework.http.HttpStatus;
 @NoArgsConstructor
 public class GetUserByIdResponse {
 
-    @Nullable
-    private User user;
+	@Nullable
+	private User user;
 
-    @NotNull
-    private HttpStatus httpStatus;
-    
+	@NotNull
+	private HttpStatus httpStatus;
+
 }

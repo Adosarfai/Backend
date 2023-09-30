@@ -21,33 +21,33 @@ import java.util.logging.Logger;
 @Service
 @AllArgsConstructor
 public class CreateNewUserUseCaseImpl implements CreateNewUserUseCase {
-    private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
-    private UserRepository userRepository;
+	private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
+	private UserRepository userRepository;
 
-    @Override
-    public HttpStatus createNewUser(@Valid final CreateNewUserRequest request) {
-        try {
-            Hash hash = Password.hash(request.getPassword())
-                    .addRandomSalt(32)
-                    .withArgon2();
+	@Override
+	public HttpStatus createNewUser(@Valid final CreateNewUserRequest request) {
+		try {
+			Hash hash = Password.hash(request.getPassword())
+					            .addRandomSalt(32)
+					            .withArgon2();
 
-            UserEntity newUser = UserEntity.builder()
-                    .password(hash.getResult())
-                    .email(request.getEmail())
-                    .privilege(Privilege.USER)
-                    .username(request.getUsername())
-                    .build();
+			UserEntity newUser = UserEntity.builder()
+					                     .password(hash.getResult())
+					                     .email(request.getEmail())
+					                     .privilege(Privilege.USER)
+					                     .username(request.getUsername())
+					                     .build();
 
-            userRepository.save(newUser);
-            // TODO: Send verification email
+			userRepository.save(newUser);
+			// TODO: Send verification email
 
-            return HttpStatus.CREATED;
-        } catch (BadParametersException | InvalidParameterException badParametersException) {
-            LOGGER.log(Level.FINE, badParametersException.toString(), badParametersException);
-            return HttpStatus.BAD_REQUEST;
-        } catch (Exception exception) {
-            LOGGER.log(Level.SEVERE, exception.toString(), exception);
-            return HttpStatus.INTERNAL_SERVER_ERROR;
-        }
-    }
+			return HttpStatus.CREATED;
+		} catch (BadParametersException | InvalidParameterException badParametersException) {
+			LOGGER.log(Level.FINE, badParametersException.toString(), badParametersException);
+			return HttpStatus.BAD_REQUEST;
+		} catch (Exception exception) {
+			LOGGER.log(Level.SEVERE, exception.toString(), exception);
+			return HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+	}
 }

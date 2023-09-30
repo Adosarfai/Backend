@@ -1,7 +1,6 @@
 package com.adosar.backend.business.response;
 
 import com.adosar.backend.domain.Map;
-import com.adosar.backend.domain.User;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -16,10 +15,10 @@ import org.springframework.http.HttpStatus;
 @NoArgsConstructor
 public class GetMapByIdResponse {
 
-    @Nullable
-    private Map map;
+	@Nullable
+	private Map map;
 
-    @NotNull
-    private HttpStatus httpStatus;
-    
+	@NotNull
+	private HttpStatus httpStatus;
+
 }

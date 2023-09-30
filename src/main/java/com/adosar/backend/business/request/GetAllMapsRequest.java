@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class GetAllMapsRequest {
 
-    @NotNull
-    private Integer page;
+	@NotNull
+	private Integer page;
 }

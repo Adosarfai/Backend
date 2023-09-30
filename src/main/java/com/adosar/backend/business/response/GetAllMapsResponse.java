@@ -1,7 +1,6 @@
 package com.adosar.backend.business.response;
 
 import com.adosar.backend.domain.Map;
-import com.adosar.backend.domain.User;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -18,11 +17,11 @@ import java.util.List;
 @NoArgsConstructor
 public class GetAllMapsResponse {
 
-    @Nullable
-    private List<Map> maps;
+	@Nullable
+	private List<Map> maps;
 
-    @NotNull
-    private HttpStatus httpStatus;
+	@NotNull
+	private HttpStatus httpStatus;
 
 
 }
