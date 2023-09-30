@@ -1,39 +1,53 @@
 package com.adosar.backend.persistence.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.ToString;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+import lombok.*;
 
 import java.util.Date;
 
-@Data
-@ToString
+@Getter
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "score")
 public class ScoreEntity {
+    @Positive
+    @NotNull
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", length = 10, nullable = false, updatable = false)
     private Integer scoreId;
 
-    @ManyToOne
+    @NotNull
+    @ManyToOne(optional = false)
     @JoinColumn(name = "map", nullable = false, updatable = false)
     private MapEntity map;
 
-    @ManyToOne
+    @NotNull
+    @ManyToOne(optional = false)
     @JoinColumn(name = "user", nullable = false, updatable = false)
     private UserEntity user;
 
-    @OneToOne
+    @NotNull
+    @OneToOne(optional = false)
     @JoinColumn(name = "replay", nullable = false, updatable = false)
     private ReplayEntity replay;
 
+    @PastOrPresent
     @Column(name = "time_set", nullable = false, updatable = false)
     private Date timeSet;
 
+    @NotNull
     @Column(name = "speed", nullable = false, updatable = false)
     private Float speed;
 
+    @NotNull
+    @PositiveOrZero
     @Column(name = "score", nullable = false, updatable = false)
     private Integer score;
 }
