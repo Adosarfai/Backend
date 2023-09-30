@@ -1,5 +1,6 @@
-package com.adosar.backend.controller.response;
+package com.adosar.backend.business.response;
 
+import com.adosar.backend.domain.User;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -12,11 +13,11 @@ import org.springframework.http.HttpStatus;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginUserResponse {
-    
+public class GetUserByIdResponse {
+
     @Nullable
-    private String Jwt;
-    
+    private User user;
+
     @NotNull
     private HttpStatus httpStatus;
 

@@ -13,41 +13,41 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Map {
-    
+
     @NotNull
     private User user;
-    
+
     @NotNull
     @Id
     private Integer mapId;
-    
+
     @NotNull
     private Date creationDate;
-    
+
     @Setter
     @NotNull
     private String hash;
-    
+
     @Setter
     @NotNull
     private String title;
-    
+
     @Setter
     @NotNull
     private String artist;
-    
+
     @Setter
     @NotNull
     private Date lastUpdate;
-    
+
     @Setter
     @NotNull
     private Removed removed;
-    
+
     @Setter
     @NotNull
     private Boolean published;
-    
+
     @Setter
     @Nullable
     private String removalReason;

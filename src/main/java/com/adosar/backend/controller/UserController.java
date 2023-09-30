@@ -1,17 +1,10 @@
 package com.adosar.backend.controller;
 
-import com.adosar.backend.business.CreateNewUserUseCase;
-import com.adosar.backend.business.GetAllUsersUseCase;
-import com.adosar.backend.business.GetUserByIdUseCase;
-import com.adosar.backend.business.LoginUserUseCase;
-import com.adosar.backend.controller.request.CreateNewUserRequest;
-import com.adosar.backend.controller.request.GetAllUsersRequest;
-import com.adosar.backend.controller.request.GetUserByIdRequest;
-import com.adosar.backend.controller.request.LoginUserRequest;
-import com.adosar.backend.controller.response.GetAllUsersResponse;
-import com.adosar.backend.controller.response.GetUserByIdResponse;
-import com.adosar.backend.controller.response.LoginUserResponse;
-import com.adosar.backend.domain.User;
+import com.adosar.backend.business.*;
+import com.adosar.backend.business.request.*;
+import com.adosar.backend.business.response.GetAllUsersResponse;
+import com.adosar.backend.business.response.GetUserByIdResponse;
+import com.adosar.backend.business.response.LoginUserResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,6 +21,8 @@ public class UserController {
     private final GetUserByIdUseCase getUserByIdUseCase;
     private final CreateNewUserUseCase createNewUserUseCase;
     private final LoginUserUseCase loginUserUseCase;
+    private final RemoveUserUseCase removeUserUseCase;
+    private final ActivateUserUseCase activateUserUseCase;
 
 
     /**
@@ -79,5 +74,19 @@ public class UserController {
     public @ResponseBody ResponseEntity<LoginUserResponse> LoginUser(@RequestBody @Valid LoginUserRequest request) {
         LoginUserResponse response = loginUserUseCase.loginUser(request);
         return new ResponseEntity<>(response, response.getHttpStatus());
+    }
+
+    @DeleteMapping("/{id}")
+    public @ResponseBody ResponseEntity<HttpStatus> RemoveUser(@PathVariable Integer id) {
+        RemoveUserRequest request = new RemoveUserRequest(id);
+        HttpStatus response = removeUserUseCase.RemoveUser(request);
+        return new ResponseEntity<>(response, response);
+    }
+
+    @PatchMapping("/{id}")
+    public @ResponseBody ResponseEntity<HttpStatus> ActivateUser(@PathVariable Integer id) {
+        ActivateUserRequest request = new ActivateUserRequest(id);
+        HttpStatus response = activateUserUseCase.ActivateUser(request);
+        return new ResponseEntity<>(response, response);
     }
 }

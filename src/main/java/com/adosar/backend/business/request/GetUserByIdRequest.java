@@ -1,4 +1,4 @@
-package com.adosar.backend.controller.request;
+package com.adosar.backend.business.request;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetUserByIdRequest {
-    
+
     @NotNull
     private Integer id;
 }

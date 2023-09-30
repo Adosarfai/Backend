@@ -2,10 +2,9 @@ package com.adosar.backend.controller;
 
 import com.adosar.backend.business.impl.GetAllUsersUseCaseImpl;
 import com.adosar.backend.business.impl.GetUserByIdUseCaseImpl;
-import com.adosar.backend.controller.request.CreateNewUserRequest;
-import com.adosar.backend.controller.response.GetAllUsersResponse;
-import com.adosar.backend.controller.response.GetUserByIdResponse;
-import com.adosar.backend.domain.User;
+import com.adosar.backend.business.request.CreateNewUserRequest;
+import com.adosar.backend.business.response.GetAllUsersResponse;
+import com.adosar.backend.business.response.GetUserByIdResponse;
 import com.adosar.backend.persistence.UserRepository;
 import com.adosar.backend.persistence.entity.UserEntity;
 import org.junit.jupiter.api.Test;
