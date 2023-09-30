@@ -1,6 +1,7 @@
 package com.adosar.backend.persistence.entity;
 
 import com.adosar.backend.domain.Removed;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -20,9 +21,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Table(name = "map")
 public class MapEntity {
-
-	@Positive
-	@NotNull
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", length = 10, nullable = false, updatable = false)
@@ -65,10 +64,8 @@ public class MapEntity {
 
 	@Length(min = 64, max = 64)
 	@Size(min = 64, max = 64)
-	@NotBlank
-	@NotEmpty
-	@NotNull
-	@Column(name = "hash", length = 64, nullable = false, updatable = false)
+	@Nullable
+	@Column(name = "hash", length = 64)
 	private String hash;
 
 	@PastOrPresent

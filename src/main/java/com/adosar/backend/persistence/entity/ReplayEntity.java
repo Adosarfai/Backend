@@ -15,9 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "replay")
 public class ReplayEntity {
-
-	@Positive
-	@NotNull
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", length = 10, nullable = false, updatable = false)

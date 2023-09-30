@@ -18,8 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "leaderboard")
 public class LeaderboardEntity {
-	@Positive
-	@NotNull
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", length = 10, nullable = false, updatable = false)

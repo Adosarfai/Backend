@@ -17,8 +17,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Table(name = "user")
 public class UserEntity {
-	@Positive
-	@NotNull
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", length = 10, nullable = false, updatable = false)
@@ -42,13 +41,13 @@ public class UserEntity {
 	@Setter
 	private String email;
 
-	@Length(min = 162, max = 162)
-	@Size(min = 162, max = 162)
+	@Length( max = 200)
+	@Size(max = 200)
 	@NotBlank
 	@NotEmpty
 	@NotNull
 	@JsonIgnore
-	@Column(name = "password", length = 162, nullable = false)
+	@Column(name = "password", length = 200, nullable = false)
 	@Setter
 	private String password;
 

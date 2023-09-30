@@ -41,7 +41,7 @@ public class LoginUserUseCaseImpl implements LoginUserUseCase {
 			if (!Password.check(request.getPassword(), user.getPassword()).withArgon2())
 				throw new CredentialException("Password hashes do not match");
 
-			Algorithm algorithm = Algorithm.HMAC512("Adosar");
+			Algorithm algorithm = Algorithm.HMAC512(System.getenv("HMAC512_SECRET"));
 			String jwt = JWT.create()
 					             .withIssuer("Adosar")
 					             .withSubject("User auth")

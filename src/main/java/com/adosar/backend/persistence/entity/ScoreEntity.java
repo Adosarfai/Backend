@@ -19,8 +19,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Table(name = "score")
 public class ScoreEntity {
-	@Positive
-	@NotNull
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", length = 10, nullable = false, updatable = false)

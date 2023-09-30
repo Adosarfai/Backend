@@ -25,7 +25,7 @@ public class Map {
 	private Date creationDate;
 
 	@Setter
-	@NotNull
+	@Nullable
 	private String hash;
 
 	@Setter

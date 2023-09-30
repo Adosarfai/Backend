@@ -5,12 +5,17 @@ import com.adosar.backend.business.request.*;
 import com.adosar.backend.business.response.GetAllUsersResponse;
 import com.adosar.backend.business.response.GetUserByIdResponse;
 import com.adosar.backend.business.response.LoginUserResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.InetAddress;
 
 @RestController
 @RequestMapping(path = "/user")
@@ -84,9 +89,19 @@ public class UserController {
 	 * @see LoginUserResponse
 	 */
 	@PostMapping(path = "/login")
-	public @ResponseBody ResponseEntity<LoginUserResponse> LoginUser(@RequestBody @Valid LoginUserRequest request) {
+	public @ResponseBody ResponseEntity<Void> LoginUser(@RequestBody @Valid LoginUserRequest request) {
 		LoginUserResponse response = loginUserUseCase.loginUser(request);
-		return new ResponseEntity<>(response, response.getHttpStatus());
+		if (response.getHttpStatus().is2xxSuccessful() && response.getJwt() != null) {
+			ResponseCookie cookie = ResponseCookie.from("jwt", response.getJwt())
+					.httpOnly(true)
+					.secure(true)
+					.path("/")
+					.domain(InetAddress.getLoopbackAddress().getHostName())
+					.maxAge(604800)
+					.build();
+			return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
+		}
+		return new ResponseEntity<>(null, response.getHttpStatus());
 	}
 
 	/**

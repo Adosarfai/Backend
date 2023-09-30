@@ -15,6 +15,8 @@ import org.springframework.javapoet.ClassName;
 import org.springframework.stereotype.Service;
 
 import java.security.InvalidParameterException;
+import java.time.Instant;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,17 +30,20 @@ public class CreateNewUserUseCaseImpl implements CreateNewUserUseCase {
 	public HttpStatus createNewUser(@Valid final CreateNewUserRequest request) {
 		try {
 			Hash hash = Password.hash(request.getPassword())
-					            .addRandomSalt(32)
-					            .withArgon2();
+					.addRandomSalt(32)
+					.withArgon2();
 
+			System.out.println(hash.getResult().length());
+			
 			UserEntity newUser = UserEntity.builder()
-					                     .password(hash.getResult())
-					                     .email(request.getEmail())
-					                     .privilege(Privilege.USER)
-					                     .username(request.getUsername())
-					                     .build();
+					.password(hash.getResult())
+					.email(request.getEmail())
+					.privilege(Privilege.USER)
+					.username(request.getUsername())
+					.creationDate(Date.from(Instant.now()))
+					.build();
 
-			userRepository.save(newUser);
+			userRepository.saveAndFlush(newUser);
 			// TODO: Send verification email
 
 			return HttpStatus.CREATED;

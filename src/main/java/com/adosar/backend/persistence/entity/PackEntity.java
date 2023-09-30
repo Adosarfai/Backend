@@ -19,8 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "pack")
 public class PackEntity {
-	@Positive
-	@NotNull
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", length = 10, nullable = false, updatable = false)

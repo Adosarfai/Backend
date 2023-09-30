@@ -179,12 +179,12 @@ public class UserControllerTest {
 					                                .build();
 
 			// Act
-			ResponseEntity<LoginUserResponse> resultWrongPassword = userController.LoginUser(LoginUserRequest.builder()
+			ResponseEntity<Void> resultWrongPassword = userController.LoginUser(LoginUserRequest.builder()
 					                                                                                 .email("test@email.com")
 					                                                                                 .password("testPassword")
 					                                                                                 .build()
 			);
-			ResponseEntity<LoginUserResponse> resultWrongEmail = userController.LoginUser(LoginUserRequest.builder()
+			ResponseEntity<Void> resultWrongEmail = userController.LoginUser(LoginUserRequest.builder()
 					                                                                              .email("wrong@email.com")
 					                                                                              .password("Epic-Passw0rd!")
 					                                                                              .build()
