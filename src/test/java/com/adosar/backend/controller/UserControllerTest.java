@@ -38,7 +38,7 @@ public class UserControllerTest {
         try {
             // Arrange
             UserRepository userRepository = mock(UserRepository.class);
-            Page<UserEntity> testUsers = new PageImpl<UserEntity>(List.of(new UserEntity()));
+            Page<UserEntity> testUsers = new PageImpl<>(List.of(new UserEntity()));
             when(userRepository.findAll(PageRequest.of(0, 10))).thenReturn(testUsers);
             when(userRepository.findAll(PageRequest.of(1, 10))).thenReturn(Page.empty());
 
