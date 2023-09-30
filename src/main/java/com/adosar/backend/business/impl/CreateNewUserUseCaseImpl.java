@@ -5,8 +5,10 @@ import com.adosar.backend.business.request.CreateNewUserRequest;
 import com.adosar.backend.domain.Privilege;
 import com.adosar.backend.persistence.UserRepository;
 import com.adosar.backend.persistence.entity.UserEntity;
+import com.password4j.BadParametersException;
 import com.password4j.Hash;
 import com.password4j.Password;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.javapoet.ClassName;
@@ -23,7 +25,7 @@ public class CreateNewUserUseCaseImpl implements CreateNewUserUseCase {
     private UserRepository userRepository;
 
     @Override
-    public HttpStatus createNewUser(final CreateNewUserRequest request) {
+    public HttpStatus createNewUser(@Valid final CreateNewUserRequest request) {
         try {
             Hash hash = Password.hash(request.getPassword())
                     .addRandomSalt(32)
@@ -40,8 +42,8 @@ public class CreateNewUserUseCaseImpl implements CreateNewUserUseCase {
             // TODO: Send verification email
 
             return HttpStatus.CREATED;
-        } catch (InvalidParameterException invalidParameterException) {
-            LOGGER.log(Level.FINE, invalidParameterException.toString(), invalidParameterException);
+        } catch (BadParametersException | InvalidParameterException badParametersException) {
+            LOGGER.log(Level.FINE, badParametersException.toString(), badParametersException);
             return HttpStatus.BAD_REQUEST;
         } catch (Exception exception) {
             LOGGER.log(Level.SEVERE, exception.toString(), exception);
