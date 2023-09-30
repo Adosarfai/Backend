@@ -3,6 +3,6 @@ package com.adosar.backend.domain;
 public enum Privilege {
     USER,
     BANNED,
-    SUPPORTER,
+    REMOVED,
     ADMIN
 }

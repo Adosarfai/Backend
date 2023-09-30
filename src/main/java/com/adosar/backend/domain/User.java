@@ -16,23 +16,23 @@ public class User {
     @NotNull
     @Id
     private Integer userId;
-    
+
     @NotNull
-    private Date CreationDate;
-    
+    private Date creationDate;
+
     @Setter
     @NotNull
     private String username;
-    
+
     @Setter
     @NotNull
     private Privilege privilege;
-    
+
     @JsonIgnore
     @Setter
     @NotNull
     private String email;
-    
+
     @JsonIgnore
     @Setter
     @NotNull

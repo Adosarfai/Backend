@@ -12,18 +12,18 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Leaderboard {
-    
+
     @NotNull
     private User user;
-    
+
     @NotNull
     @Id
     private Integer leaderboardId;
-    
+
     @NotNull
     @Setter
     private List<Map> maps;
-    
+
     @NotNull
     @Setter
     private List<User> players;
