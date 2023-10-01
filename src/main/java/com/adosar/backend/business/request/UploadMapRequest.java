@@ -2,23 +2,24 @@ package com.adosar.backend.business.request;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateNewMapRequest {
+public class UploadMapRequest {
 
 	@Setter
 	@NotNull
-	private String title;
+	private MultipartFile file;
 
 	@Setter
 	@NotNull
-	private String artist;
+	private Integer mapId;
 
 	@Setter
 	@NotNull
-	private Boolean published;
+	private String jwt;
 
 }

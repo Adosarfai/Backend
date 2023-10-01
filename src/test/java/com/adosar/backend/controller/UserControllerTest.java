@@ -5,7 +5,6 @@ import com.adosar.backend.business.request.CreateNewUserRequest;
 import com.adosar.backend.business.request.LoginUserRequest;
 import com.adosar.backend.business.response.GetAllUsersResponse;
 import com.adosar.backend.business.response.GetUserByIdResponse;
-import com.adosar.backend.business.response.LoginUserResponse;
 import com.adosar.backend.domain.Privilege;
 import com.adosar.backend.persistence.UserRepository;
 import com.adosar.backend.persistence.entity.UserEntity;
@@ -43,8 +42,8 @@ public class UserControllerTest {
 			when(userRepository.findAll(PageRequest.of(1, 10))).thenReturn(Page.empty());
 
 			UserController userController = UserController.builder()
-					                                .getAllUsersUseCase(new GetAllUsersUseCaseImpl(userRepository))
-					                                .build();
+					.getAllUsersUseCase(new GetAllUsersUseCaseImpl(userRepository))
+					.build();
 
 			// Act
 			ResponseEntity<GetAllUsersResponse> responseEntity = userController.getAllUsers(1);
@@ -68,8 +67,8 @@ public class UserControllerTest {
 			UserRepository userRepository = mock(UserRepository.class);
 
 			UserController userController = UserController.builder()
-					                                .getAllUsersUseCase(new GetAllUsersUseCaseImpl(userRepository))
-					                                .build();
+					.getAllUsersUseCase(new GetAllUsersUseCaseImpl(userRepository))
+					.build();
 
 			// Act
 			ResponseEntity<GetAllUsersResponse> responseEntity = userController.getAllUsers(-1);
@@ -92,8 +91,8 @@ public class UserControllerTest {
 			UserRepository userRepository = mock(UserRepository.class);
 
 			UserController userController = UserController.builder()
-					                                .getUserByIdUseCase(new GetUserByIdUseCaseImpl(userRepository))
-					                                .build();
+					.getUserByIdUseCase(new GetUserByIdUseCaseImpl(userRepository))
+					.build();
 
 			// Act
 			ResponseEntity<GetUserByIdResponse> responseEntity = userController.getUserById(-1);
@@ -119,8 +118,8 @@ public class UserControllerTest {
 			when(userRepository.findById(1)).thenReturn(Optional.empty());
 
 			UserController userController = UserController.builder()
-					                                .getUserByIdUseCase(new GetUserByIdUseCaseImpl(userRepository))
-					                                .build();
+					.getUserByIdUseCase(new GetUserByIdUseCaseImpl(userRepository))
+					.build();
 
 			// Act
 			ResponseEntity<GetUserByIdResponse> responseEntity = userController.getUserById(1);
@@ -144,8 +143,8 @@ public class UserControllerTest {
 			UserRepository userRepository = mock(UserRepository.class);
 
 			UserController userController = UserController.builder()
-					                                .createNewUserUseCase(new CreateNewUserUseCaseImpl(userRepository))
-					                                .build();
+					.createNewUserUseCase(new CreateNewUserUseCaseImpl(userRepository))
+					.build();
 
 			// Act
 			ResponseEntity<HttpStatus> result = userController.createNewUser(CreateNewUserRequest.builder().build());
@@ -168,26 +167,26 @@ public class UserControllerTest {
 			UserRepository userRepository = mock(UserRepository.class);
 			when(userRepository.getUserEntityByEmail("wrong@email.com")).thenReturn(null);
 			when(userRepository.getUserEntityByEmail("test@email.com")).thenReturn(UserEntity.builder()
-					                                                                       .userId(0)
-					                                                                       .email("test@email.com")
-					                                                                       .password("$argon2id$v=19$m=4096,t=30,p=4$Nohz9k/BrmmV/VkgLkKiZPYkOcpRXJN7pVpSB6pgHYU$wy48WkPXVrJAV5eKIQn8SHuUQ+1ihlXkM4ximB+7klfzOQTfCAUnIbREHtWkR4zlN35iwwn7odSbzYWnqvlR+Q")
-					                                                                       .build()
+					.userId(0)
+					.email("test@email.com")
+					.password("$argon2id$v=19$m=4096,t=30,p=4$Nohz9k/BrmmV/VkgLkKiZPYkOcpRXJN7pVpSB6pgHYU$wy48WkPXVrJAV5eKIQn8SHuUQ+1ihlXkM4ximB+7klfzOQTfCAUnIbREHtWkR4zlN35iwwn7odSbzYWnqvlR+Q")
+					.build()
 			);
 
 			UserController userController = UserController.builder()
-					                                .loginUserUseCase(new LoginUserUseCaseImpl(userRepository))
-					                                .build();
+					.loginUserUseCase(new LoginUserUseCaseImpl(userRepository))
+					.build();
 
 			// Act
 			ResponseEntity<Void> resultWrongPassword = userController.LoginUser(LoginUserRequest.builder()
-					                                                                                 .email("test@email.com")
-					                                                                                 .password("testPassword")
-					                                                                                 .build()
+					.email("test@email.com")
+					.password("testPassword")
+					.build()
 			);
 			ResponseEntity<Void> resultWrongEmail = userController.LoginUser(LoginUserRequest.builder()
-					                                                                              .email("wrong@email.com")
-					                                                                              .password("Epic-Passw0rd!")
-					                                                                              .build()
+					.email("wrong@email.com")
+					.password("Epic-Passw0rd!")
+					.build()
 			);
 
 			// Assert
@@ -209,8 +208,8 @@ public class UserControllerTest {
 			UserRepository userRepository = mock(UserRepository.class);
 
 			UserController userController = UserController.builder()
-					                                .removeUserUseCase(new RemoveUserUseCaseImpl(userRepository))
-					                                .build();
+					.removeUserUseCase(new RemoveUserUseCaseImpl(userRepository))
+					.build();
 
 			// Act
 			ResponseEntity<HttpStatus> result = userController.RemoveUser(0);
@@ -232,19 +231,19 @@ public class UserControllerTest {
 			// Arrange
 			UserRepository userRepository = mock(UserRepository.class);
 			when(userRepository.getUserEntityByUserId(0)).thenReturn(UserEntity.builder()
-					                                                         .userId(0)
-					                                                         .privilege(Privilege.REMOVED)
-					                                                         .build()
+					.userId(0)
+					.privilege(Privilege.REMOVED)
+					.build()
 			);
 			when(userRepository.getUserEntityByUserId(1)).thenReturn(UserEntity.builder()
-					                                                         .userId(1)
-					                                                         .privilege(Privilege.BANNED)
-					                                                         .build()
+					.userId(1)
+					.privilege(Privilege.BANNED)
+					.build()
 			);
 
 			UserController userController = UserController.builder()
-					                                .removeUserUseCase(new RemoveUserUseCaseImpl(userRepository))
-					                                .build();
+					.removeUserUseCase(new RemoveUserUseCaseImpl(userRepository))
+					.build();
 
 			// Act
 			ResponseEntity<HttpStatus> resultRemoved = userController.RemoveUser(0);
@@ -269,8 +268,8 @@ public class UserControllerTest {
 			UserRepository userRepository = mock(UserRepository.class);
 
 			UserController userController = UserController.builder()
-					                                .activateUserUseCase(new ActivateUserUseCaseImpl(userRepository))
-					                                .build();
+					.activateUserUseCase(new ActivateUserUseCaseImpl(userRepository))
+					.build();
 
 			// Act
 			ResponseEntity<HttpStatus> result = userController.ActivateUser(0);
@@ -292,24 +291,24 @@ public class UserControllerTest {
 			// Arrange
 			UserRepository userRepository = mock(UserRepository.class);
 			when(userRepository.getUserEntityByUserId(0)).thenReturn(UserEntity.builder()
-					                                                         .userId(0)
-					                                                         .privilege(Privilege.USER)
-					                                                         .build()
+					.userId(0)
+					.privilege(Privilege.USER)
+					.build()
 			);
 			when(userRepository.getUserEntityByUserId(1)).thenReturn(UserEntity.builder()
-					                                                         .userId(1)
-					                                                         .privilege(Privilege.ADMIN)
-					                                                         .build()
+					.userId(1)
+					.privilege(Privilege.ADMIN)
+					.build()
 			);
 			when(userRepository.getUserEntityByUserId(2)).thenReturn(UserEntity.builder()
-					                                                         .userId(2)
-					                                                         .privilege(Privilege.BANNED)
-					                                                         .build()
+					.userId(2)
+					.privilege(Privilege.BANNED)
+					.build()
 			);
 
 			UserController userController = UserController.builder()
-					                                .activateUserUseCase(new ActivateUserUseCaseImpl(userRepository))
-					                                .build();
+					.activateUserUseCase(new ActivateUserUseCaseImpl(userRepository))
+					.build();
 
 			// Act
 			ResponseEntity<HttpStatus> resultUser = userController.ActivateUser(0);

@@ -41,7 +41,7 @@ public class UserEntity {
 	@Setter
 	private String email;
 
-	@Length( max = 200)
+	@Length(max = 200)
 	@Size(max = 200)
 	@NotBlank
 	@NotEmpty

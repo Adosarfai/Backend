@@ -5,7 +5,6 @@ import com.adosar.backend.business.request.*;
 import com.adosar.backend.business.response.GetAllUsersResponse;
 import com.adosar.backend.business.response.GetUserByIdResponse;
 import com.adosar.backend.business.response.LoginUserResponse;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -21,7 +21,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Table(name = "map")
 public class MapEntity {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", length = 10, nullable = false, updatable = false)

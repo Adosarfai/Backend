@@ -1,7 +1,7 @@
 package com.adosar.backend.business.impl;
 
 import com.adosar.backend.business.GetAllMapsUseCase;
-import com.adosar.backend.business.exception.InvalidPathVariableException;
+import com.adosar.backend.business.exception.BadRequestException;
 import com.adosar.backend.business.request.GetAllMapsRequest;
 import com.adosar.backend.business.response.GetAllMapsResponse;
 import com.adosar.backend.domain.Map;
@@ -26,14 +26,16 @@ public class GetAllMapsUseCaseImpl implements GetAllMapsUseCase {
 	@Override
 	public GetAllMapsResponse getAllMaps(final GetAllMapsRequest request) {
 		try {
-			if (request.getPage() < 0) throw new InvalidPathVariableException(request.getPage().toString());
+			// Check is page is valid
+			if (request.getPage() < 0) throw new BadRequestException(request.getPage().toString());
 
+			// Get maps
 			List<MapEntity> result = mapRepository.findAll(PageRequest.of(request.getPage(), 10)).toList();
 			List<Map> maps = result.stream().map(MapConverter::convert).toList();
 
 			return new GetAllMapsResponse(maps, HttpStatus.OK);
-		} catch (InvalidPathVariableException invalidPathVariableException) {
-			LOGGER.log(Level.FINE, invalidPathVariableException.toString(), invalidPathVariableException);
+		} catch (BadRequestException badRequestException) {
+			LOGGER.log(Level.FINE, badRequestException.toString(), badRequestException);
 			return new GetAllMapsResponse(null, HttpStatus.BAD_REQUEST);
 		} catch (Exception exception) {
 			LOGGER.log(Level.SEVERE, exception.toString(), exception);

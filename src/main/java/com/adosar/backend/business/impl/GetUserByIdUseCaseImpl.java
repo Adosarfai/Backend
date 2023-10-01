@@ -1,8 +1,8 @@
 package com.adosar.backend.business.impl;
 
 import com.adosar.backend.business.GetUserByIdUseCase;
-import com.adosar.backend.business.exception.FieldNotFoundException;
-import com.adosar.backend.business.exception.InvalidPathVariableException;
+import com.adosar.backend.business.exception.BadRequestException;
+import com.adosar.backend.business.exception.NotFoundException;
 import com.adosar.backend.business.request.GetUserByIdRequest;
 import com.adosar.backend.business.response.GetUserByIdResponse;
 import com.adosar.backend.domain.User;
@@ -25,18 +25,20 @@ public class GetUserByIdUseCaseImpl implements GetUserByIdUseCase {
 	@Override
 	public GetUserByIdResponse getUserById(final GetUserByIdRequest request) {
 		try {
-			if (request.getId() < 0) throw new InvalidPathVariableException(request.getId().toString());
+			// Check is id is valid
+			if (request.getId() < 0) throw new BadRequestException(request.getId().toString());
 
-			UserEntity result = userRepository.findById(request.getId()).orElseThrow(() -> new FieldNotFoundException(String.format("User with ID %s was not found", request.getId())));
+			// Get user
+			UserEntity result = userRepository.findById(request.getId()).orElseThrow(() -> new NotFoundException(String.format("User with ID %s was not found", request.getId())));
 			User user = UserConverter.convert(result);
 
 			return new GetUserByIdResponse(user, HttpStatus.OK);
 
-		} catch (InvalidPathVariableException invalidPathVariableException) {
-			LOGGER.log(Level.FINE, invalidPathVariableException.toString(), invalidPathVariableException);
+		} catch (BadRequestException badRequestException) {
+			LOGGER.log(Level.FINE, badRequestException.toString(), badRequestException);
 			return new GetUserByIdResponse(null, HttpStatus.BAD_REQUEST);
-		} catch (FieldNotFoundException fieldNotFoundException) {
-			LOGGER.log(Level.FINE, fieldNotFoundException.toString(), fieldNotFoundException);
+		} catch (NotFoundException notFoundException) {
+			LOGGER.log(Level.FINE, notFoundException.toString(), notFoundException);
 			return new GetUserByIdResponse(null, HttpStatus.NOT_FOUND);
 		} catch (Exception exception) {
 			LOGGER.log(Level.SEVERE, exception.toString(), exception);

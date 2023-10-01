@@ -29,12 +29,12 @@ public class CreateNewUserUseCaseImpl implements CreateNewUserUseCase {
 	@Override
 	public HttpStatus createNewUser(@Valid final CreateNewUserRequest request) {
 		try {
+			// Hash password
 			Hash hash = Password.hash(request.getPassword())
 					.addRandomSalt(32)
 					.withArgon2();
 
-			System.out.println(hash.getResult().length());
-			
+			// Create new user
 			UserEntity newUser = UserEntity.builder()
 					.password(hash.getResult())
 					.email(request.getEmail())
@@ -42,7 +42,7 @@ public class CreateNewUserUseCaseImpl implements CreateNewUserUseCase {
 					.username(request.getUsername())
 					.creationDate(Date.from(Instant.now()))
 					.build();
-
+			
 			userRepository.saveAndFlush(newUser);
 			// TODO: Send verification email
 
