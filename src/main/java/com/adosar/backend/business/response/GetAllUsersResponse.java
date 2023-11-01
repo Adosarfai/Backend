@@ -1,6 +1,7 @@
 package com.adosar.backend.business.response;
 
 import com.adosar.backend.domain.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -17,11 +18,12 @@ import java.util.List;
 @NoArgsConstructor
 public class GetAllUsersResponse {
 
-	@Nullable
-	private List<User> users;
+    @Nullable
+    private List<User> users;
 
-	@NotNull
-	private HttpStatus httpStatus;
+    @NotNull
+    @JsonIgnore
+    private HttpStatus httpStatus;
 
 
 }

@@ -13,14 +13,19 @@ import org.springframework.http.HttpStatus;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginUserResponse {
+public class GetStatisticsResponse {
 
     @Nullable
-    private String Jwt;
+    private Long MapCount;
+
+    @Nullable
+    private Long LeaderboardCount;
+
+    @Nullable
+    private Long ScoreCount;
 
     @NotNull
     @JsonIgnore
     private HttpStatus httpStatus;
-
 
 }

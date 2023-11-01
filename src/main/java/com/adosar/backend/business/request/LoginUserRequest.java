@@ -14,11 +14,11 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 public class LoginUserRequest {
 
-	@NotNull
-	@Email
-	private String email;
+    @NotNull
+    @Email
+    private String email;
 
-	@NotNull
-	@Length(min = 10)
-	private String password;
+    @NotNull
+    @Length(min = 10)
+    private String password;
 }

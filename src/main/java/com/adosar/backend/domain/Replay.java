@@ -13,13 +13,13 @@ import java.util.List;
 @NoArgsConstructor
 public class Replay {
 
-	@NotNull
-	@Id
-	private Integer replayId;
+    @NotNull
+    @Id
+    private Integer replayId;
 
-	@NotNull
-	private List<Integer> pauses;
+    @NotNull
+    private List<Integer> pauses;
 
-	@NotNull
-	private List<Integer> timings;
+    @NotNull
+    private List<Integer> timings;
 }

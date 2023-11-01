@@ -20,26 +20,26 @@ import java.util.logging.Logger;
 @Service
 @AllArgsConstructor
 public class GetAllMapsUseCaseImpl implements GetAllMapsUseCase {
-	private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
-	private MapRepository mapRepository;
+    private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
+    private MapRepository mapRepository;
 
-	@Override
-	public GetAllMapsResponse getAllMaps(final GetAllMapsRequest request) {
-		try {
-			// Check is page is valid
-			if (request.getPage() < 0) throw new BadRequestException(request.getPage().toString());
+    @Override
+    public GetAllMapsResponse getAllMaps(final GetAllMapsRequest request) {
+        try {
+            // Check is page is valid
+            if (request.getPage() < 0) throw new BadRequestException(request.getPage().toString());
 
-			// Get maps
-			List<MapEntity> result = mapRepository.findAll(PageRequest.of(request.getPage(), 10)).toList();
-			List<Map> maps = result.stream().map(MapConverter::convert).toList();
+            // Get maps
+            List<MapEntity> result = mapRepository.findAll(PageRequest.of(request.getPage(), 10)).toList();
+            List<Map> maps = result.stream().map(MapConverter::convert).toList();
 
-			return new GetAllMapsResponse(maps, HttpStatus.OK);
-		} catch (BadRequestException badRequestException) {
-			LOGGER.log(Level.FINE, badRequestException.toString(), badRequestException);
-			return new GetAllMapsResponse(null, HttpStatus.BAD_REQUEST);
-		} catch (Exception exception) {
-			LOGGER.log(Level.SEVERE, exception.toString(), exception);
-			return new GetAllMapsResponse(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+            return new GetAllMapsResponse(maps, HttpStatus.OK);
+        } catch (BadRequestException badRequestException) {
+            LOGGER.log(Level.FINE, badRequestException.toString(), badRequestException);
+            return new GetAllMapsResponse(null, HttpStatus.BAD_REQUEST);
+        } catch (Exception exception) {
+            LOGGER.log(Level.SEVERE, exception.toString(), exception);
+            return new GetAllMapsResponse(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

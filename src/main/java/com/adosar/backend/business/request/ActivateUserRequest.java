@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ActivateUserRequest {
-	@NotNull
-	private Integer id;
+    @NotNull
+    private Integer id;
 }

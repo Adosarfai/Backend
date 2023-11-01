@@ -10,16 +10,16 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class UploadMapRequest {
 
-	@Setter
-	@NotNull
-	private MultipartFile file;
+    @Setter
+    @NotNull
+    private MultipartFile file;
 
-	@Setter
-	@NotNull
-	private Integer mapId;
+    @Setter
+    @NotNull
+    private Integer mapId;
 
-	@Setter
-	@NotNull
-	private String jwt;
+    @Setter
+    @NotNull
+    private String jwt;
 
 }

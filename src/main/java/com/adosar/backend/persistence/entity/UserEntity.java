@@ -18,47 +18,47 @@ import java.util.Date;
 @Table(name = "user")
 public class UserEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", length = 10, nullable = false, updatable = false)
-	private Integer userId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", length = 10, nullable = false, updatable = false)
+    private Integer userId;
 
-	@Length(min = 3, max = 50)
-	@Size(min = 3, max = 50)
-	@NotBlank
-	@NotEmpty
-	@NotNull
-	@Column(name = "username", length = 50, nullable = false)
-	@Setter
-	private String username;
+    @Length(min = 3, max = 50)
+    @Size(min = 3, max = 50)
+    @NotBlank
+    @NotEmpty
+    @NotNull
+    @Column(name = "username", length = 50, nullable = false)
+    @Setter
+    private String username;
 
-	@Email(regexp = ".+@.+\\..+")
-	@NotBlank
-	@NotEmpty
-	@NotNull
-	@JsonIgnore
-	@Column(name = "email", nullable = false)
-	@Setter
-	private String email;
+    @Email(regexp = ".+@.+\\..+")
+    @NotBlank
+    @NotEmpty
+    @NotNull
+    @JsonIgnore
+    @Column(name = "email", nullable = false)
+    @Setter
+    private String email;
 
-	@Length(max = 200)
-	@Size(max = 200)
-	@NotBlank
-	@NotEmpty
-	@NotNull
-	@JsonIgnore
-	@Column(name = "password", length = 200, nullable = false)
-	@Setter
-	private String password;
+    @Length(max = 200)
+    @Size(max = 200)
+    @NotBlank
+    @NotEmpty
+    @NotNull
+    @JsonIgnore
+    @Column(name = "password", length = 200, nullable = false)
+    @Setter
+    private String password;
 
-	@NotNull
-	@Enumerated
-	@Column(name = "privilege", nullable = false)
-	private Privilege privilege;
+    @NotNull
+    @Enumerated
+    @Column(name = "privilege", nullable = false)
+    private Privilege privilege;
 
-	@NotNull
-	@PastOrPresent
-	@CreationTimestamp
-	@Column(name = "creation_date", nullable = false, updatable = false)
-	private Date creationDate;
+    @NotNull
+    @PastOrPresent
+    @CreationTimestamp
+    @Column(name = "creation_date", nullable = false, updatable = false)
+    private Date creationDate;
 }

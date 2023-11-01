@@ -12,12 +12,18 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
-	UserEntity getUserEntityByEmail(String email);
+    UserEntity getUserEntityByEmail(String email);
 
-	UserEntity getUserEntityByUserId(Integer id);
+    UserEntity getUserEntityByUserId(Integer id);
 
-	@Modifying
-	@Transactional
-	@Query("update UserEntity u set u.privilege = :newPrivilege where u.userId = :id")
-	void updatePrivilegeByUserId(@Param("id") Integer id, @Param("newPrivilege") Privilege newPrivilege);
+    @Query("select u from UserEntity as u order by u.creationDate desc limit 1")
+    UserEntity getUserEntityByCreationDateLast();
+
+    @Modifying
+    @Transactional
+    @Query("update UserEntity u set u.privilege = :newPrivilege where u.userId = :id")
+    void updatePrivilegeByUserId(@Param("id") Integer id, @Param("newPrivilege") Privilege newPrivilege);
+
+    @Query("SELECT u.userId from UserEntity u order by u.userId desc limit 1")
+    Integer getUserEntityCount();
 }

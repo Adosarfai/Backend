@@ -23,36 +23,36 @@ import java.util.logging.Logger;
 @Service
 @AllArgsConstructor
 public class CreateNewUserUseCaseImpl implements CreateNewUserUseCase {
-	private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
-	private UserRepository userRepository;
+    private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
+    private UserRepository userRepository;
 
-	@Override
-	public HttpStatus createNewUser(@Valid final CreateNewUserRequest request) {
-		try {
-			// Hash password
-			Hash hash = Password.hash(request.getPassword())
-					.addRandomSalt(32)
-					.withArgon2();
+    @Override
+    public HttpStatus createNewUser(@Valid final CreateNewUserRequest request) {
+        try {
+            // Hash password
+            Hash hash = Password.hash(request.getPassword())
+                    .addRandomSalt(32)
+                    .withArgon2();
 
-			// Create new user
-			UserEntity newUser = UserEntity.builder()
-					.password(hash.getResult())
-					.email(request.getEmail())
-					.privilege(Privilege.USER)
-					.username(request.getUsername())
-					.creationDate(Date.from(Instant.now()))
-					.build();
-			
-			userRepository.saveAndFlush(newUser);
-			// TODO: Send verification email
+            // Create new user
+            UserEntity newUser = UserEntity.builder()
+                    .password(hash.getResult())
+                    .email(request.getEmail())
+                    .privilege(Privilege.USER)
+                    .username(request.getUsername())
+                    .creationDate(Date.from(Instant.now()))
+                    .build();
 
-			return HttpStatus.CREATED;
-		} catch (BadParametersException | InvalidParameterException badParametersException) {
-			LOGGER.log(Level.FINE, badParametersException.toString(), badParametersException);
-			return HttpStatus.BAD_REQUEST;
-		} catch (Exception exception) {
-			LOGGER.log(Level.SEVERE, exception.toString(), exception);
-			return HttpStatus.INTERNAL_SERVER_ERROR;
-		}
-	}
+            userRepository.saveAndFlush(newUser);
+            // TODO: Send verification email
+
+            return HttpStatus.CREATED;
+        } catch (BadParametersException | InvalidParameterException badParametersException) {
+            LOGGER.log(Level.FINE, badParametersException.toString(), badParametersException);
+            return HttpStatus.BAD_REQUEST;
+        } catch (Exception exception) {
+            LOGGER.log(Level.SEVERE, exception.toString(), exception);
+            return HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+    }
 }

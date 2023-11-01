@@ -13,28 +13,28 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
-	@NotNull
-	@Id
-	private Integer userId;
+    @NotNull
+    @Id
+    private Integer userId;
 
-	@NotNull
-	private Date creationDate;
+    @NotNull
+    private Date creationDate;
 
-	@Setter
-	@NotNull
-	private String username;
+    @Setter
+    @NotNull
+    private String username;
 
-	@Setter
-	@NotNull
-	private Privilege privilege;
+    @Setter
+    @NotNull
+    private Privilege privilege;
 
-	@JsonIgnore
-	@Setter
-	@NotNull
-	private String email;
+    @JsonIgnore
+    @Setter
+    @NotNull
+    private String email;
 
-	@JsonIgnore
-	@Setter
-	@NotNull
-	private String password;
+    @JsonIgnore
+    @Setter
+    @NotNull
+    private String password;
 }

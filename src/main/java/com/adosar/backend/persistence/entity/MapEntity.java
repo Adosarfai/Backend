@@ -22,61 +22,62 @@ import java.util.Date;
 @Table(name = "map")
 public class MapEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", length = 10, nullable = false, updatable = false)
-	private Integer mapId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", length = 10, nullable = false, updatable = false)
+    private Integer mapId;
 
-	@NotNull
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "user", nullable = false, updatable = false)
-	private UserEntity user;
+    @NotNull
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user", nullable = false, updatable = false)
+    private UserEntity user;
 
-	@NotBlank
-	@NotEmpty
-	@Size(max = 250)
-	@Length(max = 250)
-	@NotNull
-	@Column(name = "title", length = 250, nullable = false)
-	private String title;
+    @NotBlank
+    @NotEmpty
+    @Size(max = 250)
+    @Length(max = 250)
+    @NotNull
+    @Column(name = "title", length = 250, nullable = false)
+    private String title;
 
-	@Length(max = 100)
-	@Size(max = 100)
-	@NotBlank
-	@NotEmpty
-	@NotNull
-	@Column(name = "artist", length = 100, nullable = false)
-	private String artist;
+    @Length(max = 100)
+    @Size(max = 100)
+    @NotBlank
+    @NotEmpty
+    @NotNull
+    @Column(name = "artist", length = 100, nullable = false)
+    private String artist;
 
-	@NotNull
-	@Column(name = "published", nullable = false)
-	private Boolean published = false;
+    @NotNull
+    @Column(name = "published", nullable = false)
+    private Boolean published = false;
 
-	@NotNull
-	@Enumerated
-	@Column(name = "removed", nullable = false)
-	private Removed removed = Removed.NOT_REMOVED;
+    @NotNull
+    @Enumerated
+    @Column(name = "removed", nullable = false)
+    private Removed removed = Removed.NOT_REMOVED;
 
-	@Length(max = 200)
-	@Size(max = 2000)
-	@Column(name = "removal_reason", length = 200)
-	private String removalReason;
+    @Length(max = 200)
+    @Size(max = 2000)
+    @Column(name = "removal_reason", length = 200)
+    private String removalReason;
 
-	@Length(min = 64, max = 64)
-	@Size(min = 64, max = 64)
-	@Nullable
-	@Column(name = "hash", length = 64)
-	private String hash;
+    @Length(min = 64, max = 64)
+    @Size(min = 64, max = 64)
+    @Nullable
+    @Column(name = "hash", length = 64)
+    private String hash;
 
-	@PastOrPresent
-	@NotNull
-	@CreationTimestamp
-	@Column(name = "creation_date", nullable = false, updatable = false)
-	private Date creationDate;
+    @PastOrPresent
+    @NotNull
+    @CreationTimestamp
+    @Column(name = "creation_date", nullable = false, updatable = false)
+    private Date creationDate;
 
-	@PastOrPresent
-	@NotNull
-	@UpdateTimestamp
-	@Column(name = "last_update", nullable = false)
-	private Date lastUpdate;
+    @PastOrPresent
+    @NotNull
+    @UpdateTimestamp
+    @Column(name = "last_update", nullable = false)
+    private Date lastUpdate;
+
 }

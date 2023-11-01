@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RemoveUserRequest {
 
-	@NotNull
-	private Integer id;
+    @NotNull
+    private Integer id;
 }

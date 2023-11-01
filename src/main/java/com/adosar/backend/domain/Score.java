@@ -13,25 +13,25 @@ import java.util.Date;
 @NoArgsConstructor
 public class Score {
 
-	@NotNull
-	private Map map;
+    @NotNull
+    private Map map;
 
-	@NotNull
-	private User user;
+    @NotNull
+    private User user;
 
-	@NotNull
-	private Float speed;
+    @NotNull
+    private Float speed;
 
-	@NotNull
-	private Date timeSet;
+    @NotNull
+    private Date timeSet;
 
-	@NotNull
-	private Replay replay;
+    @NotNull
+    private Replay replay;
 
-	@NotNull
-	private Integer score;
+    @NotNull
+    private Integer score;
 
-	@NotNull
-	@Id
-	private Integer scoreId;
+    @NotNull
+    @Id
+    private Integer scoreId;
 }
