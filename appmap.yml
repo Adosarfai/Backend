@@ -1,0 +1,5 @@
+name: "MapsController.java"
+appmap_dir: "tmp/appmap"
+packages:
+  - path: "com.adosar.backend"
+  - path: "static"

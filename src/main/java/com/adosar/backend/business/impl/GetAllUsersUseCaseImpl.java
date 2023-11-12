@@ -1,7 +1,7 @@
 package com.adosar.backend.business.impl;
 
 import com.adosar.backend.business.GetAllUsersUseCase;
-import com.adosar.backend.business.exception.InvalidPathVariableException;
+import com.adosar.backend.business.exception.BadRequestException;
 import com.adosar.backend.business.request.GetAllUsersRequest;
 import com.adosar.backend.business.response.GetAllUsersResponse;
 import com.adosar.backend.domain.User;
@@ -20,24 +20,26 @@ import java.util.logging.Logger;
 @Service
 @AllArgsConstructor
 public class GetAllUsersUseCaseImpl implements GetAllUsersUseCase {
-    private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
-    private UserRepository userRepository;
+	private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
+	private UserRepository userRepository;
 
-    @Override
-    public GetAllUsersResponse getAllUsers(final GetAllUsersRequest request) {
-        try {
-            if (request.getPage() < 0) throw new InvalidPathVariableException(request.getPage().toString());
+	@Override
+	public GetAllUsersResponse getAllUsers(final GetAllUsersRequest request) {
+		try {
+			// Check is page is valid
+			if (request.getPage() < 0) throw new BadRequestException(request.getPage().toString());
 
-            List<UserEntity> result = userRepository.findAll(PageRequest.of(request.getPage(), 10)).toList();
-            List<User> users = result.stream().map(UserConverter::convert).toList();
+			// Get users
+			List<UserEntity> result = userRepository.findAll(PageRequest.of(request.getPage(), 10)).toList();
+			List<User> users = result.stream().map(UserConverter::convert).toList();
 
-            return new GetAllUsersResponse(users, HttpStatus.OK);
-        } catch (InvalidPathVariableException invalidPathVariableException) {
-            LOGGER.log(Level.FINE, invalidPathVariableException.toString(), invalidPathVariableException);
-            return new GetAllUsersResponse(null, HttpStatus.BAD_REQUEST);
-        } catch (Exception exception) {
-            LOGGER.log(Level.SEVERE, exception.toString(), exception);
-            return new GetAllUsersResponse(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+			return new GetAllUsersResponse(users, HttpStatus.OK);
+		} catch (BadRequestException badRequestException) {
+			LOGGER.log(Level.FINE, badRequestException.toString(), badRequestException);
+			return new GetAllUsersResponse(null, HttpStatus.BAD_REQUEST);
+		} catch (Exception exception) {
+			LOGGER.log(Level.SEVERE, exception.toString(), exception);
+			return new GetAllUsersResponse(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

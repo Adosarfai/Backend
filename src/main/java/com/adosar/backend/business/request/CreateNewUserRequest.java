@@ -14,15 +14,15 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 public class CreateNewUserRequest {
 
-    @NotNull
-    @Email
-    private String email;
+	@NotNull
+	@Email
+	private String email;
 
-    @NotNull
-    @Length(min = 3, max = 50)
-    private String username;
+	@NotNull
+	@Length(min = 3, max = 50)
+	private String username;
 
-    @NotNull
-    @Length(min = 10)
-    private String password;
+	@NotNull
+	@Length(min = 10)
+	private String password;
 }

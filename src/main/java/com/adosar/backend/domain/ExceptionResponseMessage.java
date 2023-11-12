@@ -9,9 +9,9 @@ import java.time.Instant;
 @AllArgsConstructor
 public class ExceptionResponseMessage {
 
-    private Instant time;
-    private int status;
-    private String error;
-    private String exception;
-    private String message;
+	private Instant time;
+	private int status;
+	private String error;
+	private String exception;
+	private String message;
 }

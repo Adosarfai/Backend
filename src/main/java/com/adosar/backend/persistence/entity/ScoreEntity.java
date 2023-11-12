@@ -1,39 +1,54 @@
 package com.adosar.backend.persistence.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.ToString;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.PositiveOrZero;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-@Data
-@ToString
+@Getter
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "score")
 public class ScoreEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", length = 10, nullable = false, updatable = false)
-    private Integer scoreId;
 
-    @ManyToOne
-    @JoinColumn(name = "map", nullable = false, updatable = false)
-    private MapEntity map;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", length = 10, nullable = false, updatable = false)
+	private Integer scoreId;
 
-    @ManyToOne
-    @JoinColumn(name = "user", nullable = false, updatable = false)
-    private UserEntity user;
+	@NotNull
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "map", nullable = false, updatable = false)
+	private MapEntity map;
 
-    @OneToOne
-    @JoinColumn(name = "replay", nullable = false, updatable = false)
-    private ReplayEntity replay;
+	@NotNull
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "user", nullable = false, updatable = false)
+	private UserEntity user;
 
-    @Column(name = "time_set", nullable = false, updatable = false)
-    private Date timeSet;
+	@NotNull
+	@OneToOne(optional = false)
+	@JoinColumn(name = "replay", nullable = false, updatable = false)
+	private ReplayEntity replay;
 
-    @Column(name = "speed", nullable = false, updatable = false)
-    private Float speed;
+	@PastOrPresent
+	@Column(name = "time_set", nullable = false, updatable = false)
+	private Date timeSet;
 
-    @Column(name = "score", nullable = false, updatable = false)
-    private Integer score;
+	@NotNull
+	@Column(name = "speed", nullable = false, updatable = false)
+	private Float speed;
+
+	@NotNull
+	@PositiveOrZero
+	@Column(name = "points", nullable = false, updatable = false)
+	private Integer points;
 }

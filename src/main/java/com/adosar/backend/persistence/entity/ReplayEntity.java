@@ -1,23 +1,30 @@
 package com.adosar.backend.persistence.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.ToString;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Data
-@ToString
+@Getter
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "replay")
 public class ReplayEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", length = 10, nullable = false, updatable = false)
-    private Integer replayId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", length = 10, nullable = false, updatable = false)
+	private Integer replayId;
 
-    @Column(name = "timings", nullable = false, updatable = false)
-    private int[] timings;
+	@NotNull
+	@Column(name = "timings", nullable = false, updatable = false)
+	private int[] timings;
 
-    @Column(name = "pauses", nullable = false, updatable = false)
-    private int[] pauses;
+	@NotNull
+	@Column(name = "pauses", nullable = false, updatable = false)
+	private int[] pauses;
 }

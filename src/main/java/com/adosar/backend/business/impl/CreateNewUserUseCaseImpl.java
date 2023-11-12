@@ -15,39 +15,44 @@ import org.springframework.javapoet.ClassName;
 import org.springframework.stereotype.Service;
 
 import java.security.InvalidParameterException;
+import java.time.Instant;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Service
 @AllArgsConstructor
 public class CreateNewUserUseCaseImpl implements CreateNewUserUseCase {
-    private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
-    private UserRepository userRepository;
+	private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
+	private UserRepository userRepository;
 
-    @Override
-    public HttpStatus createNewUser(@Valid final CreateNewUserRequest request) {
-        try {
-            Hash hash = Password.hash(request.getPassword())
-                    .addRandomSalt(32)
-                    .withArgon2();
+	@Override
+	public HttpStatus createNewUser(@Valid final CreateNewUserRequest request) {
+		try {
+			// Hash password
+			Hash hash = Password.hash(request.getPassword())
+					.addRandomSalt(32)
+					.withArgon2();
 
-            UserEntity newUser = UserEntity.builder()
-                    .password(hash.getResult())
-                    .email(request.getEmail())
-                    .privilege(Privilege.USER)
-                    .username(request.getUsername())
-                    .build();
+			// Create new user
+			UserEntity newUser = UserEntity.builder()
+					.password(hash.getResult())
+					.email(request.getEmail())
+					.privilege(Privilege.USER)
+					.username(request.getUsername())
+					.creationDate(Date.from(Instant.now()))
+					.build();
 
-            userRepository.save(newUser);
-            // TODO: Send verification email
+			userRepository.saveAndFlush(newUser);
+			// TODO: Send verification email
 
-            return HttpStatus.CREATED;
-        } catch (BadParametersException | InvalidParameterException badParametersException) {
-            LOGGER.log(Level.FINE, badParametersException.toString(), badParametersException);
-            return HttpStatus.BAD_REQUEST;
-        } catch (Exception exception) {
-            LOGGER.log(Level.SEVERE, exception.toString(), exception);
-            return HttpStatus.INTERNAL_SERVER_ERROR;
-        }
-    }
+			return HttpStatus.CREATED;
+		} catch (BadParametersException | InvalidParameterException badParametersException) {
+			LOGGER.log(Level.FINE, badParametersException.toString(), badParametersException);
+			return HttpStatus.BAD_REQUEST;
+		} catch (Exception exception) {
+			LOGGER.log(Level.SEVERE, exception.toString(), exception);
+			return HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+	}
 }
