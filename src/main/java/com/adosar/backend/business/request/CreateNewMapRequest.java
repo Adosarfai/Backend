@@ -9,16 +9,16 @@ import lombok.*;
 @AllArgsConstructor
 public class CreateNewMapRequest {
 
-    @Setter
-    @NotNull
-    private String title;
+	@Setter
+	@NotNull
+	private String title;
 
-    @Setter
-    @NotNull
-    private String artist;
+	@Setter
+	@NotNull
+	private String artist;
 
-    @Setter
-    @NotNull
-    private Boolean published;
+	@Setter
+	@NotNull
+	private Boolean published;
 
 }

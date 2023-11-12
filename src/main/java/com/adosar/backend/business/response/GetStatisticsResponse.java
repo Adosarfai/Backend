@@ -1,7 +1,6 @@
 package com.adosar.backend.business.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,17 +14,17 @@ import org.springframework.http.HttpStatus;
 @NoArgsConstructor
 public class GetStatisticsResponse {
 
-    @Nullable
-    private Long MapCount;
+	@NotNull
+	private Long MapCount;
 
-    @Nullable
-    private Long LeaderboardCount;
+	@NotNull
+	private Long LeaderboardCount;
 
-    @Nullable
-    private Long ScoreCount;
+	@NotNull
+	private Long ScoreCount;
 
-    @NotNull
-    @JsonIgnore
-    private HttpStatus httpStatus;
+	@NotNull
+	@JsonIgnore
+	private HttpStatus httpStatus;
 
 }

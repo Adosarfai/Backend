@@ -13,16 +13,16 @@ import java.sql.SQLException;
 @Component("database")
 public class DbHealthIndicator implements HealthIndicator, HealthContributor {
 
-    @Autowired
-    private DataSource dataSource;
+	@Autowired
+	private DataSource dataSource;
 
-    @Override
-    public Health health() {
-        try (Connection connection = dataSource.getConnection()) {
-            connection.createStatement().execute("select 1 from map");
-        } catch (SQLException exception) {
-            return Health.outOfService().withException(exception).build();
-        }
-        return Health.up().build();
-    }
+	@Override
+	public Health health() {
+		try (Connection connection = dataSource.getConnection()) {
+			connection.createStatement().execute("select 1 from map");
+		} catch (SQLException exception) {
+			return Health.outOfService().withException(exception).build();
+		}
+		return Health.up().build();
+	}
 }

@@ -24,46 +24,46 @@ import java.util.logging.Logger;
 @Service
 @AllArgsConstructor
 public class UploadMapUseCaseImpl implements UploadMapUseCase {
-    private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
-    private MapRepository mapRepository;
+	private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
+	private MapRepository mapRepository;
 
-    @Override
-    public HttpStatus uploadMap(@Valid final UploadMapRequest request) {
-        try {
-            // Get map
-            MapEntity mapEntity = mapRepository.getMapEntityByMapId(request.getMapId());
-            if (mapEntity == null)
-                throw new NotFoundException(String.format("Map with id %s not found", request.getMapId()));
+	@Override
+	public HttpStatus uploadMap(@Valid final UploadMapRequest request) {
+		try {
+			// Get map
+			MapEntity mapEntity = mapRepository.getMapEntityByMapId(request.getMapId());
+			if (mapEntity == null)
+				throw new NotFoundException(String.format("Map with id %s not found", request.getMapId()));
 
-            Map map = MapConverter.convert(mapEntity);
+			Map map = MapConverter.convert(mapEntity);
 
-            // Check if user is authorized
-            DecodedJWT decodedJWT = JWTService.verifyJWT(request.getJwt());
-            if (decodedJWT == null) throw new UnauthorizedException("Unable to decode JWT");
-            if (!decodedJWT.getClaim("userId").as(Integer.class).equals(map.getUser().getUserId()))
-                throw new UnauthorizedException("JWT and userId do not match");
+			// Check if user is authorized
+			DecodedJWT decodedJWT = JWTService.verifyJWT(request.getJwt());
+			if (decodedJWT == null) throw new UnauthorizedException("Unable to decode JWT");
+			if (!decodedJWT.getClaim("userId").as(Integer.class).equals(map.getUser().getUserId()))
+				throw new UnauthorizedException("JWT and userId do not match");
 
-            // Save map
-            String mapLocation = String.format("%s\\%s.zip", System.getenv("DOWNLOAD_LOCATION"), map.getMapId());
-            request.getFile().transferTo(Path.of(mapLocation));
+			// Save map
+			String mapLocation = String.format("%s\\%s.zip", System.getenv("DOWNLOAD_LOCATION"), map.getMapId());
+			request.getFile().transferTo(Path.of(mapLocation));
 
-            // Update map hash
-            String hash = Hashing.sha256().hashBytes(request.getFile().getBytes()).toString();
-            mapRepository.updateHashByMapId(request.getMapId(), hash);
+			// Update map hash
+			String hash = Hashing.sha256().hashBytes(request.getFile().getBytes()).toString();
+			mapRepository.updateHashByMapId(request.getMapId(), hash);
 
-            return HttpStatus.OK;
-        } catch (NotFoundException notFoundException) {
-            LOGGER.log(Level.FINE, notFoundException.toString(), notFoundException);
-            return HttpStatus.NOT_FOUND;
-        } catch (UnauthorizedException unauthorizedException) {
-            LOGGER.log(Level.FINE, unauthorizedException.toString(), unauthorizedException);
-            return HttpStatus.UNAUTHORIZED;
-        } catch (SizeLimitExceededException sizeLimitExceededException) {
-            LOGGER.log(Level.FINE, sizeLimitExceededException.toString(), sizeLimitExceededException);
-            return HttpStatus.PAYLOAD_TOO_LARGE;
-        } catch (Exception exception) {
-            LOGGER.log(Level.SEVERE, exception.toString(), exception);
-            return HttpStatus.INTERNAL_SERVER_ERROR;
-        }
-    }
+			return HttpStatus.OK;
+		} catch (NotFoundException notFoundException) {
+			LOGGER.log(Level.FINE, notFoundException.toString(), notFoundException);
+			return HttpStatus.NOT_FOUND;
+		} catch (UnauthorizedException unauthorizedException) {
+			LOGGER.log(Level.FINE, unauthorizedException.toString(), unauthorizedException);
+			return HttpStatus.UNAUTHORIZED;
+		} catch (SizeLimitExceededException sizeLimitExceededException) {
+			LOGGER.log(Level.FINE, sizeLimitExceededException.toString(), sizeLimitExceededException);
+			return HttpStatus.PAYLOAD_TOO_LARGE;
+		} catch (Exception exception) {
+			LOGGER.log(Level.SEVERE, exception.toString(), exception);
+			return HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+	}
 }

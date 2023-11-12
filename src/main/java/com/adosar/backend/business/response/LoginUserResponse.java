@@ -15,12 +15,12 @@ import org.springframework.http.HttpStatus;
 @NoArgsConstructor
 public class LoginUserResponse {
 
-    @Nullable
-    private String Jwt;
+	@Nullable
+	private String Jwt;
 
-    @NotNull
-    @JsonIgnore
-    private HttpStatus httpStatus;
+	@NotNull
+	@JsonIgnore
+	private HttpStatus httpStatus;
 
 
 }

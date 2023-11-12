@@ -7,5 +7,5 @@ import org.springframework.stereotype.Service;
 @NoArgsConstructor
 final public class PasswordService {
 
-    // TODO: Move all password related code here 
+	// TODO: Move all password related code here 
 }

@@ -20,30 +20,30 @@ import java.util.logging.Logger;
 @AllArgsConstructor
 public class GetMapByIdUseCaseImpl implements GetMapByIdUseCase {
 
-    private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
-    private MapRepository mapRepository;
+	private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
+	private MapRepository mapRepository;
 
-    @Override
-    public GetMapByIdResponse getMapById(GetMapByIdRequest request) {
-        try {
-            // Check is id is valid
-            if (request.getId() < 0) throw new BadRequestException(request.getId().toString());
+	@Override
+	public GetMapByIdResponse getMapById(GetMapByIdRequest request) {
+		try {
+			// Check is id is valid
+			if (request.getId() < 0) throw new BadRequestException(request.getId().toString());
 
-            // Get map
-            MapEntity result = mapRepository.findById(request.getId()).orElseThrow(() -> new NotFoundException(String.format("Map with ID %s was not found", request.getId())));
-            Map map = MapConverter.convert(result);
+			// Get map
+			MapEntity result = mapRepository.findById(request.getId()).orElseThrow(() -> new NotFoundException(String.format("Map with ID %s was not found", request.getId())));
+			Map map = MapConverter.convert(result);
 
-            return new GetMapByIdResponse(map, HttpStatus.OK);
+			return new GetMapByIdResponse(map, HttpStatus.OK);
 
-        } catch (BadRequestException badRequestException) {
-            LOGGER.log(Level.FINE, badRequestException.toString(), badRequestException);
-            return new GetMapByIdResponse(null, HttpStatus.BAD_REQUEST);
-        } catch (NotFoundException notFoundException) {
-            LOGGER.log(Level.FINE, notFoundException.toString(), notFoundException);
-            return new GetMapByIdResponse(null, HttpStatus.NOT_FOUND);
-        } catch (Exception exception) {
-            LOGGER.log(Level.SEVERE, exception.toString(), exception);
-            return new GetMapByIdResponse(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+		} catch (BadRequestException badRequestException) {
+			LOGGER.log(Level.FINE, badRequestException.toString(), badRequestException);
+			return new GetMapByIdResponse(null, HttpStatus.BAD_REQUEST);
+		} catch (NotFoundException notFoundException) {
+			LOGGER.log(Level.FINE, notFoundException.toString(), notFoundException);
+			return new GetMapByIdResponse(null, HttpStatus.NOT_FOUND);
+		} catch (Exception exception) {
+			LOGGER.log(Level.SEVERE, exception.toString(), exception);
+			return new GetMapByIdResponse(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

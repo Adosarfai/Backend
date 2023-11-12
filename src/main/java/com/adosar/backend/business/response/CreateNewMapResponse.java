@@ -16,12 +16,12 @@ import org.springframework.http.HttpStatus;
 @NoArgsConstructor
 public class CreateNewMapResponse {
 
-    @Nullable
-    private Map map;
+	@Nullable
+	private Map map;
 
-    @NotNull
-    @JsonIgnore
-    private HttpStatus httpStatus;
+	@NotNull
+	@JsonIgnore
+	private HttpStatus httpStatus;
 
 
 }

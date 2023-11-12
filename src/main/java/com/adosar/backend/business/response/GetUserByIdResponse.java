@@ -16,11 +16,11 @@ import org.springframework.http.HttpStatus;
 @NoArgsConstructor
 public class GetUserByIdResponse {
 
-    @Nullable
-    private User user;
+	@Nullable
+	private User user;
 
-    @NotNull
-    @JsonIgnore
-    private HttpStatus httpStatus;
+	@NotNull
+	@JsonIgnore
+	private HttpStatus httpStatus;
 
 }

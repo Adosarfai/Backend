@@ -13,19 +13,19 @@ import java.util.Collection;
 @Repository
 public interface MapRepository extends JpaRepository<MapEntity, Integer> {
 
-    Collection<MapEntity> getMapEntitiesByHash(String hash);
+	Collection<MapEntity> getMapEntitiesByHash(String hash);
 
-    @Query("SELECT m.mapId from MapEntity m order by m.mapId desc limit 1")
-    Integer getMapEntityCount();
+	@Query("SELECT m.mapId from MapEntity m order by m.mapId desc limit 1")
+	Integer getMapEntityCount();
 
-    @Query("select m from MapEntity as m order by m.creationDate desc limit 1")
-    MapEntity getMapEntityByCreationDateLast();
+	@Query("select m from MapEntity as m order by m.creationDate desc limit 1")
+	MapEntity getMapEntityByCreationDateLast();
 
-    MapEntity getMapEntityByMapId(Integer mapId);
+	MapEntity getMapEntityByMapId(Integer mapId);
 
-    @Modifying
-    @Transactional
-    @Query("update MapEntity u set u.hash = :newHash where u.mapId = :id")
-    void updateHashByMapId(@Param("id") Integer id, @Param("newHash") String newHash);
+	@Modifying
+	@Transactional
+	@Query("update MapEntity u set u.hash = :newHash where u.mapId = :id")
+	void updateHashByMapId(@Param("id") Integer id, @Param("newHash") String newHash);
 
 }

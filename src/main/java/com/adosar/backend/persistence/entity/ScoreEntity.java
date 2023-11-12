@@ -19,36 +19,36 @@ import java.util.Date;
 @Table(name = "score")
 public class ScoreEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", length = 10, nullable = false, updatable = false)
-    private Integer scoreId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", length = 10, nullable = false, updatable = false)
+	private Integer scoreId;
 
-    @NotNull
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "map", nullable = false, updatable = false)
-    private MapEntity map;
+	@NotNull
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "map", nullable = false, updatable = false)
+	private MapEntity map;
 
-    @NotNull
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "user", nullable = false, updatable = false)
-    private UserEntity user;
+	@NotNull
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "user", nullable = false, updatable = false)
+	private UserEntity user;
 
-    @NotNull
-    @OneToOne(optional = false)
-    @JoinColumn(name = "replay", nullable = false, updatable = false)
-    private ReplayEntity replay;
+	@NotNull
+	@OneToOne(optional = false)
+	@JoinColumn(name = "replay", nullable = false, updatable = false)
+	private ReplayEntity replay;
 
-    @PastOrPresent
-    @Column(name = "time_set", nullable = false, updatable = false)
-    private Date timeSet;
+	@PastOrPresent
+	@Column(name = "time_set", nullable = false, updatable = false)
+	private Date timeSet;
 
-    @NotNull
-    @Column(name = "speed", nullable = false, updatable = false)
-    private Float speed;
+	@NotNull
+	@Column(name = "speed", nullable = false, updatable = false)
+	private Float speed;
 
-    @NotNull
-    @PositiveOrZero
-    @Column(name = "points", nullable = false, updatable = false)
-    private Integer points;
+	@NotNull
+	@PositiveOrZero
+	@Column(name = "points", nullable = false, updatable = false)
+	private Integer points;
 }

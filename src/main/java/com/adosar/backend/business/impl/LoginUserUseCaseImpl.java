@@ -20,36 +20,36 @@ import java.util.logging.Logger;
 @Service
 @AllArgsConstructor
 public class LoginUserUseCaseImpl implements LoginUserUseCase {
-    private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
-    private UserRepository userRepository;
+	private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
+	private UserRepository userRepository;
 
-    @Override
-    public LoginUserResponse loginUser(final LoginUserRequest request) {
-        try {
-            // Get user
-            UserEntity userEntity = userRepository.getUserEntityByEmail(request.getEmail());
+	@Override
+	public LoginUserResponse loginUser(final LoginUserRequest request) {
+		try {
+			// Get user
+			UserEntity userEntity = userRepository.getUserEntityByEmail(request.getEmail());
 
-            // Invalid email
-            if (userEntity == null)
-                throw new UnauthorizedException(String.format("User with email %s was not found", request.getEmail()));
+			// Invalid email
+			if (userEntity == null)
+				throw new UnauthorizedException(String.format("User with email %s was not found", request.getEmail()));
 
-            User user = UserConverter.convert(userEntity);
+			User user = UserConverter.convert(userEntity);
 
-            // Invalid password
-            if (!Password.check(request.getPassword(), user.getPassword()).withArgon2())
-                throw new UnauthorizedException("Password hashes do not match");
+			// Invalid password
+			if (!Password.check(request.getPassword(), user.getPassword()).withArgon2())
+				throw new UnauthorizedException("Password hashes do not match");
 
-            // Create jwt
-            String jwt = JWTService.createJWT(user.getUserId());
+			// Create jwt
+			String jwt = JWTService.createJWT(user.getUserId());
 
-            return new LoginUserResponse(jwt, HttpStatus.OK);
+			return new LoginUserResponse(jwt, HttpStatus.OK);
 
-        } catch (UnauthorizedException unauthorizedException) {
-            LOGGER.log(Level.FINE, unauthorizedException.toString(), unauthorizedException);
-            return new LoginUserResponse(null, HttpStatus.UNAUTHORIZED);
-        } catch (Exception exception) {
-            LOGGER.log(Level.SEVERE, exception.toString(), exception);
-            return new LoginUserResponse(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+		} catch (UnauthorizedException unauthorizedException) {
+			LOGGER.log(Level.FINE, unauthorizedException.toString(), unauthorizedException);
+			return new LoginUserResponse(null, HttpStatus.UNAUTHORIZED);
+		} catch (Exception exception) {
+			LOGGER.log(Level.SEVERE, exception.toString(), exception);
+			return new LoginUserResponse(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

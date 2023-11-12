@@ -18,12 +18,12 @@ import java.util.List;
 @NoArgsConstructor
 public class GetAllMapsResponse {
 
-    @Nullable
-    private List<Map> maps;
+	@Nullable
+	private List<Map> maps;
 
-    @NotNull
-    @JsonIgnore
-    private HttpStatus httpStatus;
+	@NotNull
+	@JsonIgnore
+	private HttpStatus httpStatus;
 
 
 }

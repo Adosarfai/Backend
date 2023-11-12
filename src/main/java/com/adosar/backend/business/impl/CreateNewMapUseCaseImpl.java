@@ -28,44 +28,44 @@ import java.util.logging.Logger;
 @Service
 @AllArgsConstructor
 public class CreateNewMapUseCaseImpl implements CreateNewMapUseCase {
-    private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
-    private GetUserByIdUseCase getUserByIdUseCase;
-    private MapRepository mapRepository;
-    private UserRepository userRepository;
+	private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
+	private GetUserByIdUseCase getUserByIdUseCase;
+	private MapRepository mapRepository;
+	private UserRepository userRepository;
 
-    @Override
-    public CreateNewMapResponse createNewMap(@Valid final CreateNewMapRequest request, final String jwt) {
-        try {
-            // Check if user is authorized
-            DecodedJWT decodedJWT = JWTService.verifyJWT(jwt);
-            if (decodedJWT == null) throw new UnauthorizedException("Unable to decode JWT");
-            Integer userId = decodedJWT.getClaim("userId").as(Integer.class);
+	@Override
+	public CreateNewMapResponse createNewMap(@Valid final CreateNewMapRequest request, final String jwt) {
+		try {
+			// Check if user is authorized
+			DecodedJWT decodedJWT = JWTService.verifyJWT(jwt);
+			if (decodedJWT == null) throw new UnauthorizedException("Unable to decode JWT");
+			Integer userId = decodedJWT.getClaim("userId").as(Integer.class);
 
-            // Check if user exists
-            UserEntity userEntity = userRepository.getUserEntityByUserId(userId);
-            if (userEntity == null)
-                throw new UnauthorizedException(String.format("User with ID %s was not found", userId));
+			// Check if user exists
+			UserEntity userEntity = userRepository.getUserEntityByUserId(userId);
+			if (userEntity == null)
+				throw new UnauthorizedException(String.format("User with ID %s was not found", userId));
 
-            // Create map
-            MapEntity mapEntity = MapEntity.builder()
-                    .user(userEntity)
-                    .title(request.getTitle())
-                    .artist(request.getArtist())
-                    .published(request.getPublished())
-                    .removed(Removed.NOT_REMOVED)
-                    .creationDate(Date.from(Instant.now()))
-                    .lastUpdate(Date.from(Instant.now()))
-                    .build();
+			// Create map
+			MapEntity mapEntity = MapEntity.builder()
+					.user(userEntity)
+					.title(request.getTitle())
+					.artist(request.getArtist())
+					.published(request.getPublished())
+					.removed(Removed.NOT_REMOVED)
+					.creationDate(Date.from(Instant.now()))
+					.lastUpdate(Date.from(Instant.now()))
+					.build();
 
-            Map map = MapConverter.convert(mapRepository.saveAndFlush(mapEntity));
+			Map map = MapConverter.convert(mapRepository.saveAndFlush(mapEntity));
 
-            return new CreateNewMapResponse(map, HttpStatus.CREATED);
-        } catch (JWTVerificationException | UnauthorizedException jwtVerificationException) {
-            LOGGER.log(Level.FINE, jwtVerificationException.toString(), jwtVerificationException);
-            return new CreateNewMapResponse(null, HttpStatus.UNAUTHORIZED);
-        } catch (Exception exception) {
-            LOGGER.log(Level.SEVERE, exception.toString(), exception);
-            return new CreateNewMapResponse(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+			return new CreateNewMapResponse(map, HttpStatus.CREATED);
+		} catch (JWTVerificationException | UnauthorizedException jwtVerificationException) {
+			LOGGER.log(Level.FINE, jwtVerificationException.toString(), jwtVerificationException);
+			return new CreateNewMapResponse(null, HttpStatus.UNAUTHORIZED);
+		} catch (Exception exception) {
+			LOGGER.log(Level.SEVERE, exception.toString(), exception);
+			return new CreateNewMapResponse(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

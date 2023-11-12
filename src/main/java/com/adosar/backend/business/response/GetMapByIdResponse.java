@@ -16,11 +16,11 @@ import org.springframework.http.HttpStatus;
 @NoArgsConstructor
 public class GetMapByIdResponse {
 
-    @Nullable
-    private Map map;
+	@Nullable
+	private Map map;
 
-    @NotNull
-    @JsonIgnore
-    private HttpStatus httpStatus;
+	@NotNull
+	@JsonIgnore
+	private HttpStatus httpStatus;
 
 }

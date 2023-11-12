@@ -16,30 +16,30 @@ import java.util.logging.Logger;
 @Service
 @AllArgsConstructor
 public class GetStatisticsUseCaseImpl implements GetStatisticsUseCase {
-    private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
-    private MapRepository mapRepository;
-    private LeaderboardRepository leaderboardRepository;
-    private ScoreRepository scoreRepository;
+	private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
+	private MapRepository mapRepository;
+	private LeaderboardRepository leaderboardRepository;
+	private ScoreRepository scoreRepository;
 
-    @Override
-    public GetStatisticsResponse getStatistics() {
-        try {
-            long mapCount = mapRepository.getMapEntityCount();
-            long leaderboardCount = leaderboardRepository.GetLeaderboardEntityCount();
-            long scoreCount = scoreRepository.getScoreEntityCount();
+	@Override
+	public GetStatisticsResponse getStatistics() {
+		try {
+			long mapCount = mapRepository.getMapEntityCount();
+			long leaderboardCount = leaderboardRepository.GetLeaderboardEntityCount();
+			long scoreCount = scoreRepository.getScoreEntityCount();
 
-            return GetStatisticsResponse.builder()
-                    .MapCount(mapCount)
-                    .LeaderboardCount(leaderboardCount)
-                    .ScoreCount(scoreCount)
-                    .httpStatus(HttpStatus.OK)
-                    .build();
+			return GetStatisticsResponse.builder()
+					.MapCount(mapCount)
+					.LeaderboardCount(leaderboardCount)
+					.ScoreCount(scoreCount)
+					.httpStatus(HttpStatus.OK)
+					.build();
 
-        } catch (Exception exception) {
-            LOGGER.log(Level.SEVERE, exception.toString(), exception);
-            return GetStatisticsResponse.builder()
-                    .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .build();
-        }
-    }
+		} catch (Exception exception) {
+			LOGGER.log(Level.SEVERE, exception.toString(), exception);
+			return GetStatisticsResponse.builder()
+					.httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+					.build();
+		}
+	}
 }

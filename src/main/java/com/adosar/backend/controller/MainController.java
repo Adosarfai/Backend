@@ -9,19 +9,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin(allowCredentials = "true", origins = {"https://dev.adosar.net:5173", "https://adosar.net"})
+@CrossOrigin(allowCredentials = "true", origins = {"https://dev.adosar.net:5173", "https://adosar.net", "https://localhost:5137"})
 @RequestMapping(path = "/")
 @AllArgsConstructor
 @Builder
 public class MainController {
-    private final GetStatisticsUseCase getStatisticsUseCase;
+	private final GetStatisticsUseCase getStatisticsUseCase;
 
-    @GetMapping(path = "/statistics")
-    public @ResponseBody ResponseEntity<GetStatisticsResponse> getStatistics() {
-        GetStatisticsResponse response = getStatisticsUseCase.getStatistics();
-        if (response.getHttpStatus() == HttpStatus.INTERNAL_SERVER_ERROR) {
-            return new ResponseEntity<>(null, response.getHttpStatus());
-        }
-        return new ResponseEntity<>(response, response.getHttpStatus());
-    }
+	@GetMapping(path = "/statistics")
+	public @ResponseBody ResponseEntity<GetStatisticsResponse> getStatistics() {
+		GetStatisticsResponse response = getStatisticsUseCase.getStatistics();
+		if (response.getHttpStatus() == HttpStatus.INTERNAL_SERVER_ERROR) {
+			return new ResponseEntity<>(null, response.getHttpStatus());
+		}
+		return new ResponseEntity<>(response, response.getHttpStatus());
+	}
 }
