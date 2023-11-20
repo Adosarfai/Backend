@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@CrossOrigin(allowCredentials = "true", origins = {"https://dev.adosar.net:5173", "https://adosar.net", "https://localhost:5137"})
+@CrossOrigin(allowCredentials = "true", origins = {"https://dev.adosar.io:5173", "https://adosar.io", "https://localhost:5137"})
 @RequestMapping(path = "/map")
 @AllArgsConstructor
 @Builder
