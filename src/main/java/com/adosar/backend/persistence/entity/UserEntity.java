@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.validator.constraints.Length;
 
 import java.util.Date;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -20,7 +21,7 @@ public class UserEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", length = 10, nullable = false, updatable = false)
+	@Column(name = "userId", length = 10, nullable = false, updatable = false)
 	private Integer userId;
 
 	@Length(min = 3, max = 50)
@@ -50,6 +51,21 @@ public class UserEntity {
 	@Column(name = "password", length = 200, nullable = false)
 	@Setter
 	private String password;
+
+	@Length(max = 2000)
+	@Size(max = 2000)
+	@NotBlank
+	@NotEmpty
+	@NotNull
+	@Column(name = "description", length = 2000, nullable = false)
+	@Setter
+	private String description = "I am new to Adosar!";
+
+	@NotNull
+	@ManyToMany
+	@Setter
+	@JoinColumn(name = "badges", nullable = false)
+	private Set<BadgeEntity> badges;
 
 	@NotNull
 	@Enumerated

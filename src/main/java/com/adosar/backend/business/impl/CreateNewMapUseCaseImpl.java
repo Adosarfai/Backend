@@ -2,6 +2,7 @@ package com.adosar.backend.business.impl;
 
 import com.adosar.backend.business.CreateNewMapUseCase;
 import com.adosar.backend.business.GetUserByIdUseCase;
+import com.adosar.backend.business.converter.MapConverter;
 import com.adosar.backend.business.exception.UnauthorizedException;
 import com.adosar.backend.business.request.CreateNewMapRequest;
 import com.adosar.backend.business.response.CreateNewMapResponse;

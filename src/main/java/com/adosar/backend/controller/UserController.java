@@ -5,6 +5,7 @@ import com.adosar.backend.business.request.*;
 import com.adosar.backend.business.response.GetAllUsersResponse;
 import com.adosar.backend.business.response.GetUserByIdResponse;
 import com.adosar.backend.business.response.LoginUserResponse;
+import com.adosar.backend.domain.User;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -56,10 +57,10 @@ public class UserController {
 	 * @see GetUserByIdResponse
 	 */
 	@GetMapping(path = "/{id}")
-	public @ResponseBody ResponseEntity<GetUserByIdResponse> getUserById(@PathVariable Integer id) {
+	public @ResponseBody ResponseEntity<User> getUserById(@PathVariable Integer id) {
 		GetUserByIdRequest request = new GetUserByIdRequest(id);
 		GetUserByIdResponse response = getUserByIdUseCase.getUserById(request);
-		return new ResponseEntity<>(response, response.getHttpStatus());
+		return new ResponseEntity<>(response.getUser(), response.getHttpStatus());
 	}
 
 	/**

@@ -1,6 +1,7 @@
 package com.adosar.backend.business.impl;
 
 import com.adosar.backend.business.GetUserByIdUseCase;
+import com.adosar.backend.business.converter.UserConverter;
 import com.adosar.backend.business.exception.BadRequestException;
 import com.adosar.backend.business.exception.NotFoundException;
 import com.adosar.backend.business.request.GetUserByIdRequest;

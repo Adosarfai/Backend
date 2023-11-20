@@ -1,11 +1,11 @@
-package com.adosar.backend.business.impl;
+package com.adosar.backend.business.converter;
 
 import com.adosar.backend.domain.Map;
 import com.adosar.backend.persistence.entity.MapEntity;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-final class MapConverter {
+public final class MapConverter {
 
 	public static MapEntity convert(Map map) {
 		assert map != null;

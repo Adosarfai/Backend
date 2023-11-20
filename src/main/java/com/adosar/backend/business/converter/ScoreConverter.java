@@ -1,11 +1,11 @@
-package com.adosar.backend.business.impl;
+package com.adosar.backend.business.converter;
 
 import com.adosar.backend.domain.Score;
 import com.adosar.backend.persistence.entity.ScoreEntity;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-final class ScoreConverter {
+public final class ScoreConverter {
 
 	public static ScoreEntity convert(Score score) {
 		assert score != null;

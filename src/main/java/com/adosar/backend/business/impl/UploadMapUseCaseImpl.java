@@ -1,6 +1,7 @@
 package com.adosar.backend.business.impl;
 
 import com.adosar.backend.business.UploadMapUseCase;
+import com.adosar.backend.business.converter.MapConverter;
 import com.adosar.backend.business.exception.NotFoundException;
 import com.adosar.backend.business.exception.UnauthorizedException;
 import com.adosar.backend.business.request.UploadMapRequest;

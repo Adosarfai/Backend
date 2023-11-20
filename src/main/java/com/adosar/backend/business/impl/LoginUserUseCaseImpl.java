@@ -1,6 +1,7 @@
 package com.adosar.backend.business.impl;
 
 import com.adosar.backend.business.LoginUserUseCase;
+import com.adosar.backend.business.converter.UserConverter;
 import com.adosar.backend.business.exception.UnauthorizedException;
 import com.adosar.backend.business.request.LoginUserRequest;
 import com.adosar.backend.business.response.LoginUserResponse;

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.Date;
+import java.util.Set;
 
 @Getter
 @ToString
@@ -26,7 +27,15 @@ public class User {
 
 	@Setter
 	@NotNull
+	private String description;
+
+	@Setter
+	@NotNull
 	private Privilege privilege;
+
+	@Setter
+	@NotNull
+	private Set<Badge> badges;
 
 	@JsonIgnore
 	@Setter

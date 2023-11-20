@@ -1,4 +1,4 @@
-package com.adosar.backend.business.impl;
+package com.adosar.backend.business.converter;
 
 import com.adosar.backend.domain.Replay;
 import com.adosar.backend.persistence.entity.ReplayEntity;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.util.Arrays;
 
 @NoArgsConstructor
-final class ReplayConverter {
+public final class ReplayConverter {
 
 	public static ReplayEntity convert(Replay replay) {
 		assert replay != null;

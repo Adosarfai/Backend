@@ -4,8 +4,8 @@ import com.adosar.backend.business.impl.*;
 import com.adosar.backend.business.request.CreateNewUserRequest;
 import com.adosar.backend.business.request.LoginUserRequest;
 import com.adosar.backend.business.response.GetAllUsersResponse;
-import com.adosar.backend.business.response.GetUserByIdResponse;
 import com.adosar.backend.domain.Privilege;
+import com.adosar.backend.domain.User;
 import com.adosar.backend.persistence.UserRepository;
 import com.adosar.backend.persistence.entity.UserEntity;
 import org.junit.jupiter.api.Test;
@@ -95,7 +95,7 @@ public class UserControllerTest {
 					.build();
 
 			// Act
-			ResponseEntity<GetUserByIdResponse> responseEntity = userController.getUserById(-1);
+			ResponseEntity<User> responseEntity = userController.getUserById(-1);
 
 			// Assert
 			assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -122,10 +122,10 @@ public class UserControllerTest {
 					.build();
 
 			// Act
-			ResponseEntity<GetUserByIdResponse> responseEntity = userController.getUserById(1);
+			ResponseEntity<User> responseEntity = userController.getUserById(1);
 
 			// Assert
-			assertThat(responseEntity.getBody().getUser()).isNull();
+			assertThat(responseEntity.getBody()).isNull();
 			assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 		} catch (Exception exception) {
 			LOGGER.log(Level.SEVERE, exception.toString(), exception);
