@@ -45,6 +45,7 @@ tasks.withType(Test).configureEach {
 }
 
 jar {
+    enabled true
     manifest {
         attributes 'Main-Class': 'com.adosar.backend.BackendApplication'
     }

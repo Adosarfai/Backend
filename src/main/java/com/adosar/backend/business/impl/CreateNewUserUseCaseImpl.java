@@ -15,6 +15,7 @@ import org.springframework.javapoet.ClassName;
 import org.springframework.stereotype.Service;
 
 import java.security.InvalidParameterException;
+import java.text.BreakIterator;
 import java.time.Instant;
 import java.util.Date;
 import java.util.logging.Level;
@@ -33,7 +34,7 @@ public class CreateNewUserUseCaseImpl implements CreateNewUserUseCase {
 			Hash hash = Password.hash(request.getPassword())
 					.addRandomSalt(32)
 					.withArgon2();
-
+		
 			// Create new user
 			UserEntity newUser = UserEntity.builder()
 					.password(hash.getResult())

@@ -35,7 +35,7 @@ public class LoginUserUseCaseImpl implements LoginUserUseCase {
 				throw new UnauthorizedException(String.format("User with email %s was not found", request.getEmail()));
 
 			User user = UserConverter.convert(userEntity);
-
+			
 			// Invalid password
 			if (!Password.check(request.getPassword(), user.getPassword()).withArgon2())
 				throw new UnauthorizedException("Password hashes do not match");

@@ -1,16 +1,11 @@
 package com.adosar.backend.controller;
 
-import com.adosar.backend.business.CreateNewMapUseCase;
-import com.adosar.backend.business.GetAllMapsUseCase;
-import com.adosar.backend.business.GetMapByIdUseCase;
-import com.adosar.backend.business.UploadMapUseCase;
-import com.adosar.backend.business.request.CreateNewMapRequest;
-import com.adosar.backend.business.request.GetAllMapsRequest;
-import com.adosar.backend.business.request.GetMapByIdRequest;
-import com.adosar.backend.business.request.UploadMapRequest;
+import com.adosar.backend.business.*;
+import com.adosar.backend.business.request.*;
 import com.adosar.backend.business.response.CreateNewMapResponse;
 import com.adosar.backend.business.response.GetAllMapsResponse;
 import com.adosar.backend.business.response.GetMapByIdResponse;
+import com.adosar.backend.business.response.GetMapsByUserIdResponse;
 import com.adosar.backend.domain.Map;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -30,11 +25,19 @@ public class MapController {
 	private final GetMapByIdUseCase getMapByIdUseCase;
 	private final CreateNewMapUseCase createNewMapUseCase;
 	private final UploadMapUseCase uploadMapUseCase;
+	private final GetMapsByUserIdUseCase getMapsByUserIdUseCase;
 
 	@GetMapping(path = "/all/{page}")
 	public @ResponseBody ResponseEntity<Iterable<Map>> getAllMaps(@PathVariable Integer page) {
 		GetAllMapsRequest request = new GetAllMapsRequest(page);
 		GetAllMapsResponse response = getAllMapsUseCase.getAllMaps(request);
+		return new ResponseEntity<>(response.getMaps(), response.getHttpStatus());
+	}
+
+	@GetMapping(path = "/user/{id}/{page}")
+	public @ResponseBody ResponseEntity<Iterable<Map>> getMapsByUserId(@PathVariable Integer id, @PathVariable Integer page) {
+		GetMapsByUserIdRequest request = new GetMapsByUserIdRequest(page, id);
+		GetMapsByUserIdResponse response = getMapsByUserIdUseCase.getMapsByUserId(request);
 		return new ResponseEntity<>(response.getMaps(), response.getHttpStatus());
 	}
 
