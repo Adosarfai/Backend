@@ -42,11 +42,13 @@ public class PackEntity {
 	private String title;
 
 	@NotNull
+	@Builder.Default
 	@Column(name = "published", nullable = false)
 	private Boolean published = false;
 
 	@NotNull
 	@Enumerated
+	@Builder.Default
 	@Column(name = "removed", nullable = false)
 	private Removed removed = Removed.NOT_REMOVED;
 

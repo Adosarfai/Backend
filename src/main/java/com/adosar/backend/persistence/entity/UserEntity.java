@@ -57,6 +57,7 @@ public class UserEntity {
 	@NotBlank
 	@NotEmpty
 	@NotNull
+	@Builder.Default
 	@Column(name = "description", length = 2000, nullable = false)
 	@Setter
 	private String description = "I am new to Adosar!";
