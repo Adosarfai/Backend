@@ -1,10 +1,10 @@
 package com.adosar.backend.controller;
 
-import com.adosar.backend.business.*;
-import com.adosar.backend.business.request.*;
-import com.adosar.backend.business.response.GetAllUsersResponse;
-import com.adosar.backend.business.response.GetUserByIdResponse;
-import com.adosar.backend.business.response.LoginUserResponse;
+import com.adosar.backend.business.UserManager;
+import com.adosar.backend.business.request.user.*;
+import com.adosar.backend.business.response.user.GetAllUsersResponse;
+import com.adosar.backend.business.response.user.GetUserByIdResponse;
+import com.adosar.backend.business.response.user.LoginUserResponse;
 import com.adosar.backend.domain.User;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -21,12 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 @Builder
 public class UserController {
-	private final GetAllUsersUseCase getAllUsersUseCase;
-	private final GetUserByIdUseCase getUserByIdUseCase;
-	private final CreateNewUserUseCase createNewUserUseCase;
-	private final LoginUserUseCase loginUserUseCase;
-	private final RemoveUserUseCase removeUserUseCase;
-	private final ActivateUserUseCase activateUserUseCase;
+	private final UserManager userManager;
 
 
 	/**
@@ -42,7 +37,7 @@ public class UserController {
 	@GetMapping(path = "/all/{page}")
 	public @ResponseBody ResponseEntity<GetAllUsersResponse> getAllUsers(@PathVariable Integer page) {
 		GetAllUsersRequest request = new GetAllUsersRequest(page);
-		GetAllUsersResponse response = getAllUsersUseCase.getAllUsers(request);
+		GetAllUsersResponse response = userManager.getAllUsers(request);
 		return new ResponseEntity<>(response, response.getHttpStatus());
 	}
 
@@ -59,7 +54,7 @@ public class UserController {
 	@GetMapping(path = "/{id}")
 	public @ResponseBody ResponseEntity<User> getUserById(@PathVariable Integer id) {
 		GetUserByIdRequest request = new GetUserByIdRequest(id);
-		GetUserByIdResponse response = getUserByIdUseCase.getUserById(request);
+		GetUserByIdResponse response = userManager.getUserById(request);
 		return new ResponseEntity<>(response.getUser(), response.getHttpStatus());
 	}
 
@@ -74,7 +69,7 @@ public class UserController {
 	 */
 	@PostMapping
 	public @ResponseBody ResponseEntity<HttpStatus> createNewUser(@RequestBody @Valid CreateNewUserRequest request) {
-		HttpStatus response = createNewUserUseCase.createNewUser(request);
+		HttpStatus response = userManager.createNewUser(request);
 		return new ResponseEntity<>(null, response);
 	}
 
@@ -89,7 +84,7 @@ public class UserController {
 	 */
 	@PostMapping(path = "/login")
 	public @ResponseBody ResponseEntity<Void> loginUser(@RequestBody @Valid LoginUserRequest request) {
-		LoginUserResponse response = loginUserUseCase.loginUser(request);
+		LoginUserResponse response = userManager.loginUser(request);
 		if (response.getHttpStatus().is2xxSuccessful() && response.getJwt() != null) {
 			ResponseCookie cookie = ResponseCookie.from("jwt", response.getJwt())
 					.httpOnly(false)
@@ -116,7 +111,7 @@ public class UserController {
 	@DeleteMapping("/{id}")
 	public @ResponseBody ResponseEntity<HttpStatus> removeUser(@PathVariable Integer id) {
 		RemoveUserRequest request = new RemoveUserRequest(id);
-		HttpStatus response = removeUserUseCase.RemoveUser(request);
+		HttpStatus response = userManager.RemoveUser(request);
 		return new ResponseEntity<>(null, response);
 	}
 
@@ -134,7 +129,7 @@ public class UserController {
 	@PatchMapping("/{id}")
 	public @ResponseBody ResponseEntity<HttpStatus> activateUser(@PathVariable Integer id) {
 		ActivateUserRequest request = new ActivateUserRequest(id);
-		HttpStatus response = activateUserUseCase.ActivateUser(request);
+		HttpStatus response = userManager.ActivateUser(request);
 		return new ResponseEntity<>(null, response);
 	}
 }

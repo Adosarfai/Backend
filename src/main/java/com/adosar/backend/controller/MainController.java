@@ -1,7 +1,7 @@
 package com.adosar.backend.controller;
 
 import com.adosar.backend.business.GetStatisticsUseCase;
-import com.adosar.backend.business.response.GetStatisticsResponse;
+import com.adosar.backend.business.response.misc.GetStatisticsResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import org.springframework.http.HttpStatus;

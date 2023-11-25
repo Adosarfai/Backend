@@ -1,9 +1,8 @@
 package com.adosar.backend.controller;
 
-import com.adosar.backend.business.impl.*;
-import com.adosar.backend.business.request.CreateNewUserRequest;
-import com.adosar.backend.business.request.LoginUserRequest;
-import com.adosar.backend.business.response.GetAllUsersResponse;
+import com.adosar.backend.business.request.user.CreateNewUserRequest;
+import com.adosar.backend.business.request.user.LoginUserRequest;
+import com.adosar.backend.business.response.user.GetAllUsersResponse;
 import com.adosar.backend.domain.Privilege;
 import com.adosar.backend.domain.User;
 import com.adosar.backend.persistence.UserRepository;
@@ -158,7 +157,7 @@ public class UserControllerTest {
 
 	/**
 	 * @verifies return 401 UNAUTHORIZED when the login credentials are invalid
-	 * @see UserController#loginUser(com.adosar.backend.business.request.LoginUserRequest)
+	 * @see UserController#loginUser(LoginUserRequest)
 	 */
 	@Test
 	public void loginUser_shouldReturn401UNAUTHORIZEDWhenTheLoginCredentialsAreInvalid() {

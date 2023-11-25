@@ -21,7 +21,7 @@ public class UserEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "userId", length = 10, nullable = false, updatable = false)
+	@Column(name = "user_id", length = 10, nullable = false, updatable = false)
 	private Integer userId;
 
 	@Length(min = 3, max = 50)
@@ -65,7 +65,7 @@ public class UserEntity {
 	@NotNull
 	@ManyToMany
 	@Setter
-	@JoinColumn(name = "badges", nullable = false)
+	@JoinColumn(nullable = false)
 	private Set<BadgeEntity> badges;
 
 	@NotNull

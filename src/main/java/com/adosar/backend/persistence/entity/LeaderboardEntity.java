@@ -20,7 +20,7 @@ public class LeaderboardEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "leaderboardId", length = 10, nullable = false, updatable = false)
+	@Column(name = "leaderboard_id", length = 10, nullable = false, updatable = false)
 	private Integer leaderboardId;
 
 	@NotNull

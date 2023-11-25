@@ -25,7 +25,7 @@ public class PackEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "packId", length = 10, nullable = false, updatable = false)
+	@Column(name = "pack_id", length = 10, nullable = false, updatable = false)
 	private Integer packId;
 
 	@NotNull
@@ -60,6 +60,6 @@ public class PackEntity {
 	@Size(min = 1)
 	@NotNull
 	@ManyToMany
-	@JoinColumn(name = "maps", nullable = false)
+	@JoinColumn(nullable = false)
 	private List<MapEntity> maps;
 }

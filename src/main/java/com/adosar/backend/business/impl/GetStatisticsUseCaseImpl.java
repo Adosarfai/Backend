@@ -1,7 +1,7 @@
 package com.adosar.backend.business.impl;
 
 import com.adosar.backend.business.GetStatisticsUseCase;
-import com.adosar.backend.business.response.GetStatisticsResponse;
+import com.adosar.backend.business.response.misc.GetStatisticsResponse;
 import com.adosar.backend.persistence.LeaderboardRepository;
 import com.adosar.backend.persistence.MapRepository;
 import com.adosar.backend.persistence.ScoreRepository;

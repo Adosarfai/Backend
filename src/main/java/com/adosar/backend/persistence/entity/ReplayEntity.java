@@ -17,7 +17,7 @@ public class ReplayEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "replayId", length = 10, nullable = false, updatable = false)
+	@Column(name = "replay_id", length = 10, nullable = false, updatable = false)
 	private Integer replayId;
 
 	@NotNull

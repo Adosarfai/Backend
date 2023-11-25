@@ -21,7 +21,7 @@ public class ScoreEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "scoreId", length = 10, nullable = false, updatable = false)
+	@Column(name = "score_id", length = 10, nullable = false, updatable = false)
 	private Integer scoreId;
 
 	@NotNull

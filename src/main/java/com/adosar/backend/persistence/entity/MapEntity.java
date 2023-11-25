@@ -24,7 +24,7 @@ public class MapEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "mapId", length = 10, nullable = false, updatable = false)
+	@Column(name = "map_id", length = 10, nullable = false, updatable = false)
 	private Integer mapId;
 
 	@NotNull

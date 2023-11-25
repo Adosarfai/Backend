@@ -1,11 +1,11 @@
 package com.adosar.backend.controller;
 
-import com.adosar.backend.business.*;
-import com.adosar.backend.business.request.*;
-import com.adosar.backend.business.response.CreateNewMapResponse;
-import com.adosar.backend.business.response.GetAllMapsResponse;
-import com.adosar.backend.business.response.GetMapByIdResponse;
-import com.adosar.backend.business.response.GetMapsByUserIdResponse;
+import com.adosar.backend.business.MapManager;
+import com.adosar.backend.business.request.map.*;
+import com.adosar.backend.business.response.map.CreateNewMapResponse;
+import com.adosar.backend.business.response.map.GetAllMapsResponse;
+import com.adosar.backend.business.response.map.GetMapByIdResponse;
+import com.adosar.backend.business.response.map.GetMapsByUserIdResponse;
 import com.adosar.backend.domain.Map;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -21,43 +21,39 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 @Builder
 public class MapController {
-	private final GetAllMapsUseCase getAllMapsUseCase;
-	private final GetMapByIdUseCase getMapByIdUseCase;
-	private final CreateNewMapUseCase createNewMapUseCase;
-	private final UploadMapUseCase uploadMapUseCase;
-	private final GetMapsByUserIdUseCase getMapsByUserIdUseCase;
+	private final MapManager mapManager;
 
 	@GetMapping(path = "/all/{page}")
 	public @ResponseBody ResponseEntity<Iterable<Map>> getAllMaps(@PathVariable Integer page) {
 		GetAllMapsRequest request = new GetAllMapsRequest(page);
-		GetAllMapsResponse response = getAllMapsUseCase.getAllMaps(request);
+		GetAllMapsResponse response = mapManager.getAllMaps(request);
 		return new ResponseEntity<>(response.getMaps(), response.getHttpStatus());
 	}
 
 	@GetMapping(path = "/user/{id}/{page}")
 	public @ResponseBody ResponseEntity<Iterable<Map>> getMapsByUserId(@PathVariable Integer id, @PathVariable Integer page) {
 		GetMapsByUserIdRequest request = new GetMapsByUserIdRequest(page, id);
-		GetMapsByUserIdResponse response = getMapsByUserIdUseCase.getMapsByUserId(request);
+		GetMapsByUserIdResponse response = mapManager.getMapsByUserId(request);
 		return new ResponseEntity<>(response.getMaps(), response.getHttpStatus());
 	}
 
 	@GetMapping(path = "/{id}")
 	public @ResponseBody ResponseEntity<Map> getMapById(@PathVariable Integer id) {
 		GetMapByIdRequest request = new GetMapByIdRequest(id);
-		GetMapByIdResponse response = getMapByIdUseCase.getMapById(request);
+		GetMapByIdResponse response = mapManager.getMapById(request);
 		return new ResponseEntity<>(response.getMap(), response.getHttpStatus());
 	}
 
 	@PostMapping
 	public @ResponseBody ResponseEntity<Map> createNewMap(@RequestBody @Valid CreateNewMapRequest request, @CookieValue(name = "jwt", defaultValue = "") String jwt) {
-		CreateNewMapResponse response = createNewMapUseCase.createNewMap(request, jwt);
+		CreateNewMapResponse response = mapManager.createNewMap(request, jwt);
 		return new ResponseEntity<>(response.getMap(), response.getHttpStatus());
 	}
 
 	@PostMapping("/upload")
 	public @ResponseBody ResponseEntity<HttpStatus> uploadMap(@RequestParam("file") MultipartFile file, @RequestParam("mapId") Integer mapId, @CookieValue(name = "jwt", defaultValue = "") String jwt) {
 		UploadMapRequest request = new UploadMapRequest(file, mapId, jwt);
-		HttpStatus response = uploadMapUseCase.uploadMap(request);
+		HttpStatus response = mapManager.uploadMap(request);
 		return new ResponseEntity<>(null, response);
 	}
 }
