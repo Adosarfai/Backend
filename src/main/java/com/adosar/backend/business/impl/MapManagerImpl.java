@@ -2,7 +2,6 @@ package com.adosar.backend.business.impl;
 
 import com.adosar.backend.business.MapManager;
 import com.adosar.backend.business.converter.MapConverter;
-import com.adosar.backend.business.exception.BadRequestException;
 import com.adosar.backend.business.exception.NotFoundException;
 import com.adosar.backend.business.exception.UnauthorizedException;
 import com.adosar.backend.business.request.map.*;
@@ -39,22 +38,25 @@ import java.util.logging.Logger;
 @AllArgsConstructor
 public class MapManagerImpl implements MapManager {
 	private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
-	private MapRepository mapRepository;
-	private UserRepository userRepository;
+	private final MapRepository mapRepository;
+	private final UserRepository userRepository;
 
 
 	@Override
 	public CreateNewMapResponse createNewMap(CreateNewMapRequest request, String jwt) {
 		try {
+			assert !request.getTitle().isEmpty() : "'title' must have a length of at least 1";
+			assert !request.getArtist().isEmpty() : "'artist' must have a length of at least 1";
+
 			// Check if user is authorized
 			DecodedJWT decodedJWT = JWTService.verifyJWT(jwt);
 			if (decodedJWT == null) throw new UnauthorizedException("Unable to decode JWT");
 			Integer userId = decodedJWT.getClaim("userId").as(Integer.class);
 
 			// Check if user exists
-			UserEntity userEntity = userRepository.getUserEntityByUserId(userId);
-			if (userEntity == null)
-				throw new UnauthorizedException(String.format("User with ID %s was not found", userId));
+			UserEntity userEntity = userRepository.getUserEntityByUserId(userId).orElseThrow(() ->
+					new UnauthorizedException(String.format("User with ID %s was not found", userId))
+			);
 
 			// Create map
 			MapEntity mapEntity = MapEntity.builder()
@@ -70,9 +72,12 @@ public class MapManagerImpl implements MapManager {
 			Map map = MapConverter.convert(mapRepository.saveAndFlush(mapEntity));
 
 			return new CreateNewMapResponse(map, HttpStatus.CREATED);
-		} catch (JWTVerificationException | UnauthorizedException jwtVerificationException) {
-			LOGGER.log(Level.FINE, jwtVerificationException.toString(), jwtVerificationException);
+		} catch (JWTVerificationException | UnauthorizedException exception) {
+			LOGGER.log(Level.FINE, exception.toString(), exception);
 			return new CreateNewMapResponse(null, HttpStatus.UNAUTHORIZED);
+		} catch (AssertionError exception) {
+			LOGGER.log(Level.FINE, exception.toString(), exception);
+			return new CreateNewMapResponse(null, HttpStatus.BAD_REQUEST);
 		} catch (Exception exception) {
 			LOGGER.log(Level.SEVERE, exception.toString(), exception);
 			return new CreateNewMapResponse(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -82,16 +87,15 @@ public class MapManagerImpl implements MapManager {
 	@Override
 	public GetAllMapsResponse getAllMaps(GetAllMapsRequest request) {
 		try {
-			// Check is page is valid
-			if (request.getPage() < 0) throw new BadRequestException(request.getPage().toString());
+			assert request.getPage() >= 0 : "'page' must be at least 0";
 
 			// Get maps
 			List<MapEntity> result = mapRepository.findAll(PageRequest.of(request.getPage(), 10)).toList();
 			List<Map> maps = result.stream().map(MapConverter::convert).toList();
 
 			return new GetAllMapsResponse(maps, HttpStatus.OK);
-		} catch (BadRequestException badRequestException) {
-			LOGGER.log(Level.FINE, badRequestException.toString(), badRequestException);
+		} catch (AssertionError exception) {
+			LOGGER.log(Level.FINE, exception.toString(), exception);
 			return new GetAllMapsResponse(null, HttpStatus.BAD_REQUEST);
 		} catch (Exception exception) {
 			LOGGER.log(Level.SEVERE, exception.toString(), exception);
@@ -102,20 +106,21 @@ public class MapManagerImpl implements MapManager {
 	@Override
 	public GetMapByIdResponse getMapById(GetMapByIdRequest request) {
 		try {
-			// Check is id is valid
-			if (request.getId() < 0) throw new BadRequestException(request.getId().toString());
+			assert request.getId() >= 1 : "'id' must be at least 1";
 
 			// Get map
-			MapEntity result = mapRepository.findById(request.getId()).orElseThrow(() -> new NotFoundException(String.format("Map with ID %s was not found", request.getId())));
+			MapEntity result = mapRepository.findById(request.getId()).orElseThrow(() ->
+					new NotFoundException(String.format("Map with ID %s was not found", request.getId()))
+			);
 			Map map = MapConverter.convert(result);
 
 			return new GetMapByIdResponse(map, HttpStatus.OK);
 
-		} catch (BadRequestException badRequestException) {
-			LOGGER.log(Level.FINE, badRequestException.toString(), badRequestException);
+		} catch (AssertionError exception) {
+			LOGGER.log(Level.FINE, exception.toString(), exception);
 			return new GetMapByIdResponse(null, HttpStatus.BAD_REQUEST);
-		} catch (NotFoundException notFoundException) {
-			LOGGER.log(Level.FINE, notFoundException.toString(), notFoundException);
+		} catch (NotFoundException exception) {
+			LOGGER.log(Level.FINE, exception.toString(), exception);
 			return new GetMapByIdResponse(null, HttpStatus.NOT_FOUND);
 		} catch (Exception exception) {
 			LOGGER.log(Level.SEVERE, exception.toString(), exception);
@@ -126,17 +131,16 @@ public class MapManagerImpl implements MapManager {
 	@Override
 	public GetMapsByUserIdResponse getMapsByUserId(GetMapsByUserIdRequest request) {
 		try {
-			// Check is page & id are valid
-			if (request.getPage() < 0) throw new BadRequestException(request.getPage().toString());
-			if (request.getUserId() < 0) throw new BadRequestException(request.getUserId().toString());
+			assert request.getPage() >= 0 : "'page' must be at least 0";
+			assert request.getId() >= 1 : "'id' must be at least 1";
 
 			// Get maps
-			Collection<MapEntity> result = mapRepository.getMapEntitiesByUser_UserId(request.getUserId(), PageRequest.of(request.getPage(), 9));
+			Collection<MapEntity> result = mapRepository.getMapEntitiesByUser_UserId(request.getId(), PageRequest.of(request.getPage(), 9));
 			List<Map> maps = result.stream().map(MapConverter::convert).toList();
 
 			return new GetMapsByUserIdResponse(maps, HttpStatus.OK);
-		} catch (BadRequestException badRequestException) {
-			LOGGER.log(Level.FINE, badRequestException.toString(), badRequestException);
+		} catch (AssertionError exception) {
+			LOGGER.log(Level.FINE, exception.toString(), exception);
 			return new GetMapsByUserIdResponse(null, HttpStatus.BAD_REQUEST);
 		} catch (Exception exception) {
 			LOGGER.log(Level.SEVERE, exception.toString(), exception);
@@ -147,10 +151,12 @@ public class MapManagerImpl implements MapManager {
 	@Override
 	public HttpStatus uploadMap(UploadMapRequest request) {
 		try {
+			assert request.getId() >= 1 : "'id' must be at least 1";
+
 			// Get map
-			MapEntity mapEntity = mapRepository.getMapEntityByMapId(request.getMapId());
-			if (mapEntity == null)
-				throw new NotFoundException(String.format("Map with id %s not found", request.getMapId()));
+			MapEntity mapEntity = mapRepository.findById(request.getId()).orElseThrow(() ->
+					new NotFoundException(String.format("Map with id %s not found", request.getId()))
+			);
 
 			Map map = MapConverter.convert(mapEntity);
 
@@ -166,9 +172,12 @@ public class MapManagerImpl implements MapManager {
 
 			// Update map hash
 			String hash = Hashing.sha256().hashBytes(request.getFile().getBytes()).toString();
-			mapRepository.updateHashByMapId(request.getMapId(), hash);
+			mapRepository.updateHashByMapId(request.getId(), hash);
 
 			return HttpStatus.OK;
+		} catch (AssertionError exception) {
+			LOGGER.log(Level.FINE, exception.toString(), exception);
+			return HttpStatus.BAD_REQUEST;
 		} catch (NotFoundException notFoundException) {
 			LOGGER.log(Level.FINE, notFoundException.toString(), notFoundException);
 			return HttpStatus.NOT_FOUND;

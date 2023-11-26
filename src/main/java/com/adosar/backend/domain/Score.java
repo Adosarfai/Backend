@@ -29,7 +29,7 @@ public class Score {
 	private Replay replay;
 
 	@NotNull
-	private Integer score;
+	private Integer points;
 
 	@NotNull
 	@Id

@@ -1,6 +1,6 @@
-package com.adosar.backend.business.response.user;
+package com.adosar.backend.business.response.score;
 
-import com.adosar.backend.domain.User;
+import com.adosar.backend.domain.Score;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
@@ -14,14 +14,13 @@ import org.springframework.http.HttpStatus;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetAllUsersResponse {
+public class GetAllScoresResponse {
 
 	@Nullable
-	private Iterable<User> users;
+	private Iterable<Score> scores;
 
 	@NotNull
 	@JsonIgnore
 	private HttpStatus httpStatus;
-
 
 }

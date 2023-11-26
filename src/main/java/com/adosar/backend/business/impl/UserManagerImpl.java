@@ -2,7 +2,6 @@ package com.adosar.backend.business.impl;
 
 import com.adosar.backend.business.UserManager;
 import com.adosar.backend.business.converter.UserConverter;
-import com.adosar.backend.business.exception.BadRequestException;
 import com.adosar.backend.business.exception.ConflictException;
 import com.adosar.backend.business.exception.NotFoundException;
 import com.adosar.backend.business.exception.UnauthorizedException;
@@ -10,6 +9,7 @@ import com.adosar.backend.business.request.user.*;
 import com.adosar.backend.business.response.user.GetAllUsersResponse;
 import com.adosar.backend.business.response.user.GetUserByIdResponse;
 import com.adosar.backend.business.response.user.LoginUserResponse;
+import com.adosar.backend.business.response.user.UserQueryResponse;
 import com.adosar.backend.business.service.JWTService;
 import com.adosar.backend.domain.Privilege;
 import com.adosar.backend.domain.User;
@@ -35,15 +35,18 @@ import java.util.logging.Logger;
 @AllArgsConstructor
 public class UserManagerImpl implements UserManager {
 	private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 
 	@Override
 	public HttpStatus ActivateUser(ActivateUserRequest request) {
 		try {
+			assert request.getId() >= 1 : "'id' must be at least 1";
+
 			// Get user
-			UserEntity userEntity = userRepository.getUserEntityByUserId(request.getId());
-			if (userEntity == null)
-				throw new NotFoundException(String.format("Could not find user with id %s", request.getId()));
+			UserEntity userEntity = userRepository.getUserEntityByUserId(request.getId()).orElseThrow(() ->
+					new NotFoundException(String.format("Could not find user with id %s", request.getId()))
+			);
+
 			User user = UserConverter.convert(userEntity);
 
 			// Privilege is BANNED
@@ -58,11 +61,14 @@ public class UserManagerImpl implements UserManager {
 			userRepository.updatePrivilegeByUserId(user.getUserId(), Privilege.USER);
 
 			return HttpStatus.OK;
-		} catch (NotFoundException notFoundException) {
-			LOGGER.log(Level.FINE, notFoundException.toString(), notFoundException);
+		} catch (AssertionError exception) {
+			LOGGER.log(Level.FINE, exception.toString(), exception);
+			return HttpStatus.BAD_REQUEST;
+		} catch (NotFoundException exception) {
+			LOGGER.log(Level.FINE, exception.toString(), exception);
 			return HttpStatus.NOT_FOUND;
-		} catch (ConflictException conflictException) {
-			LOGGER.log(Level.FINE, conflictException.toString(), conflictException);
+		} catch (ConflictException exception) {
+			LOGGER.log(Level.FINE, exception.toString(), exception);
 			return HttpStatus.CONFLICT;
 		} catch (Exception exception) {
 			LOGGER.log(Level.SEVERE, exception.toString(), exception);
@@ -73,6 +79,9 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public HttpStatus createNewUser(CreateNewUserRequest request) {
 		try {
+			assert request.getUsername().length() >= 3 : "'username' must have a length of at least 3";
+			assert request.getPassword().length() >= 10 : "'password' must have a length of at least 10";
+
 			// Hash password
 			Hash hash = Password.hash(request.getPassword())
 					.addRandomSalt(32)
@@ -91,8 +100,8 @@ public class UserManagerImpl implements UserManager {
 			// TODO: Send verification email
 
 			return HttpStatus.CREATED;
-		} catch (BadParametersException | InvalidParameterException badParametersException) {
-			LOGGER.log(Level.FINE, badParametersException.toString(), badParametersException);
+		} catch (BadParametersException | InvalidParameterException exception) {
+			LOGGER.log(Level.FINE, exception.toString(), exception);
 			return HttpStatus.BAD_REQUEST;
 		} catch (Exception exception) {
 			LOGGER.log(Level.SEVERE, exception.toString(), exception);
@@ -103,16 +112,15 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public GetAllUsersResponse getAllUsers(GetAllUsersRequest request) {
 		try {
-			// Check is page is valid
-			if (request.getPage() < 0) throw new BadRequestException(request.getPage().toString());
+			assert request.getPage() >= 0 : "'page' must be at least 0";
 
 			// Get users
 			List<UserEntity> result = userRepository.findAll(PageRequest.of(request.getPage(), 10)).toList();
 			List<User> users = result.stream().map(UserConverter::convert).toList();
 
 			return new GetAllUsersResponse(users, HttpStatus.OK);
-		} catch (BadRequestException badRequestException) {
-			LOGGER.log(Level.FINE, badRequestException.toString(), badRequestException);
+		} catch (AssertionError exception) {
+			LOGGER.log(Level.FINE, exception.toString(), exception);
 			return new GetAllUsersResponse(null, HttpStatus.BAD_REQUEST);
 		} catch (Exception exception) {
 			LOGGER.log(Level.SEVERE, exception.toString(), exception);
@@ -123,8 +131,7 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public GetUserByIdResponse getUserById(GetUserByIdRequest request) {
 		try {
-			// Check is id is valid
-			if (request.getId() < 0) throw new BadRequestException(request.getId().toString());
+			assert request.getId() >= 1 : "'id' must be at least 1";
 
 			// Get user
 			UserEntity result = userRepository.findById(request.getId()).orElseThrow(() -> new NotFoundException(String.format("User with ID %s was not found", request.getId())));
@@ -132,11 +139,11 @@ public class UserManagerImpl implements UserManager {
 
 			return new GetUserByIdResponse(user, HttpStatus.OK);
 
-		} catch (BadRequestException badRequestException) {
-			LOGGER.log(Level.FINE, badRequestException.toString(), badRequestException);
+		} catch (AssertionError exception) {
+			LOGGER.log(Level.FINE, exception.toString(), exception);
 			return new GetUserByIdResponse(null, HttpStatus.BAD_REQUEST);
-		} catch (NotFoundException notFoundException) {
-			LOGGER.log(Level.FINE, notFoundException.toString(), notFoundException);
+		} catch (NotFoundException exception) {
+			LOGGER.log(Level.FINE, exception.toString(), exception);
 			return new GetUserByIdResponse(null, HttpStatus.NOT_FOUND);
 		} catch (Exception exception) {
 			LOGGER.log(Level.SEVERE, exception.toString(), exception);
@@ -147,12 +154,13 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public LoginUserResponse loginUser(LoginUserRequest request) {
 		try {
-			// Get user
-			UserEntity userEntity = userRepository.getUserEntityByEmail(request.getEmail());
+			assert request.getEmail().length() >= 3 : "'email' must have a length of at least 3";
+			assert request.getPassword().length() >= 10 : "'password' must have a length of at least 10";
 
-			// Invalid email
-			if (userEntity == null)
-				throw new UnauthorizedException(String.format("User with email %s was not found", request.getEmail()));
+			// Get user
+			UserEntity userEntity = userRepository.getUserEntityByEmail(request.getEmail()).orElseThrow(() ->
+					new NotFoundException(String.format("User with email %s was not found", request.getEmail()))
+			);
 
 			User user = UserConverter.convert(userEntity);
 
@@ -165,9 +173,12 @@ public class UserManagerImpl implements UserManager {
 
 			return new LoginUserResponse(jwt, HttpStatus.OK);
 
-		} catch (UnauthorizedException unauthorizedException) {
-			LOGGER.log(Level.FINE, unauthorizedException.toString(), unauthorizedException);
+		} catch (UnauthorizedException exception) {
+			LOGGER.log(Level.FINE, exception.toString(), exception);
 			return new LoginUserResponse(null, HttpStatus.UNAUTHORIZED);
+		} catch (AssertionError exception) {
+			LOGGER.log(Level.FINE, exception.toString(), exception);
+			return new LoginUserResponse(null, HttpStatus.BAD_REQUEST);
 		} catch (Exception exception) {
 			LOGGER.log(Level.SEVERE, exception.toString(), exception);
 			return new LoginUserResponse(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -177,34 +188,59 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public HttpStatus RemoveUser(RemoveUserRequest request) {
 		try {
+			assert request.getId() >= 1 : "'id' must be at least 1";
+
 			// Get user
-			UserEntity userEntity = userRepository.getUserEntityByUserId(request.getId());
-
-			// No user with ID
-			if (userEntity == null)
-				throw new NotFoundException(String.format("Could not find user with id %s", request.getId()));
+			UserEntity userEntity = userRepository.getUserEntityByUserId(request.getId()).orElseThrow(() ->
+					new NotFoundException(String.format("Could not find user with id %s", request.getId()))
+			);
 			User user = UserConverter.convert(userEntity);
-
-			// User is banned
-			if (user.getPrivilege() == Privilege.BANNED) throw new ConflictException("User is banned");
 
 			// User is removed
 			if (user.getPrivilege() == Privilege.REMOVED) throw new ConflictException("User is already deleted");
 
+			// User is banned
+			if (user.getPrivilege() == Privilege.BANNED) throw new ConflictException("User is banned");
 
 			// Update user
 			userRepository.updatePrivilegeByUserId(user.getUserId(), Privilege.REMOVED);
 
 			return HttpStatus.OK;
-		} catch (NotFoundException notFoundException) {
-			LOGGER.log(Level.FINE, notFoundException.toString(), notFoundException);
+		} catch (NotFoundException exception) {
+			LOGGER.log(Level.FINE, exception.toString(), exception);
 			return HttpStatus.NOT_FOUND;
-		} catch (ConflictException conflictException) {
-			LOGGER.log(Level.FINE, conflictException.toString(), conflictException);
+		} catch (ConflictException exception) {
+			LOGGER.log(Level.FINE, exception.toString(), exception);
 			return HttpStatus.CONFLICT;
+		} catch (AssertionError exception) {
+			LOGGER.log(Level.FINE, exception.toString(), exception);
+			return HttpStatus.BAD_REQUEST;
 		} catch (Exception exception) {
 			LOGGER.log(Level.SEVERE, exception.toString(), exception);
 			return HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+	}
+
+	@Override
+	public UserQueryResponse getUsersByPartialData(UserQueryRequest request) {
+		try {
+			assert request.getPage() >= 0 : "'page' must be at least 0";
+
+			List<UserEntity> userEntities = userRepository.getUserEntitiesByUsernameContainsAndCreationDateBeforeAndCreationDateAfter(request.getUsername(), request.getBefore(), request.getAfter(), PageRequest.of(request.getPage(), 10)).orElseThrow(() ->
+					new NotFoundException(String.format("Could not find any users where username contains %s", request.getUsername()))
+			);
+			List<User> users = userEntities.stream().map(UserConverter::convert).toList();
+
+			return new UserQueryResponse(users, HttpStatus.OK);
+		} catch (NotFoundException exception) {
+			LOGGER.log(Level.FINE, exception.toString(), exception);
+			return new UserQueryResponse(null, HttpStatus.NOT_FOUND);
+		} catch (AssertionError exception) {
+			LOGGER.log(Level.FINE, exception.toString(), exception);
+			return new UserQueryResponse(null, HttpStatus.BAD_REQUEST);
+		} catch (Exception exception) {
+			LOGGER.log(Level.SEVERE, exception.toString(), exception);
+			return new UserQueryResponse(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 }

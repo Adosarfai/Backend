@@ -10,8 +10,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
-import java.util.List;
-
 @Data
 @Builder
 @AllArgsConstructor
@@ -19,7 +17,7 @@ import java.util.List;
 public class GetAllMapsResponse {
 
 	@Nullable
-	private List<Map> maps;
+	private Iterable<Map> maps;
 
 	@NotNull
 	@JsonIgnore

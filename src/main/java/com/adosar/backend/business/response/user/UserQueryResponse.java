@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetAllUsersResponse {
+public class UserQueryResponse {
 
 	@Nullable
 	private Iterable<User> users;

@@ -1,11 +1,13 @@
 package com.adosar.backend.business.request.map;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Setter;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class CreateNewMapRequest {
 

@@ -7,6 +7,7 @@ import lombok.Builder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
 @CrossOrigin(allowCredentials = "true", origins = {"https://dev.adosar.io:5173", "https://adosar.io", "https://localhost:5137"})
@@ -15,6 +16,11 @@ import org.springframework.web.bind.annotation.*;
 @Builder
 public class MainController {
 	private final GetStatisticsUseCase getStatisticsUseCase;
+
+	@GetMapping(path = "/")
+	public RedirectView home() {
+		return new RedirectView("https://youtu.be/dQw4w9WgXcQ");
+	}
 
 	@GetMapping(path = "/statistics")
 	public @ResponseBody ResponseEntity<GetStatisticsResponse> getStatistics() {

@@ -5,6 +5,7 @@ import com.adosar.backend.business.request.user.*;
 import com.adosar.backend.business.response.user.GetAllUsersResponse;
 import com.adosar.backend.business.response.user.GetUserByIdResponse;
 import com.adosar.backend.business.response.user.LoginUserResponse;
+import com.adosar.backend.business.response.user.UserQueryResponse;
 import com.adosar.backend.domain.User;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -14,6 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.Instant;
+import java.util.Date;
 
 @RestController
 @CrossOrigin(allowCredentials = "true", origins = {"https://dev.adosar.io:5173", "https://adosar.io", "https://localhost:5137"})
@@ -131,5 +135,33 @@ public class UserController {
 		ActivateUserRequest request = new ActivateUserRequest(id);
 		HttpStatus response = userManager.ActivateUser(request);
 		return new ResponseEntity<>(null, response);
+	}
+
+	/**
+	 * Gets all users that match provided queries
+	 *
+	 * @param page     page-number
+	 * @param username username
+	 * @param before   before
+	 * @param after    after
+	 * @return 200 OK with Iterable<User>
+	 * @should return 400 BAD_REQUEST when page is invalid
+	 * @should return 404 NOT_FOUND when no users with the queries exists
+	 * @see UserQueryRequest
+	 * @see UserQueryResponse
+	 */
+	@GetMapping(path = "/query/{page}")
+	public @ResponseBody ResponseEntity<Iterable<User>> getUsersByPartialData(@PathVariable Integer page, @RequestParam(value = "username", required = false) String username, @RequestParam(value = "before", required = false) Date before, @RequestParam(value = "after", required = false) Date after) {
+		if (username == null || username.isEmpty()) username = "";
+		if (before == null) before = Date.from(Instant.now());
+		if (after == null) after = Date.from(Instant.EPOCH);
+		UserQueryRequest request = UserQueryRequest.builder()
+				.username(username)
+				.before(before)
+				.after(after)
+				.page(page)
+				.build();
+		UserQueryResponse response = userManager.getUsersByPartialData(request);
+		return new ResponseEntity<>(response.getUsers(), response.getHttpStatus());
 	}
 }

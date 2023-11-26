@@ -16,7 +16,7 @@ public final class ScoreConverter {
 				.replay(ReplayConverter.convert(score.getReplay()))
 				.timeSet(score.getTimeSet())
 				.speed(score.getSpeed())
-				.points(score.getScore())
+				.points(score.getPoints())
 				.build();
 	}
 
@@ -29,7 +29,7 @@ public final class ScoreConverter {
 				.replay(ReplayConverter.convert(score.getReplay()))
 				.timeSet(score.getTimeSet())
 				.speed(score.getSpeed())
-				.score(score.getPoints())
+				.points(score.getPoints())
 				.build();
 	}
 }

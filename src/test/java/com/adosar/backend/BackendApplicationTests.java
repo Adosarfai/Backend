@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 class BackendApplicationTests {
 
 	private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
-	
+
 	@Test
 	void contextLoads() {
 		LOGGER.log(Level.ALL, "Context Loaded");

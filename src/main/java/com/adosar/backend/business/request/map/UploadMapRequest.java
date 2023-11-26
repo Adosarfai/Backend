@@ -1,12 +1,14 @@
 package com.adosar.backend.business.request.map;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class UploadMapRequest {
 
@@ -16,7 +18,7 @@ public class UploadMapRequest {
 
 	@Setter
 	@NotNull
-	private Integer mapId;
+	private Integer id;
 
 	@Setter
 	@NotNull

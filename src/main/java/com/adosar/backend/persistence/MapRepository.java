@@ -10,22 +10,18 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Repository
 public interface MapRepository extends JpaRepository<MapEntity, Integer> {
-
-	Collection<MapEntity> getMapEntitiesByHash(String hash);
 
 	Collection<MapEntity> getMapEntitiesByUser_UserId(Integer id, PageRequest page);
 
 	@Query("SELECT m.mapId from MapEntity m order by m.mapId desc limit 1")
 	Integer getMapEntityCount();
 
-
 	@Query("select m from MapEntity as m order by m.creationDate desc limit 1")
-	MapEntity getMapEntityByCreationDateLast();
-
-	MapEntity getMapEntityByMapId(Integer mapId);
+	Optional<MapEntity> getMapEntityByCreationDateLast();
 
 	@Modifying
 	@Transactional

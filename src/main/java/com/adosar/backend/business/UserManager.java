@@ -4,6 +4,7 @@ import com.adosar.backend.business.request.user.*;
 import com.adosar.backend.business.response.user.GetAllUsersResponse;
 import com.adosar.backend.business.response.user.GetUserByIdResponse;
 import com.adosar.backend.business.response.user.LoginUserResponse;
+import com.adosar.backend.business.response.user.UserQueryResponse;
 import org.springframework.http.HttpStatus;
 
 public interface UserManager {
@@ -18,4 +19,6 @@ public interface UserManager {
 	LoginUserResponse loginUser(LoginUserRequest request);
 
 	HttpStatus RemoveUser(RemoveUserRequest request);
+	
+	UserQueryResponse getUsersByPartialData(UserQueryRequest request);
 }

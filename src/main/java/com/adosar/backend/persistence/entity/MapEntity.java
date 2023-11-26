@@ -34,14 +34,14 @@ public class MapEntity {
 
 	@NotBlank
 	@NotEmpty
-	@Size(max = 250)
-	@Length(max = 250)
+	@Size(min = 1, max = 250)
+	@Length(min = 1, max = 250)
 	@NotNull
 	@Column(name = "title", length = 250, nullable = false)
 	private String title;
 
-	@Length(max = 100)
-	@Size(max = 100)
+	@Length(min = 1, max = 100)
+	@Size(min = 1, max = 100)
 	@NotBlank
 	@NotEmpty
 	@NotNull

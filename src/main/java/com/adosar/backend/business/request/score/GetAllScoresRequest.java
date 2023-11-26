@@ -1,4 +1,4 @@
-package com.adosar.backend.business.request.map;
+package com.adosar.backend.business.request.score;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -8,8 +8,8 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class GetMapByIdRequest {
+public class GetAllScoresRequest {
 
 	@NotNull
-	private Integer id;
+	private Integer page;
 }
