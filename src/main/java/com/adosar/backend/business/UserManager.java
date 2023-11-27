@@ -19,6 +19,6 @@ public interface UserManager {
 	LoginUserResponse loginUser(LoginUserRequest request);
 
 	HttpStatus RemoveUser(RemoveUserRequest request);
-	
+
 	UserQueryResponse getUsersByPartialData(UserQueryRequest request);
 }

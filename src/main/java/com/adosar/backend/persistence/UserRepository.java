@@ -22,7 +22,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 	Optional<UserEntity> getUserEntityByUserId(Integer id);
 
 	@Query("select u from UserEntity as u order by u.creationDate desc limit 1")
-	UserEntity getUserEntityByCreationDateLast();
+	Optional<UserEntity> getUserEntityByCreationDateLast();
 
 	@Modifying
 	@Transactional

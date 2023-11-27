@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface LeaderboardRepository extends JpaRepository<LeaderboardEntity, Integer> {
 
 	@Query("SELECT l.leaderboardId from LeaderboardEntity l order by l.leaderboardId desc limit 1")
-	Integer GetLeaderboardEntityCount();
+	Integer getLeaderboardEntityCount();
 
 }

@@ -2,6 +2,7 @@ package com.adosar.backend.controller;
 
 import com.adosar.backend.business.GetStatisticsUseCase;
 import com.adosar.backend.business.response.misc.GetStatisticsResponse;
+import com.adosar.backend.persistence.ReplayRepository;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.view.RedirectView;
 @Builder
 public class MainController {
 	private final GetStatisticsUseCase getStatisticsUseCase;
+	private final ReplayRepository replayRepository;
 
 	@GetMapping(path = "/")
 	public RedirectView home() {

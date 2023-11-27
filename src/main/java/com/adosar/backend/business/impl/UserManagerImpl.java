@@ -28,6 +28,7 @@ import java.security.InvalidParameterException;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -94,6 +95,7 @@ public class UserManagerImpl implements UserManager {
 					.privilege(Privilege.USER)
 					.username(request.getUsername())
 					.creationDate(Date.from(Instant.now()))
+					.badges(Set.of())
 					.build();
 
 			userRepository.saveAndFlush(newUser);

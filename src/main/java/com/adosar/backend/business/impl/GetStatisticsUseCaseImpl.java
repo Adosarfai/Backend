@@ -25,7 +25,7 @@ public class GetStatisticsUseCaseImpl implements GetStatisticsUseCase {
 	public GetStatisticsResponse getStatistics() {
 		try {
 			long mapCount = mapRepository.getMapEntityCount();
-			long leaderboardCount = leaderboardRepository.GetLeaderboardEntityCount();
+			long leaderboardCount = leaderboardRepository.getLeaderboardEntityCount();
 			long scoreCount = scoreRepository.getScoreEntityCount();
 
 			return GetStatisticsResponse.builder()
