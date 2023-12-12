@@ -69,6 +69,7 @@ dependencies {
     implementation 'com.google.guava:guava:32.1.2-jre'
     implementation 'org.jetbrains:annotations:24.0.0'
     implementation 'com.password4j:password4j:1.7.3'
+    implementation 'commons-io:commons-io:2.11.0'
     runtimeOnly 'com.mysql:mysql-connector-j'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     compileOnly 'org.projectlombok:lombok:1.18.28'
