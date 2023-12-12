@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 public final class MapConverter {
 
 	public static MapEntity convert(Map map) {
-		assert map != null;
 		return MapEntity.builder()
 				.user(UserConverter.convert(map.getUser()))
 				.mapId(map.getMapId())
@@ -24,7 +23,6 @@ public final class MapConverter {
 	}
 
 	public static Map convert(MapEntity map) {
-		assert map != null;
 		return Map.builder()
 				.user(UserConverter.convert(map.getUser()))
 				.mapId(map.getMapId())

@@ -10,7 +10,6 @@ import java.util.Arrays;
 public final class ReplayConverter {
 
 	public static ReplayEntity convert(Replay replay) {
-		assert replay != null;
 		return ReplayEntity.builder()
 				.replayId(replay.getReplayId())
 				.pauses(replay.getPauses().stream().mapToInt(i -> i).toArray())
@@ -19,7 +18,6 @@ public final class ReplayConverter {
 	}
 
 	public static Replay convert(ReplayEntity replay) {
-		assert replay != null;
 		return Replay.builder()
 				.replayId(replay.getReplayId())
 				.pauses(Arrays.stream(replay.getPauses()).boxed().toList())

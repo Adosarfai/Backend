@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 public final class BadgeConverter {
 
 	public static BadgeEntity convert(Badge badge) {
-		assert badge != null;
 		return BadgeEntity.builder()
 				.badgeId(badge.getBadgeId())
 				.name(badge.getName())
@@ -16,7 +15,6 @@ public final class BadgeConverter {
 	}
 
 	public static Badge convert(BadgeEntity badge) {
-		assert badge != null;
 		return Badge.builder()
 				.badgeId(badge.getBadgeId())
 				.name(badge.getName())

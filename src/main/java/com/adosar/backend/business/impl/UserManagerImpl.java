@@ -10,22 +10,26 @@ import com.adosar.backend.business.response.user.GetAllUsersResponse;
 import com.adosar.backend.business.response.user.GetUserByIdResponse;
 import com.adosar.backend.business.response.user.LoginUserResponse;
 import com.adosar.backend.business.response.user.UserQueryResponse;
+import com.adosar.backend.business.service.CdnService;
 import com.adosar.backend.business.service.JWTService;
+import com.adosar.backend.business.service.PasswordService;
 import com.adosar.backend.domain.Privilege;
 import com.adosar.backend.domain.User;
 import com.adosar.backend.persistence.UserRepository;
 import com.adosar.backend.persistence.entity.UserEntity;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.password4j.BadParametersException;
 import com.password4j.Hash;
 import com.password4j.Password;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.javapoet.ClassName;
 import org.springframework.stereotype.Service;
 
 import java.security.InvalidParameterException;
 import java.time.Instant;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -35,13 +39,13 @@ import java.util.logging.Logger;
 @Service
 @AllArgsConstructor
 public class UserManagerImpl implements UserManager {
-	private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(UserManagerImpl.class.getName());
 	private final UserRepository userRepository;
 
 	@Override
-	public HttpStatus ActivateUser(ActivateUserRequest request) {
+	public HttpStatus activateUser(ActivateUserRequest request) {
 		try {
-			assert request.getId() >= 1 : "'id' must be at least 1";
+			if (request.getId() < 1) throw new AssertionError("'id' must be at least 1");
 
 			// Get user
 			UserEntity userEntity = userRepository.getUserEntityByUserId(request.getId()).orElseThrow(() ->
@@ -80,13 +84,13 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public HttpStatus createNewUser(CreateNewUserRequest request) {
 		try {
-			assert request.getUsername().length() >= 3 : "'username' must have a length of at least 3";
-			assert request.getPassword().length() >= 10 : "'password' must have a length of at least 10";
+			if (request.getUsername().length() < 3)
+				throw new AssertionError("'username' must have a length of at least 3");
+			if (request.getPassword().length() < 10)
+				throw new AssertionError("'password' must have a length of at least 10");
 
 			// Hash password
-			Hash hash = Password.hash(request.getPassword())
-					.addRandomSalt(32)
-					.withArgon2();
+			Hash hash = PasswordService.hashPassword(request.getPassword());
 
 			// Create new user
 			UserEntity newUser = UserEntity.builder()
@@ -114,7 +118,7 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public GetAllUsersResponse getAllUsers(GetAllUsersRequest request) {
 		try {
-			assert request.getPage() >= 0 : "'page' must be at least 0";
+			if (request.getPage() < 0) throw new AssertionError("'page' must be at least 0");
 
 			// Get users
 			List<UserEntity> result = userRepository.findAll(PageRequest.of(request.getPage(), 10)).toList();
@@ -133,7 +137,7 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public GetUserByIdResponse getUserById(GetUserByIdRequest request) {
 		try {
-			assert request.getId() >= 1 : "'id' must be at least 1";
+			if (request.getId() < 1) throw new AssertionError("'id' must be at least 1");
 
 			// Get user
 			UserEntity result = userRepository.findById(request.getId()).orElseThrow(() -> new NotFoundException(String.format("User with ID %s was not found", request.getId())));
@@ -156,8 +160,9 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public LoginUserResponse loginUser(LoginUserRequest request) {
 		try {
-			assert request.getEmail().length() >= 3 : "'email' must have a length of at least 3";
-			assert request.getPassword().length() >= 10 : "'password' must have a length of at least 10";
+			if (request.getEmail().length() < 3) throw new AssertionError("'email' must have a length of at least 3");
+			if (request.getPassword().length() < 10)
+				throw new AssertionError("'password' must have a length of at least 10");
 
 			// Get user
 			UserEntity userEntity = userRepository.getUserEntityByEmail(request.getEmail()).orElseThrow(() ->
@@ -188,9 +193,9 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public HttpStatus RemoveUser(RemoveUserRequest request) {
+	public HttpStatus removeUser(RemoveUserRequest request) {
 		try {
-			assert request.getId() >= 1 : "'id' must be at least 1";
+			if (request.getId() < 1) throw new AssertionError("'id' must be at least 1");
 
 			// Get user
 			UserEntity userEntity = userRepository.getUserEntityByUserId(request.getId()).orElseThrow(() ->
@@ -226,7 +231,7 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public UserQueryResponse getUsersByPartialData(UserQueryRequest request) {
 		try {
-			assert request.getPage() >= 0 : "'page' must be at least 0";
+			if (request.getPage() < 0) throw new AssertionError("'page' must be at least 0");
 
 			List<UserEntity> userEntities = userRepository.getUserEntitiesByUsernameContainsAndCreationDateBeforeAndCreationDateAfter(request.getUsername(), request.getBefore(), request.getAfter(), PageRequest.of(request.getPage(), 10)).orElseThrow(() ->
 					new NotFoundException(String.format("Could not find any users where username contains %s", request.getUsername()))
@@ -243,6 +248,54 @@ public class UserManagerImpl implements UserManager {
 		} catch (Exception exception) {
 			LOGGER.log(Level.SEVERE, exception.toString(), exception);
 			return new UserQueryResponse(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Override
+	public HttpStatus patchUserWithPartialData(PatchUserWithPartialDataRequest request, String jwt) {
+		try {
+			// Check if user is authorized
+			DecodedJWT decodedJWT = JWTService.verifyJWT(jwt);
+			if (decodedJWT == null) throw new UnauthorizedException("Unable to decode JWT");
+			Integer userId = decodedJWT.getClaim("userId").as(Integer.class);
+
+			// Check if user exists
+			UserEntity userEntity = userRepository.getUserEntityByUserId(userId).orElseThrow(() ->
+					new UnauthorizedException(String.format("User with ID %s was not found", userId))
+			);
+			User user = UserConverter.convert(userEntity);
+
+			// Update user fields
+			if (request.getUsername() != null && !request.getUsername().isBlank()) {
+				user.setUsername(request.getUsername());
+			}
+			if (request.getEmail() != null && !request.getEmail().isBlank()) {
+				user.setEmail(request.getEmail());
+			}
+			if (request.getPassword() != null && !request.getPassword().isBlank()) {
+				user.setPassword(PasswordService.hashPassword(request.getPassword()).getResult());
+			}
+			if (request.getProfilePicture() != null && !request.getProfilePicture().isBlank()) {
+				// Convert base64 to png file
+				String pfp = request.getProfilePicture();
+
+				if (request.getProfilePicture().startsWith("data:")) {
+					pfp = pfp.split(",")[1];
+				}
+				byte[] decodedFile = Base64.getMimeDecoder().decode(pfp);
+				CdnService.saveFile(decodedFile, "\\user", String.format("%s.png", userId));
+			}
+
+			// Save changes
+			userRepository.saveAndFlush(UserConverter.convert(user));
+
+			return HttpStatus.ACCEPTED;
+		} catch (JWTVerificationException | UnauthorizedException exception) {
+			LOGGER.log(Level.FINE, exception.toString(), exception);
+			return HttpStatus.UNAUTHORIZED;
+		} catch (Exception exception) {
+			LOGGER.log(Level.SEVERE, exception.toString(), exception);
+			return HttpStatus.INTERNAL_SERVER_ERROR;
 		}
 	}
 }

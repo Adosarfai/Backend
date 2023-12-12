@@ -15,13 +15,13 @@ import org.springframework.http.HttpStatus;
 public class GetStatisticsResponse {
 
 	@NotNull
-	private Long MapCount;
+	private Integer mapCount;
 
 	@NotNull
-	private Long LeaderboardCount;
+	private Integer leaderboardCount;
 
 	@NotNull
-	private Long ScoreCount;
+	private Integer scoreCount;
 
 	@NotNull
 	@JsonIgnore

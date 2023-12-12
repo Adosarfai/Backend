@@ -45,8 +45,8 @@ public class MapManagerImpl implements MapManager {
 	@Override
 	public CreateNewMapResponse createNewMap(CreateNewMapRequest request, String jwt) {
 		try {
-			assert !request.getTitle().isEmpty() : "'title' must have a length of at least 1";
-			assert !request.getArtist().isEmpty() : "'artist' must have a length of at least 1";
+			if (request.getTitle().isEmpty()) throw new AssertionError("'title' must have a length of at least 1");
+			if (request.getArtist().isEmpty()) throw new AssertionError("'artist' must have a length of at least 1");
 
 			// Check if user is authorized
 			DecodedJWT decodedJWT = JWTService.verifyJWT(jwt);
@@ -87,7 +87,7 @@ public class MapManagerImpl implements MapManager {
 	@Override
 	public GetAllMapsResponse getAllMaps(GetAllMapsRequest request) {
 		try {
-			assert request.getPage() >= 0 : "'page' must be at least 0";
+			if (request.getPage() < 0) throw new AssertionError("'page' must be at least 0");
 
 			// Get maps
 			List<MapEntity> result = mapRepository.findAll(PageRequest.of(request.getPage(), 10)).toList();
@@ -106,7 +106,7 @@ public class MapManagerImpl implements MapManager {
 	@Override
 	public GetMapByIdResponse getMapById(GetMapByIdRequest request) {
 		try {
-			assert request.getId() >= 1 : "'id' must be at least 1";
+			if (request.getId() < 1) throw new AssertionError("'id' must be at least 1");
 
 			// Get map
 			MapEntity result = mapRepository.findById(request.getId()).orElseThrow(() ->
@@ -131,8 +131,8 @@ public class MapManagerImpl implements MapManager {
 	@Override
 	public GetMapsByUserIdResponse getMapsByUserId(GetMapsByUserIdRequest request) {
 		try {
-			assert request.getPage() >= 0 : "'page' must be at least 0";
-			assert request.getId() >= 1 : "'id' must be at least 1";
+			if (request.getPage() < 0) throw new AssertionError("'page' must be at least 0");
+			if (request.getId() < 1) throw new AssertionError("'id' must be at least 1");
 
 			// Get maps
 			Collection<MapEntity> result = mapRepository.getMapEntitiesByUser_UserId(request.getId(), PageRequest.of(request.getPage(), 9));
@@ -151,7 +151,7 @@ public class MapManagerImpl implements MapManager {
 	@Override
 	public HttpStatus uploadMap(UploadMapRequest request) {
 		try {
-			assert request.getId() >= 1 : "'id' must be at least 1";
+			if (request.getId() < 1) throw new AssertionError("'id' must be at least 1");
 
 			// Get map
 			MapEntity mapEntity = mapRepository.findById(request.getId()).orElseThrow(() ->

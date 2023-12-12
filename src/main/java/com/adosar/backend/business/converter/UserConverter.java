@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 public final class UserConverter {
 
 	public static UserEntity convert(User user) {
-		assert user != null;
 		return UserEntity.builder()
 				.email(user.getEmail())
 				.userId(user.getUserId())
@@ -24,7 +23,6 @@ public final class UserConverter {
 	}
 
 	public static User convert(UserEntity user) {
-		assert user != null;
 		return User.builder()
 				.email(user.getEmail())
 				.userId(user.getUserId())

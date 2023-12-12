@@ -12,9 +12,18 @@ import java.util.UUID;
 
 @Service
 @NoArgsConstructor
-final public class JWTService {
+public final class JWTService {
 
+
+	/**
+	 * Creates a JWT token for a user
+	 *
+	 * @param userId user ID
+	 * @return JWT token
+	 */
 	public static String createJWT(Integer userId) {
+		if (userId == null) throw new NullPointerException();
+
 		Algorithm algorithm = Algorithm.HMAC512(System.getenv("HMAC512_SECRET"));
 		return JWT.create()
 				.withIssuer("adosar")
@@ -27,6 +36,10 @@ final public class JWTService {
 				.sign(algorithm);
 	}
 
+	/**
+	 * @param jwt JWT token
+	 * @return Decoded JWT object
+	 */
 	public static DecodedJWT verifyJWT(String jwt) {
 		try {
 

@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 public final class ScoreConverter {
 
 	public static ScoreEntity convert(Score score) {
-		assert score != null;
 		return ScoreEntity.builder()
 				.scoreId(score.getScoreId())
 				.map(MapConverter.convert(score.getMap()))
@@ -21,7 +20,6 @@ public final class ScoreConverter {
 	}
 
 	public static Score convert(ScoreEntity score) {
-		assert score != null;
 		return Score.builder()
 				.scoreId(score.getScoreId())
 				.map(MapConverter.convert(score.getMap()))

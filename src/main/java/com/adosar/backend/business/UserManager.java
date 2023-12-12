@@ -8,7 +8,7 @@ import com.adosar.backend.business.response.user.UserQueryResponse;
 import org.springframework.http.HttpStatus;
 
 public interface UserManager {
-	HttpStatus ActivateUser(ActivateUserRequest request);
+	HttpStatus activateUser(ActivateUserRequest request);
 
 	HttpStatus createNewUser(CreateNewUserRequest request);
 
@@ -18,7 +18,9 @@ public interface UserManager {
 
 	LoginUserResponse loginUser(LoginUserRequest request);
 
-	HttpStatus RemoveUser(RemoveUserRequest request);
+	HttpStatus removeUser(RemoveUserRequest request);
 
 	UserQueryResponse getUsersByPartialData(UserQueryRequest request);
+
+	HttpStatus patchUserWithPartialData(PatchUserWithPartialDataRequest request, String jwt);
 }

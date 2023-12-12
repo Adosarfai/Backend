@@ -15,7 +15,6 @@ import com.adosar.backend.persistence.entity.ScoreEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.javapoet.ClassName;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,7 +24,7 @@ import java.util.logging.Logger;
 @Service
 @AllArgsConstructor
 public class ScoreManagerImpl implements ScoreManager {
-	private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(ScoreManagerImpl.class.getName());
 	private final ScoreRepository scoreRepository;
 
 	@Override

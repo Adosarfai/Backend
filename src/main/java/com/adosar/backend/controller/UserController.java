@@ -39,7 +39,7 @@ public class UserController {
 	 * @see GetAllUsersResponse
 	 */
 	@GetMapping(path = "/all/{page}")
-	public @ResponseBody ResponseEntity<GetAllUsersResponse> getAllUsers(@PathVariable Integer page) {
+	public ResponseEntity<GetAllUsersResponse> getAllUsers(@PathVariable Integer page) {
 		GetAllUsersRequest request = new GetAllUsersRequest(page);
 		GetAllUsersResponse response = userManager.getAllUsers(request);
 		return new ResponseEntity<>(response, response.getHttpStatus());
@@ -56,7 +56,7 @@ public class UserController {
 	 * @see GetUserByIdResponse
 	 */
 	@GetMapping(path = "/{id}")
-	public @ResponseBody ResponseEntity<User> getUserById(@PathVariable Integer id) {
+	public ResponseEntity<User> getUserById(@PathVariable Integer id) {
 		GetUserByIdRequest request = new GetUserByIdRequest(id);
 		GetUserByIdResponse response = userManager.getUserById(request);
 		return new ResponseEntity<>(response.getUser(), response.getHttpStatus());
@@ -72,34 +72,34 @@ public class UserController {
 	 * @see HttpStatus
 	 */
 	@PostMapping
-	public @ResponseBody ResponseEntity<HttpStatus> createNewUser(@RequestBody @Valid CreateNewUserRequest request) {
+	public ResponseEntity<HttpStatus> createNewUser(@RequestBody @Valid CreateNewUserRequest request) {
 		HttpStatus response = userManager.createNewUser(request);
-		return new ResponseEntity<>(null, response);
+		return new ResponseEntity<>(response, response);
 	}
 
 	/**
 	 * Creates JWT for user auth
 	 *
 	 * @param request LoginUserRequest object
-	 * @return 200 OK with LoginUserResponse object
+	 * @return 200 OK with HttpStatus
 	 * @should return 401 UNAUTHORIZED when the login credentials are invalid
 	 * @see LoginUserRequest
 	 * @see LoginUserResponse
 	 */
 	@PostMapping(path = "/login")
-	public @ResponseBody ResponseEntity<Void> loginUser(@RequestBody @Valid LoginUserRequest request) {
+	public ResponseEntity<HttpStatus> loginUser(@RequestBody @Valid LoginUserRequest request) {
 		LoginUserResponse response = userManager.loginUser(request);
 		if (response.getHttpStatus().is2xxSuccessful() && response.getJwt() != null) {
 			ResponseCookie cookie = ResponseCookie.from("jwt", response.getJwt())
 					.httpOnly(false)
 					.secure(true)
 					.path("/")
-					.domain("dev.adosar.net")
+					.domain(System.getenv("ADOSAR_DOMAIN"))
 					.maxAge(604800)
 					.build();
 			return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
 		}
-		return new ResponseEntity<>(null, response.getHttpStatus());
+		return new ResponseEntity<>(response.getHttpStatus(), response.getHttpStatus());
 	}
 
 	/**
@@ -113,9 +113,9 @@ public class UserController {
 	 * @see HttpStatus
 	 */
 	@DeleteMapping("/{id}")
-	public @ResponseBody ResponseEntity<HttpStatus> removeUser(@PathVariable Integer id) {
+	public ResponseEntity<HttpStatus> removeUser(@PathVariable Integer id) {
 		RemoveUserRequest request = new RemoveUserRequest(id);
-		HttpStatus response = userManager.RemoveUser(request);
+		HttpStatus response = userManager.removeUser(request);
 		return new ResponseEntity<>(null, response);
 	}
 
@@ -131,9 +131,9 @@ public class UserController {
 	 * @see HttpStatus
 	 */
 	@PatchMapping("/{id}")
-	public @ResponseBody ResponseEntity<HttpStatus> activateUser(@PathVariable Integer id) {
+	public ResponseEntity<HttpStatus> activateUser(@PathVariable Integer id) {
 		ActivateUserRequest request = new ActivateUserRequest(id);
-		HttpStatus response = userManager.ActivateUser(request);
+		HttpStatus response = userManager.activateUser(request);
 		return new ResponseEntity<>(null, response);
 	}
 
@@ -151,7 +151,7 @@ public class UserController {
 	 * @see UserQueryResponse
 	 */
 	@GetMapping(path = "/query/{page}")
-	public @ResponseBody ResponseEntity<Iterable<User>> getUsersByPartialData(@PathVariable Integer page, @RequestParam(value = "username", required = false) String username, @RequestParam(value = "before", required = false) Date before, @RequestParam(value = "after", required = false) Date after) {
+	public ResponseEntity<Iterable<User>> getUsersByPartialData(@PathVariable Integer page, @RequestParam(value = "username", required = false) String username, @RequestParam(value = "before", required = false) Date before, @RequestParam(value = "after", required = false) Date after) {
 		if (username == null || username.isEmpty()) username = "";
 		if (before == null) before = Date.from(Instant.now());
 		if (after == null) after = Date.from(Instant.EPOCH);
@@ -163,5 +163,11 @@ public class UserController {
 				.build();
 		UserQueryResponse response = userManager.getUsersByPartialData(request);
 		return new ResponseEntity<>(response.getUsers(), response.getHttpStatus());
+	}
+
+	@PatchMapping(path = "/update")
+	public ResponseEntity<HttpStatus> patchUserWithPartialData(@RequestBody @Valid PatchUserWithPartialDataRequest request, @CookieValue(name = "jwt", defaultValue = "") String jwt) {
+		HttpStatus response = userManager.patchUserWithPartialData(request, jwt);
+		return new ResponseEntity<>(response, response);
 	}
 }

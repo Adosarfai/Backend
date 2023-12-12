@@ -2,12 +2,14 @@ package com.adosar.backend.controller;
 
 import com.adosar.backend.business.GetStatisticsUseCase;
 import com.adosar.backend.business.response.misc.GetStatisticsResponse;
-import com.adosar.backend.persistence.ReplayRepository;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
@@ -17,7 +19,6 @@ import org.springframework.web.servlet.view.RedirectView;
 @Builder
 public class MainController {
 	private final GetStatisticsUseCase getStatisticsUseCase;
-	private final ReplayRepository replayRepository;
 
 	@GetMapping(path = "/")
 	public RedirectView home() {
@@ -25,7 +26,7 @@ public class MainController {
 	}
 
 	@GetMapping(path = "/statistics")
-	public @ResponseBody ResponseEntity<GetStatisticsResponse> getStatistics() {
+	public ResponseEntity<GetStatisticsResponse> getStatistics() {
 		GetStatisticsResponse response = getStatisticsUseCase.getStatistics();
 		if (response.getHttpStatus() == HttpStatus.INTERNAL_SERVER_ERROR) {
 			return new ResponseEntity<>(null, response.getHttpStatus());

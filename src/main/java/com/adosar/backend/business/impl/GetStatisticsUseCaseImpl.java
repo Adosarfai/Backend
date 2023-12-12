@@ -7,7 +7,6 @@ import com.adosar.backend.persistence.MapRepository;
 import com.adosar.backend.persistence.ScoreRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.javapoet.ClassName;
 import org.springframework.stereotype.Service;
 
 import java.util.logging.Level;
@@ -16,7 +15,7 @@ import java.util.logging.Logger;
 @Service
 @AllArgsConstructor
 public class GetStatisticsUseCaseImpl implements GetStatisticsUseCase {
-	private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(GetStatisticsUseCaseImpl.class.getName());
 	private MapRepository mapRepository;
 	private LeaderboardRepository leaderboardRepository;
 	private ScoreRepository scoreRepository;
@@ -24,14 +23,14 @@ public class GetStatisticsUseCaseImpl implements GetStatisticsUseCase {
 	@Override
 	public GetStatisticsResponse getStatistics() {
 		try {
-			long mapCount = mapRepository.getMapEntityCount();
-			long leaderboardCount = leaderboardRepository.getLeaderboardEntityCount();
-			long scoreCount = scoreRepository.getScoreEntityCount();
+			Integer mapCount = mapRepository.getMapEntityCount();
+			Integer leaderboardCount = leaderboardRepository.getLeaderboardEntityCount();
+			Integer scoreCount = scoreRepository.getScoreEntityCount();
 
 			return GetStatisticsResponse.builder()
-					.MapCount(mapCount)
-					.LeaderboardCount(leaderboardCount)
-					.ScoreCount(scoreCount)
+					.mapCount(mapCount)
+					.leaderboardCount(leaderboardCount)
+					.scoreCount(scoreCount)
 					.httpStatus(HttpStatus.OK)
 					.build();
 

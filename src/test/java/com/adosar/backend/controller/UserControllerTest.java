@@ -1,325 +1,395 @@
 package com.adosar.backend.controller;
 
-import com.adosar.backend.business.request.user.CreateNewUserRequest;
-import com.adosar.backend.business.request.user.LoginUserRequest;
+import com.adosar.backend.business.UserManager;
+import com.adosar.backend.business.request.user.*;
 import com.adosar.backend.business.response.user.GetAllUsersResponse;
-import com.adosar.backend.domain.Privilege;
+import com.adosar.backend.business.response.user.GetUserByIdResponse;
+import com.adosar.backend.business.response.user.LoginUserResponse;
+import com.adosar.backend.business.response.user.UserQueryResponse;
 import com.adosar.backend.domain.User;
-import com.adosar.backend.persistence.UserRepository;
-import com.adosar.backend.persistence.entity.UserEntity;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.javapoet.ClassName;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
-public class UserControllerTest {
-	private static final Logger LOGGER = Logger.getLogger(ClassName.class.getName());
-
-	/**
-	 * @verifies return empty list when no users are on the page
-	 * @see UserController#getAllUsers(Integer)
-	 */
+@SuppressWarnings("UnusedShould")
+class UserControllerTest {
+	// Should create a new user
 	@Test
-	public void getAllUsers_shouldReturnEmptyListWhenNoUsersAreOnThePage() {
-		try {
-			// Arrange
-			UserRepository userRepository = mock(UserRepository.class);
-			Page<UserEntity> testUsers = new PageImpl<>(List.of(new UserEntity()));
-			when(userRepository.findAll(PageRequest.of(0, 10))).thenReturn(testUsers);
-			when(userRepository.findAll(PageRequest.of(1, 10))).thenReturn(Page.empty());
+	void can_create_new_user_successfully_with_valid_input() {
+		// Arrange
+		UserManager userManager = mock(UserManager.class);
+		UserController userController = new UserController(userManager);
+		CreateNewUserRequest request = CreateNewUserRequest.builder()
+				.email("test@example.com")
+				.username("testuser")
+				.password("password123")
+				.build();
+		HttpStatus expectedHttpStatus = HttpStatus.CREATED;
 
-			UserController userController = UserController.builder()
-					.getAllUsersUseCase(new GetAllUsersUseCaseImpl(userRepository))
-					.build();
+		// Mock the behavior of UserManager.createNewUser() to return the expected HttpStatus
+		when(userManager.createNewUser(request)).thenReturn(expectedHttpStatus);
 
-			// Act
-			ResponseEntity<GetAllUsersResponse> responseEntity = userController.getAllUsers(1);
+		// Act
+		ResponseEntity<HttpStatus> response = userController.createNewUser(request);
 
-			// Assert
-			assertThat(responseEntity.getBody().getUsers()).isEmpty();
-			assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-		} catch (Exception exception) {
-			LOGGER.log(Level.SEVERE, exception.toString(), exception);
-		}
+		// Assert
+		assertNotNull(response);
+		assertEquals(expectedHttpStatus, response.getBody());
 	}
 
-	/**
-	 * @verifies return 400 BAD_REQUEST when page number is invalid
-	 * @see UserController#getAllUsers(Integer)
-	 */
+	// Should activate user account
 	@Test
-	public void getAllUsers_shouldReturn400BAD_REQUESTWhenPageNumberIsInvalid() {
-		try {
-			// Arrange
-			UserRepository userRepository = mock(UserRepository.class);
+	void test_should_activate_user_account() {
+		// Arrange
+		UserManager userManager = mock(UserManager.class);
+		UserController userController = new UserController(userManager);
+		Integer userId = 1;
+		HttpStatus expectedHttpStatus = HttpStatus.OK;
 
-			UserController userController = UserController.builder()
-					.getAllUsersUseCase(new GetAllUsersUseCaseImpl(userRepository))
-					.build();
+		// Mock UserManager.activateUser() to return the expected HttpStatus
+		when(userManager.activateUser(any(ActivateUserRequest.class))).thenReturn(expectedHttpStatus);
 
-			// Act
-			ResponseEntity<GetAllUsersResponse> responseEntity = userController.getAllUsers(-1);
+		// Act
+		ResponseEntity<HttpStatus> response = userController.activateUser(userId);
 
-			// Assert
-			assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-		} catch (Exception exception) {
-			LOGGER.log(Level.SEVERE, exception.toString(), exception);
-		}
+		// Assert
+		assertEquals(expectedHttpStatus, response.getStatusCode());
+		verify(userManager).activateUser(ActivateUserRequest.builder().id(userId).build());
 	}
 
-	/**
-	 * @verifies return 400 BAD_REQUEST when ID is invalid
-	 * @see UserController#getUserById(Integer)
-	 */
+	// Should get all users that match provided queries
 	@Test
-	public void getUserById_shouldReturn400BAD_REQUESTWhenIDIsInvalid() {
-		try {
-			// Arrange
-			UserRepository userRepository = mock(UserRepository.class);
+	void test_getUsersByPartialData_returns_OK_and_users_when_valid_request_is_provided() {
+		// Arrange
+		UserManager userManager = mock(UserManager.class);
+		UserController userController = new UserController(userManager);
+		Integer page = 0;
+		String username = "test";
+		Date before = Date.from(Instant.now());
+		Date after = Date.from(Instant.EPOCH);
+		UserQueryRequest request = UserQueryRequest.builder()
+				.username(username)
+				.before(before)
+				.after(after)
+				.page(page)
+				.build();
+		Iterable<User> users = Arrays.asList(
+				User.builder().build(),
+				User.builder().build()
+		);
+		UserQueryResponse expectedResponse = new UserQueryResponse(users, HttpStatus.OK);
+		when(userManager.getUsersByPartialData(request)).thenReturn(expectedResponse);
 
-			UserController userController = UserController.builder()
-					.getUserByIdUseCase(new GetUserByIdUseCaseImpl(userRepository))
-					.build();
+		// Act
+		ResponseEntity<Iterable<User>> response = userController.getUsersByPartialData(page, username, before, after);
 
-			// Act
-			ResponseEntity<User> responseEntity = userController.getUserById(-1);
-
-			// Assert
-			assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-		} catch (Exception exception) {
-			LOGGER.log(Level.SEVERE, exception.toString(), exception);
-		}
+		// Assert
+		assertEquals(expectedResponse.getHttpStatus(), response.getStatusCode());
+		assertEquals(users, response.getBody());
 	}
 
-	/**
-	 * @verifies return 404 NOT_FOUND when no user with ID exists
-	 * @see UserController#getUserById(Integer)
-	 */
+	// Should return 10 users offset by the page number
 	@Test
-	public void getUserById_shouldReturn404NOT_FOUNDWhenNoUserWithIDExists() {
-		try {
-			// Arrange
-			UserRepository userRepository = mock(UserRepository.class);
-			Optional<UserEntity> testUser = Optional.of(new UserEntity());
-			when(userRepository.findById(0)).thenReturn(testUser);
-			when(userRepository.findById(1)).thenReturn(Optional.empty());
+	void test_should_return_10_users_offset_by_page_number() {
+		// Arrange
+		UserManager userManager = mock(UserManager.class);
+		UserController userController = new UserController(userManager);
+		Integer page = 0;
+		GetAllUsersRequest request = GetAllUsersRequest.builder()
+				.page(page)
+				.build();
+		GetAllUsersResponse expectedResponse = GetAllUsersResponse.builder()
+				.users(Collections.emptyList())
+				.httpStatus(HttpStatus.OK)
+				.build();
 
-			UserController userController = UserController.builder()
-					.getUserByIdUseCase(new GetUserByIdUseCaseImpl(userRepository))
-					.build();
+		when(userManager.getAllUsers(request)).thenReturn(expectedResponse);
 
-			// Act
-			ResponseEntity<User> responseEntity = userController.getUserById(1);
+		// Act
+		ResponseEntity<GetAllUsersResponse> responseEntity = userController.getAllUsers(page);
 
-			// Assert
-			assertThat(responseEntity.getBody()).isNull();
-			assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-		} catch (Exception exception) {
-			LOGGER.log(Level.SEVERE, exception.toString(), exception);
-		}
+		// Assert
+		assertEquals(expectedResponse, responseEntity.getBody());
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+		verify(userManager).getAllUsers(request);
 	}
 
-	/**
-	 * @verifies return 400 BAD_REQUEST when request object is not valid
-	 * @see UserController#createNewUser(CreateNewUserRequest)
-	 */
+	// Should return empty list when no users are on the page
 	@Test
-	public void createNewUser_shouldReturn400BAD_REQUESTWhenRequestObjectIsNotValid() {
-		try {
-			// Arrange
-			UserRepository userRepository = mock(UserRepository.class);
+	void test_should_return_empty_list_when_no_users_on_page() {
+		// Arrange
+		UserManager userManager = mock(UserManager.class);
+		UserController userController = new UserController(userManager);
+		Integer page = 0;
+		GetAllUsersRequest request = GetAllUsersRequest.builder()
+				.page(page)
+				.build();
+		GetAllUsersResponse expectedResponse = GetAllUsersResponse.builder()
+				.users(Collections.emptyList())
+				.httpStatus(HttpStatus.OK)
+				.build();
 
-			UserController userController = UserController.builder()
-					.createNewUserUseCase(new CreateNewUserUseCaseImpl(userRepository))
-					.build();
+		when(userManager.getAllUsers(request)).thenReturn(expectedResponse);
 
-			// Act
-			ResponseEntity<HttpStatus> result = userController.createNewUser(CreateNewUserRequest.builder().build());
+		// Act
+		ResponseEntity<GetAllUsersResponse> responseEntity = userController.getAllUsers(page);
 
-			// Assert        
-			assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-		} catch (Exception exception) {
-			LOGGER.log(Level.SEVERE, exception.toString(), exception);
-		}
+		// Assert
+		assertEquals(expectedResponse, responseEntity.getBody());
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+		verify(userManager).getAllUsers(request);
 	}
 
-	/**
-	 * @verifies return 401 UNAUTHORIZED when the login credentials are invalid
-	 * @see UserController#loginUser(LoginUserRequest)
-	 */
+	// Should return 400 BAD_REQUEST when page number is invalid
 	@Test
-	public void loginUser_shouldReturn401UNAUTHORIZEDWhenTheLoginCredentialsAreInvalid() {
-		try {
-			// Arrange
-			UserRepository userRepository = mock(UserRepository.class);
-			when(userRepository.getUserEntityByEmail("wrong@email.com")).thenReturn(null);
-			when(userRepository.getUserEntityByEmail("test@email.com")).thenReturn(UserEntity.builder()
-					.userId(0)
-					.email("test@email.com")
-					.password("$argon2id$v=19$m=4096,t=30,p=4$Nohz9k/BrmmV/VkgLkKiZPYkOcpRXJN7pVpSB6pgHYU$wy48WkPXVrJAV5eKIQn8SHuUQ+1ihlXkM4ximB+7klfzOQTfCAUnIbREHtWkR4zlN35iwwn7odSbzYWnqvlR+Q")
-					.build()
-			);
+	void test_should_return_bad_request_when_page_number_invalid() {
+		// Arrange
+		UserManager userManager = mock(UserManager.class);
+		UserController userController = new UserController(userManager);
+		Integer page = -1;
+		GetAllUsersRequest request = GetAllUsersRequest.builder()
+				.page(page)
+				.build();
+		GetAllUsersResponse expectedResponse = GetAllUsersResponse.builder()
+				.httpStatus(HttpStatus.BAD_REQUEST)
+				.build();
 
-			UserController userController = UserController.builder()
-					.loginUserUseCase(new LoginUserUseCaseImpl(userRepository))
-					.build();
+		when(userManager.getAllUsers(request)).thenReturn(expectedResponse);
 
-			// Act
-			ResponseEntity<Void> resultWrongPassword = userController.loginUser(LoginUserRequest.builder()
-					.email("test@email.com")
-					.password("testPassword")
-					.build()
-			);
-			ResponseEntity<Void> resultWrongEmail = userController.loginUser(LoginUserRequest.builder()
-					.email("wrong@email.com")
-					.password("Epic-Passw0rd!")
-					.build()
-			);
+		// Act
+		ResponseEntity<GetAllUsersResponse> responseEntity = userController.getAllUsers(page);
 
-			// Assert
-			assertThat(resultWrongPassword.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-			assertThat(resultWrongEmail.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-		} catch (Exception exception) {
-			LOGGER.log(Level.SEVERE, exception.toString(), exception);
-		}
+		// Assert
+		assertEquals(expectedResponse, responseEntity.getBody());
+		assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+		verify(userManager).getAllUsers(request);
 	}
 
-	/**
-	 * @verifies return 404 NOT_FOUND when no user with the requested id exists
-	 * @see UserController#removeUser(Integer)
-	 */
+	// Should return 400 BAD_REQUEST when page number is invalid
 	@Test
-	public void removeUser_shouldReturn404NOT_FOUNDWhenNoUserWithTheRequestedIdExists() {
-		try {
-			// Arrange
-			UserRepository userRepository = mock(UserRepository.class);
+	void test_should_return_bad_request_when_page_number_is_invalid() {
+		// Arrange
+		UserManager userManager = mock(UserManager.class);
+		UserController userController = new UserController(userManager);
+		Integer invalidPage = -1;
 
-			UserController userController = UserController.builder()
-					.removeUserUseCase(new RemoveUserUseCaseImpl(userRepository))
-					.build();
+		// Act
+		ResponseEntity<GetAllUsersResponse> response = userController.getAllUsers(invalidPage);
 
-			// Act
-			ResponseEntity<HttpStatus> result = userController.removeUser(0);
-
-			// Assert        
-			assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-		} catch (Exception exception) {
-			LOGGER.log(Level.SEVERE, exception.toString(), exception);
-		}
+		// Assert
+		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 	}
 
-	/**
-	 * @verifies return 409 CONFLICT when the user is already removed or is banned
-	 * @see UserController#removeUser(Integer)
-	 */
+	// Should return 400 BAD_REQUEST when ID is invalid
 	@Test
-	public void removeUser_shouldReturn409CONFLICTWhenTheUserIsAlreadyRemovedOrIsBanned() {
-		try {
-			// Arrange
-			UserRepository userRepository = mock(UserRepository.class);
-			when(userRepository.getUserEntityByUserId(0)).thenReturn(UserEntity.builder()
-					.userId(0)
-					.privilege(Privilege.REMOVED)
-					.build()
-			);
-			when(userRepository.getUserEntityByUserId(1)).thenReturn(UserEntity.builder()
-					.userId(1)
-					.privilege(Privilege.BANNED)
-					.build()
-			);
+	void test_should_return_bad_request_when_id_is_invalid() {
+		// Arrange
+		UserManager userManager = mock(UserManager.class);
+		UserController userController = new UserController(userManager);
+		Integer id = -1;
 
-			UserController userController = UserController.builder()
-					.removeUserUseCase(new RemoveUserUseCaseImpl(userRepository))
-					.build();
+		// Act
+		ResponseEntity<User> response = userController.getUserById(id);
 
-			// Act
-			ResponseEntity<HttpStatus> resultRemoved = userController.removeUser(0);
-			ResponseEntity<HttpStatus> resultBanned = userController.removeUser(1);
-
-			// Assert        
-			assertThat(resultRemoved.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-			assertThat(resultBanned.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-		} catch (Exception exception) {
-			LOGGER.log(Level.SEVERE, exception.toString(), exception);
-		}
+		// Assert
+		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 	}
 
-	/**
-	 * @verifies return 404 NOT_FOUND when no user with the requested id exists
-	 * @see UserController#activateUser(Integer)
-	 */
+	// Should return empty list when no users are on the page
 	@Test
-	public void activateUser_shouldReturn404NOT_FOUNDWhenNoUserWithTheRequestedIdExists() {
-		try {
-			// Arrange
-			UserRepository userRepository = mock(UserRepository.class);
+	void test_should_return_empty_list_when_no_users_are_on_the_page() {
+		// Arrange
+		UserManager userManager = mock(UserManager.class);
+		UserController userController = new UserController(userManager);
+		Integer page = 0;
+		GetAllUsersRequest request = GetAllUsersRequest.builder()
+				.page(page)
+				.build();
+		GetAllUsersResponse response = GetAllUsersResponse.builder()
+				.users(Collections.emptyList())
+				.httpStatus(HttpStatus.OK)
+				.build();
+		when(userManager.getAllUsers(request)).thenReturn(response);
 
-			UserController userController = UserController.builder()
-					.activateUserUseCase(new ActivateUserUseCaseImpl(userRepository))
-					.build();
+		// Act
+		ResponseEntity<GetAllUsersResponse> result = userController.getAllUsers(page);
 
-			// Act
-			ResponseEntity<HttpStatus> result = userController.activateUser(0);
-
-			// Assert
-			assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-		} catch (Exception exception) {
-			LOGGER.log(Level.SEVERE, exception.toString(), exception);
-		}
+		// Assert
+		assertEquals(response, result.getBody());
+		assertEquals(HttpStatus.OK, result.getStatusCode());
+		verify(userManager).getAllUsers(request);
 	}
 
-	/**
-	 * @verifies return 409 CONFLICT when the user is already activated or is banned
-	 * @see UserController#activateUser(Integer)
-	 */
+	// Should return 404 NOT_FOUND when no user with ID exists
 	@Test
-	public void activateUser_shouldReturn409CONFLICTWhenTheUserIsAlreadyActivatedOrIsBanned() {
-		try {
-			// Arrange
-			UserRepository userRepository = mock(UserRepository.class);
-			when(userRepository.getUserEntityByUserId(0)).thenReturn(UserEntity.builder()
-					.userId(0)
-					.privilege(Privilege.USER)
-					.build()
-			);
-			when(userRepository.getUserEntityByUserId(1)).thenReturn(UserEntity.builder()
-					.userId(1)
-					.privilege(Privilege.ADMIN)
-					.build()
-			);
-			when(userRepository.getUserEntityByUserId(2)).thenReturn(UserEntity.builder()
-					.userId(2)
-					.privilege(Privilege.BANNED)
-					.build()
-			);
+	void test_should_return_404_not_found_when_no_user_with_id_exists() {
+		// Arrange
+		UserManager userManager = mock(UserManager.class);
+		UserController userController = new UserController(userManager);
+		Integer id = 1;
+		GetUserByIdRequest request = GetUserByIdRequest.builder()
+				.id(id)
+				.build();
+		GetUserByIdResponse expectedResponse = GetUserByIdResponse.builder()
+				.user(null)
+				.httpStatus(HttpStatus.NOT_FOUND)
+				.build();
 
-			UserController userController = UserController.builder()
-					.activateUserUseCase(new ActivateUserUseCaseImpl(userRepository))
-					.build();
+		// Mock the behavior of userManager.getUserById() to return the expected response
+		when(userManager.getUserById(request)).thenReturn(expectedResponse);
 
-			// Act
-			ResponseEntity<HttpStatus> resultUser = userController.activateUser(0);
-			ResponseEntity<HttpStatus> resultAdmin = userController.activateUser(1);
-			ResponseEntity<HttpStatus> resultBanned = userController.activateUser(2);
+		// Act
+		ResponseEntity<User> response = userController.getUserById(id);
 
-			// Assert
-			assertThat(resultUser.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-			assertThat(resultAdmin.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-			assertThat(resultBanned.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-		} catch (Exception exception) {
-			LOGGER.log(Level.SEVERE, exception.toString(), exception);
-		}
+		// Assert
+		assertEquals(expectedResponse.getUser(), response.getBody());
+		assertEquals(expectedResponse.getHttpStatus(), response.getStatusCode());
+
+		verify(userManager).getUserById(request);
+	}
+
+	// Should return 401 UNAUTHORIZED when the login credentials are invalid
+	@Test
+	void test_return_401_unauthorized_when_login_credentials_are_invalid() {
+		// Arrange
+		UserManager userManager = mock(UserManager.class);
+		UserController userController = new UserController(userManager);
+		LoginUserRequest request = LoginUserRequest.builder()
+				.email("invalid_email")
+				.password("invalid_password")
+				.build();
+		LoginUserResponse response = LoginUserResponse.builder()
+				.httpStatus(HttpStatus.UNAUTHORIZED)
+				.build();
+		when(userManager.loginUser(request)).thenReturn(response);
+
+		// Act
+		ResponseEntity<Void> result = userController.loginUser(request);
+
+		// Assert
+		assertEquals(HttpStatus.UNAUTHORIZED, result.getStatusCode());
+		assertNull(result.getBody());
+		verify(userManager).loginUser(request);
+	}
+
+	// Should return 404 NOT_FOUND when no user with the requested id exists
+	@Test
+	void test_return_not_found_when_user_not_found() {
+		// Arrange
+		UserManager userManager = mock(UserManager.class);
+		UserController userController = new UserController(userManager);
+		Integer id = 1;
+		GetUserByIdRequest request = GetUserByIdRequest.builder()
+				.id(id)
+				.build();
+		GetUserByIdResponse response = GetUserByIdResponse.builder()
+				.httpStatus(HttpStatus.NOT_FOUND)
+				.build();
+		when(userManager.getUserById(request)).thenReturn(response);
+
+		// Act
+		ResponseEntity<User> result = userController.getUserById(id);
+
+		// Assert
+		assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+		assertNull(result.getBody());
+	}
+
+	// Should return 404 NOT_FOUND when no users with the queries exists
+	@Test
+	void test_getUsersByPartialData_returns_NOT_FOUND_when_no_users_with_queries_exists() {
+		// Arrange
+		UserManager userManager = mock(UserManager.class);
+		UserController userController = new UserController(userManager);
+		Integer page = 0;
+		String username = "test";
+		Date before = Date.from(Instant.now());
+		Date after = Date.from(Instant.EPOCH);
+		ResponseEntity<Iterable<User>> expectedResponse = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+		// Mock the UserManager.getUsersByPartialData() method to return an empty UserQueryResponse
+		UserQueryRequest request = UserQueryRequest.builder()
+				.username(username)
+				.before(before)
+				.after(after)
+				.page(page)
+				.build();
+		UserQueryResponse response = UserQueryResponse.builder()
+				.users(Collections.emptyList())
+				.httpStatus(HttpStatus.NOT_FOUND)
+				.build();
+		when(userManager.getUsersByPartialData(request)).thenReturn(response);
+
+		// Act
+		ResponseEntity<Iterable<User>> result = userController.getUsersByPartialData(page, username, before, after);
+
+		// Assert
+		assertEquals(expectedResponse, result);
+	}
+
+	// Should return 400 BAD_REQUEST when page is invalid
+	@Test
+	void test_should_return_bad_request_when_page_is_invalid() {
+		// Arrange
+		UserManager userManager = mock(UserManager.class);
+		UserController userController = new UserController(userManager);
+		Integer invalidPage = -1;
+
+		// Act
+		ResponseEntity<GetAllUsersResponse> response = userController.getAllUsers(invalidPage);
+
+		// Assert
+		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+	}
+
+	// Should return 409 CONFLICT when the user is already activated or is banned
+	@Test
+	void test_return_409_conflict_when_user_already_activated_or_banned() {
+		// Arrange
+		UserManager userManager = mock(UserManager.class);
+		UserController userController = new UserController(userManager);
+		Integer userId = 1;
+		HttpStatus expectedHttpStatus = HttpStatus.CONFLICT;
+
+		// Mock UserManager.removeUser() to return HttpStatus.CONFLICT
+		when(userManager.removeUser(any(RemoveUserRequest.class))).thenReturn(HttpStatus.CONFLICT);
+
+		// Act
+		ResponseEntity<HttpStatus> response = userController.removeUser(userId);
+
+		// Assert
+		assertEquals(expectedHttpStatus, response.getStatusCode());
+		verify(userManager).removeUser(any(RemoveUserRequest.class));
+	}
+
+	// Should return 400 BAD_REQUEST when request object is not valid
+	@Test
+	void test_request_object_not_valid_returns_bad_request_with_invalid_password() {
+		// Arrange
+		UserManager userManager = mock(UserManager.class);
+		UserController userController = new UserController(userManager);
+		CreateNewUserRequest request = CreateNewUserRequest.builder()
+				.email("test@example.com")
+				.username("user")
+				.password("short")
+				.build();
+
+		// Mock the behavior of UserManager.createNewUser() to return BAD_REQUEST
+		when(userManager.createNewUser(request)).thenReturn(HttpStatus.BAD_REQUEST);
+
+		// Act
+		ResponseEntity<HttpStatus> response = userController.createNewUser(request);
+
+		// Assert
+		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 	}
 }

@@ -22,21 +22,21 @@ public class ScoreController {
 	private final ScoreManager scoreManager;
 
 	@GetMapping(path = "/all/{page}")
-	public @ResponseBody ResponseEntity<Iterable<Score>> getAllScores(@PathVariable Integer page) {
+	public ResponseEntity<Iterable<Score>> getAllScores(@PathVariable Integer page) {
 		GetAllScoresRequest request = new GetAllScoresRequest(page);
 		GetAllScoresResponse response = scoreManager.getAllScores(request);
 		return new ResponseEntity<>(response.getScores(), response.getHttpStatus());
 	}
 
 	@GetMapping(path = "/{id}")
-	public @ResponseBody ResponseEntity<Score> getScoreById(@PathVariable Integer id) {
+	public ResponseEntity<Score> getScoreById(@PathVariable Integer id) {
 		GetScoreByIdRequest request = new GetScoreByIdRequest(id);
 		GetScoreByIdResponse response = scoreManager.getScoreById(request);
 		return new ResponseEntity<>(response.getScore(), response.getHttpStatus());
 	}
 
 	@GetMapping(path = "/map/{id}/{page}")
-	public @ResponseBody ResponseEntity<Iterable<Score>> getScoresByMapId(@PathVariable Integer id, @PathVariable Integer page) {
+	public ResponseEntity<Iterable<Score>> getScoresByMapId(@PathVariable Integer id, @PathVariable Integer page) {
 		GetScoresByMapIdRequest request = new GetScoresByMapIdRequest(id, page);
 		GetScoresByMapIdResponse response = scoreManager.getScoresByMapId(request);
 		return new ResponseEntity<>(response.getScores(), response.getHttpStatus());
