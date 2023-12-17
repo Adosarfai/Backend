@@ -4,12 +4,15 @@ import com.adosar.backend.business.ScoreManager;
 import com.adosar.backend.business.request.score.GetAllScoresRequest;
 import com.adosar.backend.business.request.score.GetScoreByIdRequest;
 import com.adosar.backend.business.request.score.GetScoresByMapIdRequest;
+import com.adosar.backend.business.request.score.UploadScoreRequest;
 import com.adosar.backend.business.response.score.GetAllScoresResponse;
 import com.adosar.backend.business.response.score.GetScoreByIdResponse;
 import com.adosar.backend.business.response.score.GetScoresByMapIdResponse;
 import com.adosar.backend.domain.Score;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,5 +43,11 @@ public class ScoreController {
 		GetScoresByMapIdRequest request = new GetScoresByMapIdRequest(id, page);
 		GetScoresByMapIdResponse response = scoreManager.getScoresByMapId(request);
 		return new ResponseEntity<>(response.getScores(), response.getHttpStatus());
+	}
+	
+	@PostMapping(path = "/")
+	public ResponseEntity<HttpStatus> uploadScore(@RequestBody @Valid UploadScoreRequest request) {
+		HttpStatus response = scoreManager.uploadScore(request);
+		return new ResponseEntity<>(response, response);
 	}
 }

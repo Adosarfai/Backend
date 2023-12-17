@@ -273,11 +273,11 @@ class UserControllerTest {
 		when(userManager.loginUser(request)).thenReturn(response);
 
 		// Act
-		ResponseEntity<Void> result = userController.loginUser(request);
+		ResponseEntity<HttpStatus> result = userController.loginUser(request);
 
 		// Assert
 		assertEquals(HttpStatus.UNAUTHORIZED, result.getStatusCode());
-		assertNull(result.getBody());
+		assertEquals(HttpStatus.UNAUTHORIZED, result.getBody());
 		verify(userManager).loginUser(request);
 	}
 
