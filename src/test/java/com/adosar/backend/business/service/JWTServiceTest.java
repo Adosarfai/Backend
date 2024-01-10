@@ -10,25 +10,33 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SuppressWarnings("UnusedShould")
 class JWTServiceTest {
+
 	// createJWT returns a non-null string with valid input
 	@Test
-	void test_createJWT_returns_non_null_string_with_valid_input() {
+	void test_createJWT_returns_a_non_null_string_with_valid_input() {
+		// Arrange
+		Integer userId = 123;
+
 		// Act
-		String jwt = JWTService.createJWT(123);
+		String jwt = JWTService.createJWT(userId);
+
 		// Assert
 		assertNotNull(jwt);
 	}
 
-	// JWT token has unique ID
+	// JWT token has an unique ID
 	@Test
-	void test_unique_id() {
+	void test_jwt_token_has_an_unique_id() {
 		// Arrange
-		String jwt = JWTService.createJWT(123);
+		Integer userId = 123;
 
 		// Act
+		String jwt = JWTService.createJWT(userId);
 		DecodedJWT decodedJWT = JWTService.verifyJWT(jwt);
+
+		// Assert
+		assertNotNull(decodedJWT);
 		assertNotNull(decodedJWT.getId());
 	}
 
@@ -37,17 +45,16 @@ class JWTServiceTest {
 	void test_jwt_token_has_expected_expiration_time() {
 		// Arrange
 		Integer userId = 123;
-		String jwt = JWTService.createJWT(userId);
 
 		// Act
+		String jwt = JWTService.createJWT(userId);
 		DecodedJWT decodedJWT = JWTService.verifyJWT(jwt);
-
-		// Assert
-		assertNotNull(decodedJWT);
-
+		assert decodedJWT != null;
 		Instant expirationTime = decodedJWT.getExpiresAt().toInstant().truncatedTo(ChronoUnit.SECONDS);
 		Instant expectedExpirationTime = Instant.now().plusSeconds(604800).truncatedTo(ChronoUnit.SECONDS);
 
+		// Assert
+		assertNotNull(decodedJWT);
 		assertEquals(expectedExpirationTime, expirationTime);
 	}
 
@@ -61,7 +68,6 @@ class JWTServiceTest {
 		String jwt = JWTService.createJWT(userId);
 		DecodedJWT decodedJWT = JWTService.verifyJWT(jwt);
 
-
 		// Assert
 		assertNotNull(decodedJWT);
 		assertEquals("adosar", decodedJWT.getIssuer());
@@ -71,20 +77,21 @@ class JWTServiceTest {
 
 	// verifyJWT returns a non-null DecodedJWT object with valid input
 	@Test
-	void test_verifyJWT_returns_non_null_DecodedJWT_with_valid_input() {
+	void test_verifyJWT_returns_a_non_null_DecodedJWT_object_with_valid_input() {
 		// Arrange
-		String jwt = JWTService.createJWT(1);
+		Integer userId = 123;
 
 		// Act
+		String jwt = JWTService.createJWT(userId);
 		DecodedJWT decodedJWT = JWTService.verifyJWT(jwt);
 
 		// Assert
 		assertNotNull(decodedJWT);
 	}
 
-	// JWT token is signed with expected algorithm and secret
+	// JWT token is signed with expected algorithm, secret, issuer and subject
 	@Test
-	void test_jwt_token_is_signed_with_expected_algorithm_and_secret() {
+	void test_jwt_token_is_signed_with_expected_algorithm_secret_issuer_and_subject() {
 		// Arrange
 		Integer userId = 123;
 		String expectedIssuer = "adosar";
@@ -129,24 +136,9 @@ class JWTServiceTest {
 		});
 	}
 
-	// JWT token has expected issuer and subject
-	@Test
-	void test_jwt_token_has_expected_issuer_and_subject() {
-		// Arrange
-		Integer userId = 123;
-
-		// Act
-		String jwt = JWTService.createJWT(userId);
-		DecodedJWT decodedJWT = JWTService.verifyJWT(jwt);
-
-		// Assert
-		assertEquals("adosar", decodedJWT.getIssuer());
-		assertEquals("user auth", decodedJWT.getSubject());
-	}
-
 	// JWT token has expected not-before time
 	@Test
-	void test_not_before_time() {
+	void test_jwt_token_has_expected_not_before_time() {
 		// Arrange
 		String jwt = JWTService.createJWT(123);
 

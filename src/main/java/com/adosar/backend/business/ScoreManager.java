@@ -15,6 +15,6 @@ public interface ScoreManager {
 	GetScoreByIdResponse getScoreById(GetScoreByIdRequest request);
 
 	GetScoresByMapIdResponse getScoresByMapId(GetScoresByMapIdRequest request);
-	
+
 	HttpStatus uploadScore(UploadScoreRequest request);
 }

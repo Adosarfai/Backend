@@ -23,7 +23,6 @@ import com.password4j.BadParametersException;
 import com.password4j.Hash;
 import com.password4j.Password;
 import lombok.AllArgsConstructor;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

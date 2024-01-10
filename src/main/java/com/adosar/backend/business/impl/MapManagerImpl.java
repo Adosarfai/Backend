@@ -5,10 +5,7 @@ import com.adosar.backend.business.converter.MapConverter;
 import com.adosar.backend.business.exception.NotFoundException;
 import com.adosar.backend.business.exception.UnauthorizedException;
 import com.adosar.backend.business.request.map.*;
-import com.adosar.backend.business.response.map.CreateNewMapResponse;
-import com.adosar.backend.business.response.map.GetAllMapsResponse;
-import com.adosar.backend.business.response.map.GetMapByIdResponse;
-import com.adosar.backend.business.response.map.GetMapsByUserIdResponse;
+import com.adosar.backend.business.response.map.*;
 import com.adosar.backend.business.service.JWTService;
 import com.adosar.backend.domain.Map;
 import com.adosar.backend.domain.Removed;
@@ -190,6 +187,29 @@ public class MapManagerImpl implements MapManager {
 		} catch (Exception exception) {
 			LOGGER.log(Level.SEVERE, exception.toString(), exception);
 			return HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+	}
+
+	@Override
+	public MapQueryResponse getMapsByPartialData(MapQueryRequest request) {
+		try {
+			if (request.getPage() < 0) throw new AssertionError("'page' must be at least 0");
+
+			List<MapEntity> mapEntities = mapRepository.getUserEntitiesByTitleContainsAndCreationDateBeforeAndCreationDateAfter(request.getTitle(), request.getBefore(), request.getAfter(), PageRequest.of(request.getPage(), 10)).orElseThrow(() ->
+					new NotFoundException(String.format("Could not find any maps where title contains %s", request.getTitle()))
+			);
+			List<Map> maps = mapEntities.stream().map(MapConverter::convert).toList();
+
+			return new MapQueryResponse(maps, HttpStatus.OK);
+		} catch (NotFoundException exception) {
+			LOGGER.log(Level.FINE, exception.toString(), exception);
+			return new MapQueryResponse(null, HttpStatus.NOT_FOUND);
+		} catch (AssertionError exception) {
+			LOGGER.log(Level.FINE, exception.toString(), exception);
+			return new MapQueryResponse(null, HttpStatus.BAD_REQUEST);
+		} catch (Exception exception) {
+			LOGGER.log(Level.SEVERE, exception.toString(), exception);
+			return new MapQueryResponse(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 }

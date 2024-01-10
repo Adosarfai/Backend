@@ -1,10 +1,7 @@
 package com.adosar.backend.business;
 
 import com.adosar.backend.business.request.map.*;
-import com.adosar.backend.business.response.map.CreateNewMapResponse;
-import com.adosar.backend.business.response.map.GetAllMapsResponse;
-import com.adosar.backend.business.response.map.GetMapByIdResponse;
-import com.adosar.backend.business.response.map.GetMapsByUserIdResponse;
+import com.adosar.backend.business.response.map.*;
 import org.springframework.http.HttpStatus;
 
 public interface MapManager {
@@ -15,6 +12,8 @@ public interface MapManager {
 	GetMapByIdResponse getMapById(GetMapByIdRequest request);
 
 	GetMapsByUserIdResponse getMapsByUserId(GetMapsByUserIdRequest request);
+
+	MapQueryResponse getMapsByPartialData(MapQueryRequest request);
 
 	HttpStatus uploadMap(UploadMapRequest request);
 }

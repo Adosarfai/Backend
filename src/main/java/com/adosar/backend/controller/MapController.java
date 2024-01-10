@@ -2,10 +2,7 @@ package com.adosar.backend.controller;
 
 import com.adosar.backend.business.MapManager;
 import com.adosar.backend.business.request.map.*;
-import com.adosar.backend.business.response.map.CreateNewMapResponse;
-import com.adosar.backend.business.response.map.GetAllMapsResponse;
-import com.adosar.backend.business.response.map.GetMapByIdResponse;
-import com.adosar.backend.business.response.map.GetMapsByUserIdResponse;
+import com.adosar.backend.business.response.map.*;
 import com.adosar.backend.domain.Map;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -14,6 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.Instant;
+import java.util.Date;
 
 @RestController
 @CrossOrigin(allowCredentials = "true", origins = {"https://dev.adosar.io:5173", "https://adosar.io", "https://localhost:5137"})
@@ -55,5 +55,20 @@ public class MapController {
 		UploadMapRequest request = new UploadMapRequest(file, mapId, jwt);
 		HttpStatus response = mapManager.uploadMap(request);
 		return new ResponseEntity<>(null, response);
+	}
+
+	@GetMapping(path = "/query/{page}")
+	public ResponseEntity<Iterable<Map>> getMapsByPartialData(@PathVariable Integer page, @RequestParam(value = "title", required = false) String title, @RequestParam(value = "before", required = false) Date before, @RequestParam(value = "after", required = false) Date after) {
+		if (title == null || title.isEmpty()) title = "";
+		if (before == null) before = Date.from(Instant.now());
+		if (after == null) after = Date.from(Instant.EPOCH);
+		MapQueryRequest request = MapQueryRequest.builder()
+				.title(title)
+				.before(before)
+				.after(after)
+				.page(page)
+				.build();
+		MapQueryResponse response = mapManager.getMapsByPartialData(request);
+		return new ResponseEntity<>(response.getMaps(), response.getHttpStatus());
 	}
 }

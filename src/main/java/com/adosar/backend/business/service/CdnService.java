@@ -9,7 +9,7 @@ import java.io.OutputStream;
 
 public final class CdnService {
 	private static final String CDN_PATH = System.getenv("CDN_PATH");
-	
+
 	public static void saveFile(byte[] data, String path, String filename) throws IOException {
 		String fullPath = FilenameUtils.separatorsToSystem(String.format("%s%s\\%s", CDN_PATH, path, filename));
 		File file = new File(fullPath);

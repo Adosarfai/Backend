@@ -44,7 +44,7 @@ public class ScoreController {
 		GetScoresByMapIdResponse response = scoreManager.getScoresByMapId(request);
 		return new ResponseEntity<>(response.getScores(), response.getHttpStatus());
 	}
-	
+
 	@PostMapping(path = "/")
 	public ResponseEntity<HttpStatus> uploadScore(@RequestBody @Valid UploadScoreRequest request) {
 		HttpStatus response = scoreManager.uploadScore(request);

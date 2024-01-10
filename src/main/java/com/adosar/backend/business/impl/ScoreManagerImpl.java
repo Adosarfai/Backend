@@ -102,18 +102,17 @@ public class ScoreManagerImpl implements ScoreManager {
 	@Override
 	public HttpStatus uploadScore(UploadScoreRequest request) {
 		try {
-			
+
 			ReplayEntity replayEntity = ReplayEntity.builder().timings(request.getTimings()).pauses(request.getPauses()).build();
 			MapEntity mapEntity = MapEntity.builder().mapId(request.getMapId()).build();
 			UserEntity userEntity = UserEntity.builder().userId(request.getUserId()).build();
 			ScoreEntity scoreEntity = ScoreEntity.builder().map(mapEntity).user(userEntity).replay(replayEntity).timeSet(new Date()).speed(request.getSpeed()).points(request.getPoints()).build();
-			
+
 			replayRepository.saveAndFlush(replayEntity);
 			scoreRepository.saveAndFlush(scoreEntity);
-			
+
 			return HttpStatus.CREATED;
-		}
-		catch (Exception exception) {
+		} catch (Exception exception) {
 			LOGGER.log(Level.SEVERE, exception.toString(), exception);
 			return HttpStatus.INTERNAL_SERVER_ERROR;
 		}
