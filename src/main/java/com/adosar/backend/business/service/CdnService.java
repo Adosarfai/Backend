@@ -1,12 +1,16 @@
 package com.adosar.backend.business.service;
 
+import lombok.AllArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+@Service
+@AllArgsConstructor
 public final class CdnService {
 	private static final String CDN_PATH = System.getenv("CDN_PATH");
 

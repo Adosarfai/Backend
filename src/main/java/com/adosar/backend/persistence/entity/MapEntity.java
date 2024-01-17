@@ -25,12 +25,12 @@ public class MapEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "map_id", length = 10, nullable = false, updatable = false)
-	private Integer mapId;
+	public Integer mapId;
 
 	@NotNull
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "user", nullable = false, updatable = false)
-	private UserEntity user;
+	public UserEntity user;
 
 	@NotBlank
 	@NotEmpty
@@ -38,7 +38,7 @@ public class MapEntity {
 	@Length(min = 1, max = 250)
 	@NotNull
 	@Column(name = "title", length = 250, nullable = false)
-	private String title;
+	public String title;
 
 	@Length(min = 1, max = 100)
 	@Size(min = 1, max = 100)
@@ -46,40 +46,44 @@ public class MapEntity {
 	@NotEmpty
 	@NotNull
 	@Column(name = "artist", length = 100, nullable = false)
-	private String artist;
+	public String artist;
 
 	@NotNull
 	@Builder.Default
 	@Column(name = "published", nullable = false)
-	private Boolean published = false;
+	public Boolean published = false;
 
 	@NotNull
 	@Enumerated
 	@Builder.Default
 	@Column(name = "removed", nullable = false)
-	private Removed removed = Removed.NOT_REMOVED;
+	public Removed removed = Removed.NOT_REMOVED;
 
 	@Length(max = 200)
 	@Size(max = 2000)
 	@Column(name = "removal_reason", length = 200)
-	private String removalReason;
+	public String removalReason;
 
 	@Length(min = 64, max = 64)
 	@Size(min = 64, max = 64)
 	@Nullable
 	@Column(name = "hash", length = 64)
-	private String hash;
+	public String hash;
 
 	@PastOrPresent
 	@NotNull
 	@CreationTimestamp
 	@Column(name = "creation_date", nullable = false, updatable = false)
-	private Date creationDate;
+	public Date creationDate;
 
 	@PastOrPresent
 	@NotNull
 	@UpdateTimestamp
 	@Column(name = "last_update", nullable = false)
-	private Date lastUpdate;
+	public Date lastUpdate;
 
+	@Override
+	public String toString() {
+		return String.format("(user=%s, mapId=%s, creationDate=%s, hash=%s, title=%s, artist=%s, lastUpdate=%s, removed=%s, published=%s, removalReason=%s)", user, mapId, creationDate, hash, title, artist, lastUpdate, removed, published, removalReason);
+	}
 }

@@ -2,11 +2,11 @@ package com.adosar.backend.business.service;
 
 import com.password4j.Hash;
 import com.password4j.Password;
-import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@NoArgsConstructor
+@AllArgsConstructor
 public final class PasswordService {
 
 	/**

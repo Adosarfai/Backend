@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
-@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,9 +12,14 @@ public class Badge {
 
 	@Id
 	@NotNull
-	private Integer badgeId;
+	public Integer badgeId;
 
 	@NotNull
 	@Setter
-	private String name;
+	public String name;
+
+	@Override
+	public String toString() {
+		return String.format("(badgeId=%s, name=%s)", badgeId, name);
+	}
 }

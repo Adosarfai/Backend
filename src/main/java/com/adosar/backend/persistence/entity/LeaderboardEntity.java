@@ -21,20 +21,25 @@ public class LeaderboardEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "leaderboard_id", length = 10, nullable = false, updatable = false)
-	private Integer leaderboardId;
+	public Integer leaderboardId;
 
 	@NotNull
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "user", nullable = false, updatable = false)
-	private UserEntity user;
+	public UserEntity user;
 
 	@Size(min = 1)
 	@NotNull
 	@ManyToMany
-	private List<MapEntity> maps;
+	public List<MapEntity> maps;
 
 	@Size
 	@NotNull
 	@ManyToMany
-	private List<UserEntity> players;
+	public List<UserEntity> players;
+
+	@Override
+	public String toString() {
+		return String.format("(user=%s, leaderboardId=%s, maps=%s, players=%s)", user, leaderboardId, maps, players);
+	}
 }

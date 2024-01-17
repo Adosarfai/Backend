@@ -10,9 +10,11 @@ import com.adosar.backend.business.response.user.GetAllUsersResponse;
 import com.adosar.backend.business.response.user.GetUserByIdResponse;
 import com.adosar.backend.business.response.user.LoginUserResponse;
 import com.adosar.backend.business.response.user.UserQueryResponse;
+import com.adosar.backend.business.service.AuthorizationService;
 import com.adosar.backend.business.service.CdnService;
 import com.adosar.backend.business.service.JWTService;
 import com.adosar.backend.business.service.PasswordService;
+import com.adosar.backend.domain.Authorization;
 import com.adosar.backend.domain.Privilege;
 import com.adosar.backend.domain.User;
 import com.adosar.backend.persistence.UserRepository;
@@ -29,10 +31,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.InvalidParameterException;
 import java.time.Instant;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,7 +44,7 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public HttpStatus activateUser(ActivateUserRequest request) {
 		try {
-			if (request.getId() < 1) throw new AssertionError("'id' must be at least 1");
+			if (request.getId() < 1) throw new AssertionError(String.format("id %s must at least be 0", request.getId()));
 
 			// Get user
 			UserEntity userEntity = userRepository.getUserEntityByUserId(request.getId()).orElseThrow(() ->
@@ -103,7 +102,6 @@ public class UserManagerImpl implements UserManager {
 					.build();
 
 			userRepository.saveAndFlush(newUser);
-			// TODO: Send verification email
 
 			return HttpStatus.CREATED;
 		} catch (BadParametersException | InvalidParameterException exception) {
@@ -137,7 +135,7 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public GetUserByIdResponse getUserById(GetUserByIdRequest request) {
 		try {
-			if (request.getId() < 1) throw new AssertionError("'id' must be at least 1");
+			if (request.getId() < 1) throw new AssertionError(String.format("id %s must at least be 0", request.getId()));
 
 			// Get user
 			UserEntity result = userRepository.findById(request.getId()).orElseThrow(() -> new NotFoundException(String.format("User with ID %s was not found", request.getId())));
@@ -176,7 +174,7 @@ public class UserManagerImpl implements UserManager {
 				throw new UnauthorizedException("Password hashes do not match");
 
 			// Create jwt
-			String jwt = JWTService.createJWT(user.getUserId());
+			String jwt = JWTService.createJWT(user.getUserId(), user.getPrivilege());
 
 			return new LoginUserResponse(jwt, HttpStatus.OK);
 
@@ -195,7 +193,7 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public HttpStatus removeUser(RemoveUserRequest request) {
 		try {
-			if (request.getId() < 1) throw new AssertionError("'id' must be at least 1");
+			if (request.getId() < 1) throw new AssertionError(String.format("id %s must at least be 0", request.getId()));
 
 			// Get user
 			UserEntity userEntity = userRepository.getUserEntityByUserId(request.getId()).orElseThrow(() ->
@@ -231,9 +229,9 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public UserQueryResponse getUsersByPartialData(UserQueryRequest request) {
 		try {
-			if (request.getPage() < 0) throw new AssertionError("'page' must be at least 0");
+			if (request.getPage() < 0) throw new AssertionError(String.format("page %s must at least be 0", request.getPage()));
 
-			List<UserEntity> userEntities = userRepository.getUserEntitiesByUsernameContainsAndCreationDateBeforeAndCreationDateAfter(request.getUsername(), request.getBefore(), request.getAfter(), PageRequest.of(request.getPage(), 10)).orElseThrow(() ->
+			List<UserEntity> userEntities = userRepository.getUserEntitiesByUsernameContainsAndCreationDateBeforeAndCreationDateAfterAndPrivilegeInAllIgnoreCaseOrderByUserIdAsc(request.getUsername(), request.getBefore(), request.getAfter(), List.of(Privilege.USER, Privilege.ADMIN), PageRequest.of(request.getPage(), 10)).orElseThrow(() ->
 					new NotFoundException(String.format("Could not find any users where username contains %s", request.getUsername()))
 			);
 			List<User> users = userEntities.stream().map(UserConverter::convert).toList();
@@ -291,6 +289,34 @@ public class UserManagerImpl implements UserManager {
 
 			return HttpStatus.ACCEPTED;
 		} catch (JWTVerificationException | UnauthorizedException exception) {
+			LOGGER.log(Level.FINE, exception.toString(), exception);
+			return HttpStatus.UNAUTHORIZED;
+		} catch (Exception exception) {
+			LOGGER.log(Level.SEVERE, exception.toString(), exception);
+			return HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+	}
+
+	@Override
+	public HttpStatus toggleUserBan(String jwt, Integer id) {
+		try {
+			Authorization authorization = AuthorizationService.isAuthorized(jwt, Privilege.ADMIN, userRepository);
+			if (Boolean.FALSE.equals(authorization.isAuthorized)) {
+				throw new UnauthorizedException("Unauthorized");
+			}
+
+			Optional<UserEntity> userEntity = userRepository.getUserEntityByUserId(id);
+
+			if (userEntity.isEmpty()) {
+				throw new NotFoundException(String.format("User with id %s could not be found", id));
+			}
+
+			userEntity.get().setPrivilege(userEntity.get().getPrivilege() == Privilege.BANNED ? Privilege.USER : Privilege.BANNED);
+
+			userRepository.saveAndFlush(userEntity.get());
+
+			return HttpStatus.ACCEPTED;
+		} catch (UnauthorizedException exception) {
 			LOGGER.log(Level.FINE, exception.toString(), exception);
 			return HttpStatus.UNAUTHORIZED;
 		} catch (Exception exception) {

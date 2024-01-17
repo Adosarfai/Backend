@@ -8,47 +8,51 @@ import lombok.*;
 import java.util.Date;
 
 @Getter
-@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Map {
 
 	@NotNull
-	private User user;
+	public User user;
 
 	@NotNull
 	@Id
-	private Integer mapId;
+	public Integer mapId;
 
 	@NotNull
-	private Date creationDate;
+	public Date creationDate;
 
 	@Setter
 	@Nullable
-	private String hash;
+	public String hash;
 
 	@Setter
 	@NotNull
-	private String title;
+	public String title;
 
 	@Setter
 	@NotNull
-	private String artist;
+	public String artist;
 
 	@Setter
 	@NotNull
-	private Date lastUpdate;
+	public Date lastUpdate;
 
 	@Setter
 	@NotNull
-	private Removed removed;
+	public Removed removed;
 
 	@Setter
 	@NotNull
-	private Boolean published;
+	public Boolean published;
 
 	@Setter
 	@Nullable
-	private String removalReason;
+	public String removalReason;
+
+	@Override
+	public String toString() {
+		return String.format("(user=%s, mapId=%s, creationDate=%s, hash=%s, title=%s, artist=%s, lastUpdate=%s, removed=%s, published=%s, removalReason=%s)", user, mapId, creationDate, hash, title, artist, lastUpdate, removed, published, removalReason);
+	}
 }

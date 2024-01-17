@@ -103,38 +103,12 @@ public class UserController {
 	}
 
 	/**
-	 * Deactivates user account
 	 *
-	 * @param id userId
-	 * @return 200 OK
-	 * @should return 404 NOT_FOUND when no user with the requested id exists
-	 * @should return 409 CONFLICT when the user is already removed or is banned
-	 * @see RemoveUserRequest
-	 * @see HttpStatus
 	 */
-	@DeleteMapping("/{id}")
-	public ResponseEntity<HttpStatus> removeUser(@PathVariable Integer id) {
-		RemoveUserRequest request = new RemoveUserRequest(id);
-		HttpStatus response = userManager.removeUser(request);
-		return new ResponseEntity<>(null, response);
-	}
-
-
-	/**
-	 * Activates user account
-	 *
-	 * @param id userId
-	 * @return 200 OK
-	 * @should return 404 NOT_FOUND when no user with the requested id exists
-	 * @should return 409 CONFLICT when the user is already activated or is banned
-	 * @see ActivateUserRequest
-	 * @see HttpStatus
-	 */
-	@PatchMapping("/{id}")
-	public ResponseEntity<HttpStatus> activateUser(@PathVariable Integer id) {
-		ActivateUserRequest request = new ActivateUserRequest(id);
-		HttpStatus response = userManager.activateUser(request);
-		return new ResponseEntity<>(null, response);
+	@PutMapping(path = "/ban/{id}")
+	public ResponseEntity<HttpStatus> toggleUserBan(@PathVariable Integer id, @CookieValue(name = "jwt", defaultValue = "") String jwt) {
+		HttpStatus response = userManager.toggleUserBan(jwt, id);
+		return new ResponseEntity<>(response, response);
 	}
 
 	/**

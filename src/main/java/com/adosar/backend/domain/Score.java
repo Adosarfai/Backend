@@ -2,36 +2,43 @@ package com.adosar.backend.domain;
 
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 @Getter
-@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Score {
 
 	@NotNull
-	private Map map;
+	public Map map;
 
 	@NotNull
-	private User user;
+	public User user;
 
 	@NotNull
-	private Float speed;
+	public Float speed;
 
 	@NotNull
-	private Date timeSet;
+	public Date timeSet;
 
 	@NotNull
-	private Replay replay;
+	public Replay replay;
 
 	@NotNull
-	private Integer points;
+	public Integer points;
 
 	@NotNull
 	@Id
-	private Integer scoreId;
+	public Integer scoreId;
+
+	@Override
+	public String toString() {
+		return String.format("(map=%s, user=%s, speed=%s, timeSet=%s, replay=%s, points=%s, scoreId=%s)", map, user, speed, timeSet, replay, points, scoreId);
+	}
 }

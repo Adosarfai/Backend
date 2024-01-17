@@ -8,36 +8,40 @@ import lombok.*;
 import java.util.List;
 
 @Getter
-@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Pack {
 
 	@NotNull
-	private User user;
+	public User user;
 
 	@NotNull
 	@Id
-	private Integer packId;
+	public Integer packId;
 
 	@Setter
 	@NotNull
-	private String title;
+	public String title;
 
 	@Setter
 	@NotNull
-	private List<Map> maps;
+	public List<Map> maps;
 
 	@Setter
 	@NotNull
-	private Removed removed;
+	public Removed removed;
 
 	@Setter
 	@NotNull
-	private boolean published;
+	public boolean published;
 
 	@Setter
 	@Nullable
-	private String removalReason;
+	public String removalReason;
+
+	@Override
+	public String toString() {
+		return String.format("(user=%s, packId=%s, title=%s, maps=%s, removed=%s, published=%s, removalReason=%s)", user, packId, title, maps, removed, published, removalReason);
+	}
 }

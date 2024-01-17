@@ -12,7 +12,6 @@ import com.adosar.backend.business.response.score.GetScoreByIdResponse;
 import com.adosar.backend.business.response.score.GetScoresByMapIdResponse;
 import com.adosar.backend.business.response.score.UploadScoreResponse;
 import com.adosar.backend.domain.Score;
-import com.adosar.backend.persistence.MapRepository;
 import com.adosar.backend.persistence.ReplayRepository;
 import com.adosar.backend.persistence.ScoreRepository;
 import com.adosar.backend.persistence.entity.MapEntity;
@@ -111,7 +110,7 @@ public class ScoreManagerImpl implements ScoreManager {
 			ScoreEntity scoreEntity = ScoreEntity.builder().map(mapEntity).user(userEntity).replay(replayEntity).timeSet(new Date()).speed(request.getSpeed()).points(request.getPoints()).build();
 
 			Score score = ScoreConverter.convert(scoreEntity);
-			
+
 			replayRepository.saveAndFlush(replayEntity);
 			scoreRepository.saveAndFlush(scoreEntity);
 

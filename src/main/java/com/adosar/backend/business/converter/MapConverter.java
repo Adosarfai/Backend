@@ -9,16 +9,16 @@ public final class MapConverter {
 
 	public static MapEntity convert(Map map) {
 		return MapEntity.builder()
-				.user(UserConverter.convert(map.getUser()))
 				.mapId(map.getMapId())
-				.creationDate(map.getCreationDate())
-				.hash(map.getHash())
+				.user(UserConverter.convert(map.getUser()))
 				.title(map.getTitle())
 				.artist(map.getArtist())
-				.lastUpdate(map.getLastUpdate())
-				.removed(map.getRemoved())
 				.published(map.getPublished())
+				.removed(map.getRemoved())
 				.removalReason(map.getRemovalReason())
+				.hash(map.getHash())
+				.creationDate(map.getCreationDate())
+				.lastUpdate(map.getLastUpdate())
 				.build();
 	}
 

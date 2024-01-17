@@ -17,10 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
-import org.springframework.messaging.support.GenericMessage;
 import org.springframework.web.bind.annotation.*;
-
-import java.nio.charset.StandardCharsets;
 
 @RestController
 @CrossOrigin(allowCredentials = "true", origins = {"https://dev.adosar.io:5173", "https://adosar.io", "https://localhost:5137"})

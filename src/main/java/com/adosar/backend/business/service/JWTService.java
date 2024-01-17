@@ -1,5 +1,6 @@
 package com.adosar.backend.business.service;
 
+import com.adosar.backend.domain.Privilege;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -21,7 +22,7 @@ public final class JWTService {
 	 * @param userId user ID
 	 * @return JWT token
 	 */
-	public static String createJWT(Integer userId) {
+	public static String createJWT(Integer userId, Privilege privilege) {
 		if (userId == null) throw new NullPointerException();
 
 		Algorithm algorithm = Algorithm.HMAC512(System.getenv("HMAC512_SECRET"));
@@ -29,6 +30,7 @@ public final class JWTService {
 				.withIssuer("adosar")
 				.withSubject("user auth")
 				.withClaim("userId", userId)
+				.withClaim("privilege", privilege.toString())
 				.withIssuedAt(Instant.now())
 				.withExpiresAt(Instant.now().plusSeconds(604800))
 				.withJWTId(UUID.randomUUID().toString())

@@ -4,16 +4,17 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath "gradle.plugin.com.github.johnrengelman:shadow:7.1.2"
+        classpath "gradle.plugin.com.github.johnrengelman:shadow:8.0.0"
     }
 }
 
 plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow' version '8.1.1'
-    id 'org.springframework.boot' version '3.1.4'
-    id 'io.spring.dependency-management' version '1.1.3'
-    id 'org.sonarqube' version '4.4.1.3373'
+    id 'org.springframework.boot' version '3.2.1'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'org.sonarqube' version '4.2.1.3168'
+    id 'com.github.ben-manes.versions' version '0.50.0'
     id 'jacoco'
 }
 
@@ -39,7 +40,7 @@ jacocoTestReport {
             fileTree(dir: it, includes: [
                     "com/adosar/backend/business/impl/**/*",
                     "com/adosar/backend/business/service/**/*",
-                    "com/adosar/backend/controller/**/*",
+                    "com/adosar/backend/business/converter/**/*",
             ])
         }))
     }
@@ -51,33 +52,33 @@ sonar {
         property "sonar.projectName", "Backend"
         property "sonar.host.url", "http://localhost:9000"
         property "sonar.qualitygate.wait", true
-        property "sonar.token", "sqp_d0ea4ba496d181607f2360309ef2c1af353d8599"
+        property "sonar.token", "sqp_d0ea4ba496d181607f2360309ef2c1af353d8599" // This sonar token is for local only
         property "sonar.coverage.inclusions", [
                 "src/main/java/com/adosar/backend/business/impl/**/*",
                 "src/main/java/com/adosar/backend/business/service/**/*",
-                "src/main/java/com/adosar/backend/controller/**/*",
+                "src/main/java/com/adosar/backend/business/converter/**/*",
         ]
     }
 }
 
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework:spring-messaging'
-    implementation 'org.springframework.boot:spring-boot-starter-websocket'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'com.google.guava:guava:32.1.2-jre'
-    implementation 'org.jetbrains:annotations:24.0.0'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.2.1'
+    implementation 'org.springframework:spring-messaging:6.1.3'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket:3.2.1'
+    implementation 'org.springframework.boot:spring-boot-starter-web:3.2.1'
+    implementation 'org.springframework.boot:spring-boot-starter-validation:3.2.1'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator:3.2.1'
+    implementation 'com.google.guava:guava:33.0.0-jre'
+    implementation 'org.jetbrains:annotations:24.1.0'
     implementation 'com.password4j:password4j:1.7.3'
     implementation 'commons-io:commons-io:2.11.0'
-    runtimeOnly 'com.mysql:mysql-connector-j'
+    runtimeOnly 'com.mysql:mysql-connector-j:8.3.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    compileOnly 'org.projectlombok:lombok:1.18.28'
-    annotationProcessor 'org.projectlombok:lombok:1.18.28'
-    testCompileOnly 'org.projectlombok:lombok:1.18.28'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.28'
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    testCompileOnly 'org.projectlombok:lombok:1.18.30'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
     implementation 'com.auth0:java-jwt:4.4.0'
 }
 

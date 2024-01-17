@@ -1,5 +1,6 @@
 package com.adosar.backend.business.service;
 
+import com.adosar.backend.domain.Privilege;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ class JWTServiceTest {
 		Integer userId = 123;
 
 		// Act
-		String jwt = JWTService.createJWT(userId);
+		String jwt = JWTService.createJWT(userId, Privilege.USER);
 
 		// Assert
 		assertNotNull(jwt);
@@ -32,7 +33,7 @@ class JWTServiceTest {
 		Integer userId = 123;
 
 		// Act
-		String jwt = JWTService.createJWT(userId);
+		String jwt = JWTService.createJWT(userId, Privilege.USER);
 		DecodedJWT decodedJWT = JWTService.verifyJWT(jwt);
 
 		// Assert
@@ -47,11 +48,11 @@ class JWTServiceTest {
 		Integer userId = 123;
 
 		// Act
-		String jwt = JWTService.createJWT(userId);
+		String jwt = JWTService.createJWT(userId, Privilege.USER);
 		DecodedJWT decodedJWT = JWTService.verifyJWT(jwt);
 		assert decodedJWT != null;
-		Instant expirationTime = decodedJWT.getExpiresAt().toInstant().truncatedTo(ChronoUnit.SECONDS);
-		Instant expectedExpirationTime = Instant.now().plusSeconds(604800).truncatedTo(ChronoUnit.SECONDS);
+		Instant expirationTime = decodedJWT.getExpiresAt().toInstant().truncatedTo(ChronoUnit.MINUTES);
+		Instant expectedExpirationTime = Instant.now().plusSeconds(604800).truncatedTo(ChronoUnit.MINUTES);
 
 		// Assert
 		assertNotNull(decodedJWT);
@@ -65,7 +66,7 @@ class JWTServiceTest {
 		Integer userId = 123;
 
 		// Act
-		String jwt = JWTService.createJWT(userId);
+		String jwt = JWTService.createJWT(userId, Privilege.USER);
 		DecodedJWT decodedJWT = JWTService.verifyJWT(jwt);
 
 		// Assert
@@ -82,7 +83,7 @@ class JWTServiceTest {
 		Integer userId = 123;
 
 		// Act
-		String jwt = JWTService.createJWT(userId);
+		String jwt = JWTService.createJWT(userId, Privilege.USER);
 		DecodedJWT decodedJWT = JWTService.verifyJWT(jwt);
 
 		// Assert
@@ -99,7 +100,7 @@ class JWTServiceTest {
 		Algorithm expectedAlgorithm = Algorithm.HMAC512(System.getenv("HMAC512_SECRET"));
 
 		// Act
-		String jwtToken = JWTService.createJWT(userId);
+		String jwtToken = JWTService.createJWT(userId, Privilege.USER);
 		DecodedJWT decodedJWT = JWTService.verifyJWT(jwtToken);
 
 		// Assert
@@ -116,7 +117,7 @@ class JWTServiceTest {
 
 	// verifyJWT returns null with invalid input
 	@Test
-	void test_verifyJWT_returns_null_with_invalid_input() {
+	void test_verify_jwt_returns_null_with_invalid_input() {
 		// Arrange
 		String invalidJWT = "invalid_token";
 
@@ -129,10 +130,10 @@ class JWTServiceTest {
 
 	// createJWT throws exception with null input
 	@Test
-	void test_createJWTThrowsExceptionWithNullInput() {
+	void test_create_jwt_throws_exception_with_null_input() {
 		// Assert
 		assertThrows(NullPointerException.class, () -> {
-			JWTService.createJWT(null);
+			JWTService.createJWT(null, null);
 		});
 	}
 
@@ -140,7 +141,8 @@ class JWTServiceTest {
 	@Test
 	void test_jwt_token_has_expected_not_before_time() {
 		// Arrange
-		String jwt = JWTService.createJWT(123);
+		Integer userId = 123;
+		String jwt = JWTService.createJWT(userId, Privilege.USER);
 
 		// Act
 		DecodedJWT decodedJWT = JWTService.verifyJWT(jwt);

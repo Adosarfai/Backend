@@ -23,4 +23,6 @@ public interface UserManager {
 	UserQueryResponse getUsersByPartialData(UserQueryRequest request);
 
 	HttpStatus patchUserWithPartialData(PatchUserWithPartialDataRequest request, String jwt);
+
+	HttpStatus toggleUserBan(String jwt, Integer id);
 }

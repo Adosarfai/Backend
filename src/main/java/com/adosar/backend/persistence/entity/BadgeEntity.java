@@ -19,7 +19,7 @@ public class BadgeEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "badge_id", length = 10, nullable = false, updatable = false)
-	private Integer badgeId;
+	public Integer badgeId;
 
 	@Length(max = 100)
 	@Size(max = 100)
@@ -28,5 +28,10 @@ public class BadgeEntity {
 	@NotNull
 	@Column(name = "name", length = 100, nullable = false)
 	@Setter
-	private String name;
+	public String name;
+
+	@Override
+	public String toString() {
+		return String.format("(badgeId=%s, name=%s)", badgeId, name);
+	}
 }

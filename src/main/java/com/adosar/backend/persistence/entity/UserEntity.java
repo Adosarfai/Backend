@@ -22,7 +22,7 @@ public class UserEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id", length = 10, nullable = false, updatable = false)
-	private Integer userId;
+	public Integer userId;
 
 	@Length(min = 3, max = 50)
 	@Size(min = 3, max = 50)
@@ -31,7 +31,7 @@ public class UserEntity {
 	@NotNull
 	@Column(name = "username", length = 50, nullable = false)
 	@Setter
-	private String username;
+	public String username;
 
 	@Email(regexp = ".+@.+\\..+")
 	@NotBlank
@@ -40,7 +40,7 @@ public class UserEntity {
 	@JsonIgnore
 	@Column(name = "email", nullable = false)
 	@Setter
-	private String email;
+	public String email;
 
 	@Length(max = 200)
 	@Size(max = 200)
@@ -50,7 +50,7 @@ public class UserEntity {
 	@JsonIgnore
 	@Column(name = "password", length = 200, nullable = false)
 	@Setter
-	private String password;
+	public String password;
 
 	@Length(max = 2000)
 	@Size(max = 2000)
@@ -60,22 +60,27 @@ public class UserEntity {
 	@Builder.Default
 	@Column(name = "description", length = 2000, nullable = false)
 	@Setter
-	private String description = "I am new to Adosar!";
+	public String description = "I am new to Adosar!";
 
 	@NotNull
 	@ManyToMany
 	@Setter
-	@JoinColumn(nullable = false)
-	private Set<BadgeEntity> badges;
+	public Set<BadgeEntity> badges;
 
 	@NotNull
 	@Enumerated
+	@Setter
 	@Column(name = "privilege", nullable = false)
-	private Privilege privilege;
+	public Privilege privilege;
 
 	@NotNull
 	@PastOrPresent
 	@CreationTimestamp
 	@Column(name = "creation_date", nullable = false, updatable = false)
-	private Date creationDate;
+	public Date creationDate;
+
+	@Override
+	public String toString() {
+		return String.format("(userId=%s, creationDate=%s, username=%s, description=%s, privilege=%s, badges=%s, email=%s, password=%s)", userId, creationDate, username, description, privilege, badges, email, password);
+	}
 }

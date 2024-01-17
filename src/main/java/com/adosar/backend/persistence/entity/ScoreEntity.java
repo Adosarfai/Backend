@@ -22,33 +22,38 @@ public class ScoreEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "score_id", length = 10, nullable = false, updatable = false)
-	private Integer scoreId;
+	public Integer scoreId;
 
 	@NotNull
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "map", nullable = false, updatable = false)
-	private MapEntity map;
+	public MapEntity map;
 
 	@NotNull
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "user", nullable = false, updatable = false)
-	private UserEntity user;
+	public UserEntity user;
 
 	@NotNull
 	@OneToOne(optional = false)
 	@JoinColumn(name = "replay", nullable = false, updatable = false)
-	private ReplayEntity replay;
+	public ReplayEntity replay;
 
 	@PastOrPresent
 	@Column(name = "time_set", nullable = false, updatable = false)
-	private Date timeSet;
+	public Date timeSet;
 
 	@NotNull
 	@Column(name = "speed", nullable = false, updatable = false)
-	private Float speed;
+	public Float speed;
 
 	@NotNull
 	@PositiveOrZero
 	@Column(name = "points", nullable = false, updatable = false)
-	private Integer points;
+	public Integer points;
+
+	@Override
+	public String toString() {
+		return String.format("(map=%s, user=%s, speed=%s, timeSet=%s, replay=%s, points=%s, scoreId=%s)", map, user, speed, timeSet, replay, points, scoreId);
+	}
 }

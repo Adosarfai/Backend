@@ -7,24 +7,28 @@ import lombok.*;
 import java.util.List;
 
 @Getter
-@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Leaderboard {
 
 	@NotNull
-	private User user;
+	public User user;
 
 	@NotNull
 	@Id
-	private Integer leaderboardId;
+	public Integer leaderboardId;
 
 	@NotNull
 	@Setter
-	private List<Map> maps;
+	public List<Map> maps;
 
 	@NotNull
 	@Setter
-	private List<User> players;
+	public List<User> players;
+
+	@Override
+	public String toString() {
+		return String.format("(user=%s, leaderboardId=%s, maps=%s, players=%s)", user, leaderboardId, maps, players);
+	}
 }

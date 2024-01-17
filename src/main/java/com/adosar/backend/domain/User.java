@@ -16,34 +16,39 @@ import java.util.Set;
 public class User {
 	@NotNull
 	@Id
-	private Integer userId;
+	public Integer userId;
 
 	@NotNull
-	private Date creationDate;
-
-	@Setter
-	@NotNull
-	private String username;
+	public Date creationDate;
 
 	@Setter
 	@NotNull
-	private String description;
+	public String username;
 
 	@Setter
 	@NotNull
-	private Privilege privilege;
+	public String description;
 
 	@Setter
 	@NotNull
-	private Set<Badge> badges;
+	public Privilege privilege;
+
+	@Setter
+	@NotNull
+	public Set<Badge> badges;
 
 	@JsonIgnore
 	@Setter
 	@NotNull
-	private String email;
+	public String email;
 
 	@JsonIgnore
 	@Setter
 	@NotNull
-	private String password;
+	public String password;
+
+	@Override
+	public String toString() {
+		return String.format("(userId=%s, creationDate=%s, username=%s, description=%s, privilege=%s, badges=%s, email=%s, password=%s)", userId, creationDate, username, description, privilege, badges, email, password);
+	}
 }
