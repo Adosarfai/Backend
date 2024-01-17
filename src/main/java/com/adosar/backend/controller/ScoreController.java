@@ -8,13 +8,19 @@ import com.adosar.backend.business.request.score.UploadScoreRequest;
 import com.adosar.backend.business.response.score.GetAllScoresResponse;
 import com.adosar.backend.business.response.score.GetScoreByIdResponse;
 import com.adosar.backend.business.response.score.GetScoresByMapIdResponse;
+import com.adosar.backend.business.response.score.UploadScoreResponse;
 import com.adosar.backend.domain.Score;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.user.SimpUserRegistry;
+import org.springframework.messaging.support.GenericMessage;
 import org.springframework.web.bind.annotation.*;
+
+import java.nio.charset.StandardCharsets;
 
 @RestController
 @CrossOrigin(allowCredentials = "true", origins = {"https://dev.adosar.io:5173", "https://adosar.io", "https://localhost:5137"})
@@ -23,6 +29,8 @@ import org.springframework.web.bind.annotation.*;
 @Builder
 public class ScoreController {
 	private final ScoreManager scoreManager;
+	private final SimpUserRegistry userRegistry;
+	private final SimpMessagingTemplate messagingTemplate;
 
 	@GetMapping(path = "/all/{page}")
 	public ResponseEntity<Iterable<Score>> getAllScores(@PathVariable Integer page) {
@@ -45,9 +53,14 @@ public class ScoreController {
 		return new ResponseEntity<>(response.getScores(), response.getHttpStatus());
 	}
 
+	@SendTo("/feed")
 	@PostMapping(path = "/")
-	public ResponseEntity<HttpStatus> uploadScore(@RequestBody @Valid UploadScoreRequest request) {
-		HttpStatus response = scoreManager.uploadScore(request);
-		return new ResponseEntity<>(response, response);
+	public ResponseEntity<Score> uploadScore(@RequestBody @Valid UploadScoreRequest request) {
+		UploadScoreResponse response = scoreManager.uploadScore(request);
+
+		// Send websocket message
+		messagingTemplate.convertAndSend("/feed", response.getScore());
+
+		return new ResponseEntity<>(response.getScore(), response.getHttpStatus());
 	}
 }

@@ -11,6 +11,9 @@ import com.adosar.backend.domain.Score;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.user.SimpUser;
+import org.springframework.messaging.simp.user.SimpUserRegistry;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,7 +29,9 @@ class ScoreControllerTest {
 	void test_get_all_scores_returns_list_of_scores_and_success_status_code() {
 		// Arrange
 		ScoreManager scoreManager = mock(ScoreManager.class);
-		ScoreController scoreController = new ScoreController(scoreManager);
+		SimpUserRegistry simpUserRegistry = mock(SimpUserRegistry.class);
+		SimpMessagingTemplate simpMessagingTemplate = mock(SimpMessagingTemplate.class);
+		ScoreController scoreController = new ScoreController(scoreManager, simpUserRegistry, simpMessagingTemplate);
 		GetAllScoresRequest request = GetAllScoresRequest.builder()
 				.page(1)
 				.build();
@@ -50,7 +55,9 @@ class ScoreControllerTest {
 	void test_get_score_by_id_returns_response_with_score_and_success_status_code() {
 		// Arrange
 		ScoreManager scoreManager = mock(ScoreManager.class);
-		ScoreController scoreController = new ScoreController(scoreManager);
+		SimpUserRegistry simpUserRegistry = mock(SimpUserRegistry.class);
+		SimpMessagingTemplate simpMessagingTemplate = mock(SimpMessagingTemplate.class);
+		ScoreController scoreController = new ScoreController(scoreManager, simpUserRegistry, simpMessagingTemplate);
 		Integer id = 1;
 		GetScoreByIdRequest request = new GetScoreByIdRequest(id);
 		Score score = new Score();
@@ -72,7 +79,9 @@ class ScoreControllerTest {
 	void test_get_scores_by_map_id_returns_list_of_scores_and_success_status_code() {
 		// Arrange
 		ScoreManager scoreManager = mock(ScoreManager.class);
-		ScoreController scoreController = new ScoreController(scoreManager);
+		SimpUserRegistry simpUserRegistry = mock(SimpUserRegistry.class);
+		SimpMessagingTemplate simpMessagingTemplate = mock(SimpMessagingTemplate.class);
+		ScoreController scoreController = new ScoreController(scoreManager, simpUserRegistry, simpMessagingTemplate);
 		Integer id = 1;
 		Integer page = 0;
 		GetScoresByMapIdRequest request = GetScoresByMapIdRequest.builder()
@@ -104,7 +113,9 @@ class ScoreControllerTest {
 	void test_get_all_scores_with_invalid_page_number_returns_error_status_code() {
 		// Arrange
 		ScoreManager scoreManager = mock(ScoreManager.class);
-		ScoreController scoreController = new ScoreController(scoreManager);
+		SimpUserRegistry simpUserRegistry = mock(SimpUserRegistry.class);
+		SimpMessagingTemplate simpMessagingTemplate = mock(SimpMessagingTemplate.class);
+		ScoreController scoreController = new ScoreController(scoreManager, simpUserRegistry, simpMessagingTemplate);
 		Integer invalidPage = -1;
 		GetAllScoresRequest request = GetAllScoresRequest.builder()
 				.page(invalidPage)
@@ -128,7 +139,9 @@ class ScoreControllerTest {
 	void test_get_scores_by_map_id_with_invalid_id_or_page_number_returns_error_status_code() {
 		// Arrange
 		ScoreManager scoreManager = mock(ScoreManager.class);
-		ScoreController scoreController = new ScoreController(scoreManager);
+		SimpUserRegistry simpUserRegistry = mock(SimpUserRegistry.class);
+		SimpMessagingTemplate simpMessagingTemplate = mock(SimpMessagingTemplate.class);
+		ScoreController scoreController = new ScoreController(scoreManager, simpUserRegistry, simpMessagingTemplate);
 		Integer invalidId = -1;
 		Integer invalidPage = -1;
 		GetScoresByMapIdRequest request = GetScoresByMapIdRequest.builder()
@@ -157,7 +170,9 @@ class ScoreControllerTest {
 	void test_get_scores_by_map_id_with_non_existent_map_id_returns_empty_list_of_scores_and_success_status_code() {
 		// Arrange
 		ScoreManager scoreManager = mock(ScoreManager.class);
-		ScoreController scoreController = new ScoreController(scoreManager);
+		SimpUserRegistry simpUserRegistry = mock(SimpUserRegistry.class);
+		SimpMessagingTemplate simpMessagingTemplate = mock(SimpMessagingTemplate.class);
+		ScoreController scoreController = new ScoreController(scoreManager, simpUserRegistry, simpMessagingTemplate);
 		Integer id = 123;
 		Integer page = 1;
 		GetScoresByMapIdRequest request = GetScoresByMapIdRequest.builder()
@@ -184,7 +199,9 @@ class ScoreControllerTest {
 	void test_get_scores_by_map_id_with_non_existent_page_number() {
 		// Arrange
 		ScoreManager scoreManager = mock(ScoreManager.class);
-		ScoreController scoreController = new ScoreController(scoreManager);
+		SimpUserRegistry simpUserRegistry = mock(SimpUserRegistry.class);
+		SimpMessagingTemplate simpMessagingTemplate = mock(SimpMessagingTemplate.class);
+		ScoreController scoreController = new ScoreController(scoreManager, simpUserRegistry, simpMessagingTemplate);
 		Integer id = 1;
 		Integer page = 100;
 		GetScoresByMapIdRequest request = GetScoresByMapIdRequest.builder()
@@ -212,7 +229,9 @@ class ScoreControllerTest {
 	void test_score_controller_returns_success_status_code_when_score_manager_returns_empty_response() {
 		// Arrange
 		ScoreManager scoreManager = mock(ScoreManager.class);
-		ScoreController scoreController = new ScoreController(scoreManager);
+		SimpUserRegistry simpUserRegistry = mock(SimpUserRegistry.class);
+		SimpMessagingTemplate simpMessagingTemplate = mock(SimpMessagingTemplate.class);
+		ScoreController scoreController = new ScoreController(scoreManager, simpUserRegistry, simpMessagingTemplate);
 		GetAllScoresRequest getAllScoresRequest = GetAllScoresRequest.builder()
 				.page(1)
 				.build();

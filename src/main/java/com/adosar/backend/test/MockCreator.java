@@ -49,7 +49,7 @@ public class MockCreator {
 				.name(String.format("Mocked test badge %s", badgeId))
 				.build();
 	}
-	
+
 	public static LeaderboardEntity mockLeaderboardEntity(Integer leaderboardId) {
 		return LeaderboardEntity.builder()
 				.user(mockUserEntity(1))
@@ -66,7 +66,7 @@ public class MockCreator {
 				))
 				.build();
 	}
-	
+
 	public static PackEntity mockPackEntity(Integer packId) {
 		return PackEntity.builder()
 				.user(mockUserEntity(1))
@@ -82,15 +82,15 @@ public class MockCreator {
 				.removalReason(null)
 				.build();
 	}
-	
+
 	public static ReplayEntity mockReplayEntity(Integer replayId) {
 		return ReplayEntity.builder()
 				.replayId(replayId)
-				.pauses(new int[] {123, 456, 789})
-				.timings(new int[] {123, 456, 789})
+				.pauses(new int[]{123, 456, 789})
+				.timings(new int[]{123, 456, 789})
 				.build();
 	}
-	
+
 	public static ScoreEntity mockScoreEntity(Integer scoreId) {
 		return ScoreEntity.builder()
 				.map(mockMapEntity(1))

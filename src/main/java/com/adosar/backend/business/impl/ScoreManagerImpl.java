@@ -10,13 +10,16 @@ import com.adosar.backend.business.request.score.UploadScoreRequest;
 import com.adosar.backend.business.response.score.GetAllScoresResponse;
 import com.adosar.backend.business.response.score.GetScoreByIdResponse;
 import com.adosar.backend.business.response.score.GetScoresByMapIdResponse;
+import com.adosar.backend.business.response.score.UploadScoreResponse;
 import com.adosar.backend.domain.Score;
+import com.adosar.backend.persistence.MapRepository;
 import com.adosar.backend.persistence.ReplayRepository;
 import com.adosar.backend.persistence.ScoreRepository;
 import com.adosar.backend.persistence.entity.MapEntity;
 import com.adosar.backend.persistence.entity.ReplayEntity;
 import com.adosar.backend.persistence.entity.ScoreEntity;
 import com.adosar.backend.persistence.entity.UserEntity;
+import com.adosar.backend.test.MockCreator;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -100,21 +103,22 @@ public class ScoreManagerImpl implements ScoreManager {
 	}
 
 	@Override
-	public HttpStatus uploadScore(UploadScoreRequest request) {
+	public UploadScoreResponse uploadScore(UploadScoreRequest request) {
 		try {
-
 			ReplayEntity replayEntity = ReplayEntity.builder().timings(request.getTimings()).pauses(request.getPauses()).build();
-			MapEntity mapEntity = MapEntity.builder().mapId(request.getMapId()).build();
-			UserEntity userEntity = UserEntity.builder().userId(request.getUserId()).build();
+			MapEntity mapEntity = MockCreator.mockMapEntity(request.getMapId());
+			UserEntity userEntity = MockCreator.mockUserEntity(request.getUserId());
 			ScoreEntity scoreEntity = ScoreEntity.builder().map(mapEntity).user(userEntity).replay(replayEntity).timeSet(new Date()).speed(request.getSpeed()).points(request.getPoints()).build();
 
+			Score score = ScoreConverter.convert(scoreEntity);
+			
 			replayRepository.saveAndFlush(replayEntity);
 			scoreRepository.saveAndFlush(scoreEntity);
 
-			return HttpStatus.CREATED;
+			return new UploadScoreResponse(score, HttpStatus.CREATED);
 		} catch (Exception exception) {
 			LOGGER.log(Level.SEVERE, exception.toString(), exception);
-			return HttpStatus.INTERNAL_SERVER_ERROR;
+			return new UploadScoreResponse(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 }

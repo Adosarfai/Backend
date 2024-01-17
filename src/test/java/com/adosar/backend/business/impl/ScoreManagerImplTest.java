@@ -8,6 +8,7 @@ import com.adosar.backend.business.response.score.GetAllScoresResponse;
 import com.adosar.backend.business.response.score.GetScoreByIdResponse;
 import com.adosar.backend.business.response.score.GetScoresByMapIdResponse;
 import com.adosar.backend.domain.Score;
+import com.adosar.backend.persistence.ReplayRepository;
 import com.adosar.backend.persistence.ScoreRepository;
 import com.adosar.backend.persistence.entity.MapEntity;
 import com.adosar.backend.persistence.entity.ReplayEntity;
@@ -36,7 +37,8 @@ class ScoreManagerImplTest {
 	void test_getAllScores_returns_empty_list_with_OK_when_page_number_greater_than_number_of_pages() {
 		// Arrange
 		ScoreRepository scoreRepository = mock(ScoreRepository.class);
-		ScoreManagerImpl scoreManager = new ScoreManagerImpl(scoreRepository);
+		ReplayRepository replayRepository = mock(ReplayRepository.class);
+		ScoreManagerImpl scoreManager = new ScoreManagerImpl(scoreRepository, replayRepository);
 		GetAllScoresRequest request = GetAllScoresRequest.builder()
 				.page(5)
 				.build();
@@ -58,7 +60,8 @@ class ScoreManagerImplTest {
 	void test_should_return_all_scores_with_status_ok_when_get_all_scores_called_with_valid_page_number() {
 		// Arrange
 		ScoreRepository scoreRepository = mock(ScoreRepository.class);
-		ScoreManagerImpl scoreManager = new ScoreManagerImpl(scoreRepository);
+		ReplayRepository replayRepository = mock(ReplayRepository.class);
+		ScoreManagerImpl scoreManager = new ScoreManagerImpl(scoreRepository, replayRepository);
 		GetAllScoresRequest request = GetAllScoresRequest.builder()
 				.page(0)
 				.build();
@@ -99,7 +102,8 @@ class ScoreManagerImplTest {
 	void test_getScoresByMapId_returns_empty_list_with_status_OK_when_page_number_greater_than_number_of_pages() {
 		// Arrange
 		ScoreRepository scoreRepository = mock(ScoreRepository.class);
-		ScoreManagerImpl scoreManager = new ScoreManagerImpl(scoreRepository);
+		ReplayRepository replayRepository = mock(ReplayRepository.class);
+		ScoreManagerImpl scoreManager = new ScoreManagerImpl(scoreRepository, replayRepository);
 		GetScoresByMapIdRequest request = GetScoresByMapIdRequest.builder()
 				.id(1)
 				.page(2)
@@ -122,7 +126,8 @@ class ScoreManagerImplTest {
 	void test_should_return_score_with_status_OK_when_getScoreById_called_with_valid_score_ID() {
 		// Arrange
 		ScoreRepository scoreRepository = mock(ScoreRepository.class);
-		ScoreManagerImpl scoreManager = new ScoreManagerImpl(scoreRepository);
+		ReplayRepository replayRepository = mock(ReplayRepository.class);
+		ScoreManagerImpl scoreManager = new ScoreManagerImpl(scoreRepository, replayRepository);
 		GetScoreByIdRequest request = GetScoreByIdRequest.builder().id(1).build();
 		ScoreEntity scoreEntity = ScoreEntity.builder()
 				.scoreId(1)
@@ -157,7 +162,8 @@ class ScoreManagerImplTest {
 	void test_getScoresByMapId_returns_not_found_when_map_id_not_found() {
 		// Arrange
 		ScoreRepository scoreRepository = mock(ScoreRepository.class);
-		ScoreManagerImpl scoreManager = new ScoreManagerImpl(scoreRepository);
+		ReplayRepository replayRepository = mock(ReplayRepository.class);
+		ScoreManagerImpl scoreManager = new ScoreManagerImpl(scoreRepository, replayRepository);
 		GetScoresByMapIdRequest request = GetScoresByMapIdRequest.builder()
 				.id(1)
 				.page(0)
@@ -179,7 +185,8 @@ class ScoreManagerImplTest {
 	void test_should_return_bad_request_when_get_score_by_id_called_with_score_id_less_than_1() {
 		// Arrange
 		ScoreRepository scoreRepository = mock(ScoreRepository.class);
-		ScoreManagerImpl scoreManager = new ScoreManagerImpl(scoreRepository);
+		ReplayRepository replayRepository = mock(ReplayRepository.class);
+		ScoreManagerImpl scoreManager = new ScoreManagerImpl(scoreRepository, replayRepository);
 		GetScoreByIdRequest request = GetScoreByIdRequest.builder()
 				.id(0)
 				.build();
@@ -197,7 +204,8 @@ class ScoreManagerImplTest {
 	void test_getScoresByMapId_returns_bad_request_when_map_id_less_than_1() {
 		// Arrange
 		ScoreRepository scoreRepository = mock(ScoreRepository.class);
-		ScoreManagerImpl scoreManager = new ScoreManagerImpl(scoreRepository);
+		ReplayRepository replayRepository = mock(ReplayRepository.class);
+		ScoreManagerImpl scoreManager = new ScoreManagerImpl(scoreRepository, replayRepository);
 		GetScoresByMapIdRequest request = GetScoresByMapIdRequest.builder()
 				.id(0)
 				.page(0)
@@ -216,7 +224,8 @@ class ScoreManagerImplTest {
 	void test_get_scores_by_map_id_returns_all_scores_with_status_OK() {
 		// Arrange
 		ScoreRepository scoreRepository = mock(ScoreRepository.class);
-		ScoreManagerImpl scoreManager = new ScoreManagerImpl(scoreRepository);
+		ReplayRepository replayRepository = mock(ReplayRepository.class);
+		ScoreManagerImpl scoreManager = new ScoreManagerImpl(scoreRepository, replayRepository);
 		GetScoresByMapIdRequest request = GetScoresByMapIdRequest.builder()
 				.id(1)
 				.page(0)
@@ -271,7 +280,8 @@ class ScoreManagerImplTest {
 	void test_getScoreById_returns_not_found_when_score_with_ID_is_not_found() {
 		// Arrange
 		ScoreRepository scoreRepository = mock(ScoreRepository.class);
-		ScoreManagerImpl scoreManager = new ScoreManagerImpl(scoreRepository);
+		ReplayRepository replayRepository = mock(ReplayRepository.class);
+		ScoreManagerImpl scoreManager = new ScoreManagerImpl(scoreRepository, replayRepository);
 		GetScoreByIdRequest request = GetScoreByIdRequest.builder().id(1).build();
 
 		// Mock the behavior of scoreRepository.findById() to return an empty Optional
@@ -290,7 +300,8 @@ class ScoreManagerImplTest {
 	void test_getScoreById_returns_bad_request_when_ID_is_less_than_1() {
 		// Arrange
 		ScoreRepository scoreRepository = mock(ScoreRepository.class);
-		ScoreManagerImpl scoreManager = new ScoreManagerImpl(scoreRepository);
+		ReplayRepository replayRepository = mock(ReplayRepository.class);
+		ScoreManagerImpl scoreManager = new ScoreManagerImpl(scoreRepository, replayRepository);
 		GetScoreByIdRequest request = GetScoreByIdRequest.builder().id(0).build();
 
 		// Act
@@ -306,7 +317,8 @@ class ScoreManagerImplTest {
 	void test_getScoreById_returns_internal_server_error_when_exception_occurs() {
 		// Arrange
 		ScoreRepository scoreRepository = mock(ScoreRepository.class);
-		ScoreManagerImpl scoreManager = new ScoreManagerImpl(scoreRepository);
+		ReplayRepository replayRepository = mock(ReplayRepository.class);
+		ScoreManagerImpl scoreManager = new ScoreManagerImpl(scoreRepository, replayRepository);
 		GetScoreByIdRequest request = GetScoreByIdRequest.builder().id(1).build();
 
 		// Mock the behavior of scoreRepository.findById() to throw a RuntimeException
@@ -325,7 +337,8 @@ class ScoreManagerImplTest {
 	void test_getAllScores_returns_BAD_REQUEST_when_page_is_negative() {
 		// Arrange
 		ScoreRepository scoreRepository = mock(ScoreRepository.class);
-		ScoreManagerImpl scoreManager = new ScoreManagerImpl(scoreRepository);
+		ReplayRepository replayRepository = mock(ReplayRepository.class);
+		ScoreManagerImpl scoreManager = new ScoreManagerImpl(scoreRepository, replayRepository);
 		GetAllScoresRequest request = GetAllScoresRequest.builder()
 				.page(-1)
 				.build();

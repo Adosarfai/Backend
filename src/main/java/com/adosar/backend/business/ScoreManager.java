@@ -7,7 +7,7 @@ import com.adosar.backend.business.request.score.UploadScoreRequest;
 import com.adosar.backend.business.response.score.GetAllScoresResponse;
 import com.adosar.backend.business.response.score.GetScoreByIdResponse;
 import com.adosar.backend.business.response.score.GetScoresByMapIdResponse;
-import org.springframework.http.HttpStatus;
+import com.adosar.backend.business.response.score.UploadScoreResponse;
 
 public interface ScoreManager {
 	GetAllScoresResponse getAllScores(GetAllScoresRequest request);
@@ -16,5 +16,5 @@ public interface ScoreManager {
 
 	GetScoresByMapIdResponse getScoresByMapId(GetScoresByMapIdRequest request);
 
-	HttpStatus uploadScore(UploadScoreRequest request);
+	UploadScoreResponse uploadScore(UploadScoreRequest request);
 }
