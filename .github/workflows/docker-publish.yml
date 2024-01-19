@@ -19,6 +19,9 @@ env:
   # github.repository as <account>/<repo>
   IMAGE_NAME: adosar/backend
 
+permissions:
+  contents: read
+  packages: write
 
 jobs:
   build:
