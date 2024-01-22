@@ -18,6 +18,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.common.hash.Hashing;
 import lombok.AllArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.javapoet.ClassName;
@@ -25,9 +26,11 @@ import org.springframework.stereotype.Service;
 
 import java.nio.file.Path;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -187,6 +190,26 @@ public class MapManagerImpl implements MapManager {
 		} catch (Exception exception) {
 			LOGGER.log(Level.SEVERE, exception.toString(), exception);
 			return HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+	}
+
+	@Override
+	public getMostPopularMapByDateResponse getMostPopularMapByDate(LocalDate date) {
+		try {
+			Optional<MapEntity> mapEntity = mapRepository.getMostPopularMap(date);
+			
+			if (mapEntity.isEmpty()) {
+				throw new NotFoundException("Could not get most popular map");
+			}
+			
+			return new getMostPopularMapByDateResponse(MapConverter.convert(mapEntity.get()), HttpStatus.OK);
+			
+		} catch (NotFoundException exception) {
+			LOGGER.log(Level.FINE, exception.toString(), exception);
+			return new getMostPopularMapByDateResponse(null, HttpStatus.NOT_FOUND);
+		} catch (Exception exception) {
+			LOGGER.log(Level.SEVERE, exception.toString(), exception);
+			return new getMostPopularMapByDateResponse(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 

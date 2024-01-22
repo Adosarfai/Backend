@@ -7,12 +7,14 @@ import com.adosar.backend.domain.Map;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Date;
 
 @RestController
@@ -70,5 +72,12 @@ public class MapController {
 				.build();
 		MapQueryResponse response = mapManager.getMapsByPartialData(request);
 		return new ResponseEntity<>(response.getMaps(), response.getHttpStatus());
+	}
+	
+	@GetMapping(path = "/popular/{date}")
+	public ResponseEntity<Map> getMostPopularMapByDate(@PathVariable(required = false) LocalDate date) {
+		if (date == null) date = LocalDate.now();
+		getMostPopularMapByDateResponse response = mapManager.getMostPopularMapByDate(date);
+		return new ResponseEntity<>(response.getMap(), response.getHttpStatus());
 	}
 }

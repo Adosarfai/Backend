@@ -4,6 +4,8 @@ import com.adosar.backend.business.request.map.*;
 import com.adosar.backend.business.response.map.*;
 import org.springframework.http.HttpStatus;
 
+import java.time.LocalDate;
+
 public interface MapManager {
 	CreateNewMapResponse createNewMap(CreateNewMapRequest request, String jwt);
 
@@ -16,4 +18,6 @@ public interface MapManager {
 	MapQueryResponse getMapsByPartialData(MapQueryRequest request);
 
 	HttpStatus uploadMap(UploadMapRequest request);
+	
+	getMostPopularMapByDateResponse getMostPopularMapByDate(LocalDate date);
 }
